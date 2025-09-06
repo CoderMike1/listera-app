@@ -1,7 +1,10 @@
 const {app} = require('electron')
 const {createMainWindow} = require("./windows")
+const {registerLoginHandlers} = require("./components/login");
 
 app.whenReady().then(() =>{
+
+    registerLoginHandlers()
 
     createMainWindow()
 })

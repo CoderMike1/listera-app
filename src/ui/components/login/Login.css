@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+
+/* Podstawy – brak pasków, pełna wysokość */
+html, body, #root { height: 100%; }
+body { margin: 0; overflow: hidden; }
+
+/* Strona logowania - pełny viewport, tło i centrowanie */
+.login-page {
+    width: 100vw;
+    height: 100dvh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+}
+
+/* Delikatne animowane tło */
+.login-page::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    background: linear-gradient(120deg, #eef3ff, #f7efff, #effff7, #eef3ff);
+    background-size: 300% 300%;
+    animation: bgShift 28s ease-in-out infinite;
+    z-index: -1;
+    filter: blur(6px);
+}
+.login-page::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+            radial-gradient(60% 50% at 85% 10%, #ffffff66 0%, #ffffff00 60%),
+            radial-gradient(55% 45% at 10% 90%, #ffffff55 0%, #ffffff00 60%);
+    pointer-events: none;
+    z-index: -1;
+}
+@keyframes bgShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Karta z treścią na środku */
+.login-card {
+    display: grid;
+    place-items: center;
+    gap: 4px;
+    padding: 16px 24px;
+    text-align: center;
+}
+.app-brand {
+    display: flex;
+    flex-direction: column;   /* jeden pod drugim */
+    align-items: center;
+    gap: 2px;                 /* niemal „na styk” – zmień np. na 0–4px */
+    line-height: 1;           /* ciaśniej */
+    margin-bottom: 24px;      /* odstęp od przycisku Login */
+}
+/* Tytuł i wersja */
+.app-title {
+    font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 6vw, 52px);
+    margin: 0;
+    letter-spacing: 0.5px;
+    /* gradientowy tekst */
+    background: linear-gradient(90deg, #1f6fff, #8847ff 50%, #00c2ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 1px 0 rgba(255,255,255,.25);
+}
+.app-version {
+    font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    margin: 0;
+    font-size: 12px;
+    opacity: .7;
+}
+
+/* Przycisk */
+.login-btn {
+    margin-top: -20px;
+    padding: 14px 28px;
+    font-size: 1.05rem;
+    border: 0;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #5c7cff, #3651ff);
+    color: #fff;
+    box-shadow: 0 10px 20px rgba(54,81,255,.35),
+    0 3px 6px rgba(0,0,0,.08) inset;
+    cursor: pointer;
+    transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
+}
+.login-btn:hover   { transform: translateY(-1px); }
+.login-btn:active  { transform: translateY(1px); filter: brightness(.96); }
+.login-btn:disabled { opacity: .7; cursor: not-allowed; }
+
+/* Status */
+.login-status { font-size: .95rem; }
+.login-status.success { color: #2e7d32; }
+.login-status.error   { color: #c62828; }
+
+/* === Alternatywa OFFLINE ===
+1) Dodaj font np. do: src/ui/assets/fonts/Outfit-Variable.woff2
+2) Zamiast @import u góry wstaw:
+@font-face {
+  font-family: 'Outfit';
+  src: url('/src/ui/assets/fonts/Outfit-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+*/

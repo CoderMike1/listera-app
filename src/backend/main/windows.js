@@ -11,6 +11,7 @@ const createMainWindow = () =>{
         width:1100,
         height:750,
         show:false,
+        resizable: false,
         webPreferences:{
             preload:path.join(__dirname,"..","preload","index.js"),
             contextIsolation: true,
@@ -24,7 +25,7 @@ const createMainWindow = () =>{
     // win.loadFile(path.join(__dirname,"..","renderer","dashboard","index.html"))
 
     if(isDev){
-        win.loadURL(DEV_URL+"#/dashboard")
+        win.loadURL(DEV_URL+"#/login")
     }
     else{
         win.loadFile(path.join(__dirname,"..","..","src", "renderer", "dist", "index.html"))
