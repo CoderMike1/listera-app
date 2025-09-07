@@ -1,0 +1,15 @@
+.dash-cols{
+    min-height: 100vh;
+    display:grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap:16px;
+    padding:16px;
+    background:#f6f7fb ;
+}
+
+.panel{
+    background: #fff;
+    border:2px solid #e5e7eb;
+    border-radius:12px;
+
+}

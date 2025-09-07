@@ -101,15 +101,3 @@ body { margin: 0; overflow: hidden; }
 .login-status { font-size: .95rem; }
 .login-status.success { color: #2e7d32; }
 .login-status.error   { color: #c62828; }
-
-/* === Alternatywa OFFLINE ===
-1) Dodaj font np. do: src/ui/assets/fonts/Outfit-Variable.woff2
-2) Zamiast @import u góry wstaw:
-@font-face {
-  font-family: 'Outfit';
-  src: url('/src/ui/assets/fonts/Outfit-Variable.woff2') format('woff2');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-*/
