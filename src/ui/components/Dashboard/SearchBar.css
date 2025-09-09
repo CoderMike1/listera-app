@@ -1,0 +1,22 @@
+.searchbar-container{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:12px;
+}
+.input{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background: var(--border);
+    border-radius:999px;
+    padding:10px 14px;
+    box-shadow:var(--shadow);
+}
+.input input{
+    border:0;
+    outline:0;
+    background: transparent;
+    color:var(--text);
+    width:240px;
+    padding-top:6px
+}

@@ -34,29 +34,9 @@
     padding: 16px;
     color:var(--text);
     background: var(--side-bg);
+    height:100%
 }
-.middle-container__toolbar{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:12px;
-}
-.input{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    background: var(--border);
-    border-radius:999px;
-    padding:10px 14px;
-    box-shadow:var(--shadow);
-}
-.input input{
-    border:0;
-    outline:0;
-    background: transparent;
-    color:var(--text);
-    width:240px;
-    padding-top:6px
-}
+
 
 .middle-container__header h1{
     margin:22px 0 4px;
@@ -131,6 +111,9 @@
 .chart__axis{
     stroke:var(--border);
 }
+.chart__tick__text{
+    font-family: 'Inter', sans-serif;
+}
 .chart--donut{
     height:120px;
 }
@@ -147,7 +130,10 @@
     transform:rotate(-90deg);
     transform-origin:50% 50%;
 }
-
+.donut_text{
+    font-family: 'Inter', sans-serif;
+    font-size:4px;
+}
 .legend{
     display:flex;
     justify-content: space-between;

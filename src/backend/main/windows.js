@@ -8,10 +8,10 @@ const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:5173";
 const createMainWindow = () =>{
 
     const win = new BrowserWindow({
-        width:1100,
+        width:1300,
         height:750,
         show:false,
-        resizable: false,
+        // resizable: false,
         webPreferences:{
             preload:path.join(__dirname,"..","preload","index.js"),
             contextIsolation: true,

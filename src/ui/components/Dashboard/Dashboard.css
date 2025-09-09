@@ -1,3 +1,4 @@
+
 .dash-cols{
     min-height: 100vh;
     display:grid;
@@ -8,8 +9,11 @@
 }
 
 .panel{
-    background: #fff;
+    background: #f3f5f9;
     border:2px solid #e5e7eb;
     border-radius:12px;
 
+}
+.sidebar-panel{
+    width: 100%;
 }

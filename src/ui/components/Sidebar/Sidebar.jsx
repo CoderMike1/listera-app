@@ -39,8 +39,12 @@ const Sidebar = () =>{
             <div className="sidebar__foot">
                 <div className="version">v0.0.1</div>
                 <div className='help-part'>
-                    <img src={helpPng} alt='Help' width={20} height={20} className='help-image'/>
-                    <span>Help?</span>
+                    <div className="help-part-image">
+                        <img src={helpPng} alt='Help' width={20} height={20}/>
+                    </div>
+                    <div className="help-part-span">
+                        <span>Help?</span>
+                    </div>
                 </div>
             </div>
         </aside>

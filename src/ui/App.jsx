@@ -1,7 +1,8 @@
 import {HashRouter,Routes,Route,Navigate} from "react-router-dom";
 import './App.css'
-import Login from "./components/login/Login";
-import Dashboard from "./components/dashboard/Dashboard";
+import Login from "./components/Login/Login";
+import Dashboard from "./components/Dashboard/Dashboard";
+import ItemsMiddlePanel from "./components/Items/Items";
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
            <Route path='/' element={<Navigate to='/login' replace/>}/>
            <Route path='/login' element={<Login/>}/>
            <Route path='/dashboard' element={<Dashboard/>}/>
+           <Route path='/items' element={<ItemsMiddlePanel/>}/>
        </Routes>
    </HashRouter>
   )

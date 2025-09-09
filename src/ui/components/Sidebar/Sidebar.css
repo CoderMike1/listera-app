@@ -16,24 +16,11 @@
     :root { --side-bg: #0f172a; --side-border: #1f2937; --link: #e5e7eb; --link-muted: #94a3b8; --active-bg: #0b1220; --active: #22d3ee; }
 }
 
-.sidebar1{
-    height:100vh;
-    width:260px;
-    background: var(--side-bg);
-    border-right: 1px solid var(--side-border);
-    /*padding:16px 12px;*/
-    display:grid;
-    grid-template-rows: auto 1fr auto;
-    gap:8px;
-    position: sticky; top:0;
-    overflow:hidden;
-
-}
 .sidebar {
     position: sticky;
     top: 0;
     height: 100dvh;
-    width: 260px;
+    width: 100%;
     background: var(--side-bg);
     border-right: 1px solid var(--side-border);
     /*padding: 16px 12px;*/
@@ -131,4 +118,10 @@
     font-size:20px;
     font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     font-weight:600;
+    display:flex;
+}
+.help-part-image{
+    position: absolute;
+    right:66px;
+    bottom:26px;
 }
