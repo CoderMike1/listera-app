@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS items (
   size TEXT DEFAULT 'onesize',
   stock INTEGER DEFAULT 0,
   purchase_price REAL DEFAULT 0,
-    status TEXT DEFAULT('active'),
+  status    TEXT NOT NULL
+  CHECK (status IN ('active','sold','toship')),
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now'))
 );
@@ -48,8 +49,8 @@ ON CONFLICT(id) DO UPDATE SET
 
 
 const add_item = db.prepare(`
-INSERT INTO items (name, sku, size, stock, purchase_price)
-VALUES (@name, @sku, COALESCE(@size,'onesize'), COALESCE(@stock,0), COALESCE(@purchase_price,0))
+INSERT INTO items (name, sku, size,status, stock, purchase_price)
+VALUES (@name, @sku, COALESCE(@size,'onesize'),@status, COALESCE(@stock,0), COALESCE(@purchase_price,0))
 `)
 
 const update_item = db.prepare(`
@@ -68,18 +69,21 @@ ORDER BY updated_at DESC
 LIMIT @limit OFFSET @offset
 `);
 
-const count_items = db.prepare(`SELECT COUNT(*) AS n FROM items`);
-
+const count_active_items = db.prepare(`SELECT COUNT(*) AS n FROM items WHERE status = 'active'`)
+const count_sold_items = db.prepare(`SELECT COUNT(*) AS s FROM items WHERE status = 'sold'`)
+const count_toship_items = db.prepare(`SELECT COUNT(*) AS ts FROM items WHERE status = 'toship'`)
 
 
 module.exports = {
 
     getKpis(){
-        const total = count_items.get().n;
+        const total_active_items = count_active_items.get().n;
+        const total_sold_items = count_sold_items.get().s;
+        const total_toship_items = count_toship_items.get().ts
         const resp = [
-            {icon:"📦",value:total,label:"Active"},
-            {icon:"🧾",value:"3",label:"Inactive"},
-            {icon:"⚠️",value:"12",label:"Errors"}
+            {icon:"🏭",value:total_active_items,label:"Active"},
+            {icon:"🔥",value:total_sold_items,label:"Sold"},
+            {icon:"📦️",value:total_toship_items,label:"To Ship"}
         ]
 
         return {ok:true,results:resp}

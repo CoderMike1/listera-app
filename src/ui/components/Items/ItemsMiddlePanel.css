@@ -140,6 +140,7 @@
 .imp-table th:nth-child(5){
     width: 70px;
 }
+
 .imp-table thead th{
     padding:10px 0 10px 0;
     border-bottom: 1px solid #e5e7eb;
@@ -177,9 +178,32 @@
 }
 .imp-toolbar .btn-add{ margin-left: 8px; }
 
-.imp-filters{
+.imp-filters, .imp-deleter, .imp-refresher{
     position:relative;
     font-family: 'Inter', sans-serif;
+}
+.imp-refresher > button{
+    height: 100%;
+    border:none;
+    font-size: 23px;
+    background: none;
+    cursor: pointer;
+    transition: transform 0.4s ease-out;
+    transform-origin: center;
+}
+.imp-refresher > button:active{
+    transform: rotate(360deg);
+}
+.imp-deleter > button {
+    height: 100%;
+    border:none;
+    border-radius:12px;
+    background: #e0adca;
+    cursor:pointer;
+}
+.imp-deleter > .on{
+    background: #770505;
+    color:yellow;
 }
 .imp-filters-pop{
     position:absolute;
@@ -258,4 +282,9 @@
     outline: 2px solid #93c5fd;
     outline-offset: 2px;
 }
+.imp-table-empty{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-family: 'Inter', sans-serif;
 
+}

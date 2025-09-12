@@ -57,6 +57,8 @@ const Items = () =>{
     })
     const [deleteMode,setDeleteMode] = useState(false)
 
+    const [selectedCategory,setSelectedCategory] = useState(null)
+
 
 
 
@@ -85,6 +87,7 @@ const Items = () =>{
                 name:draft.name?.trim() ?? "",
                 sku:draft.sku?.trim() ?? "",
                 size: draft.size ?? "onesize",
+                status: draft.status ?? "active",
                 stock: draft.stock === "" || draft.stock == null ? 9: Number(draft.stock),
                 purchase_price: draft.purchase_price === "" || draft.purchase_price == null ? 0 :Number(draft.purchase_price)
             }
@@ -125,6 +128,12 @@ const Items = () =>{
             return hitQ && hitStock && hitPrice;
         });
 
+        if(selectedCategory){
+            list = list.filter(it => {
+                return it.status === selectedCategory
+            })
+        }
+
         switch (filters.sort) {
             case "price_desc":
                 list = [...list].sort((a,b) => (Number(b.purchase_price ?? 0) - Number(a.purchase_price ?? 0)));
@@ -145,7 +154,7 @@ const Items = () =>{
         return list;
 
 
-    }, [itemsList, query, filters]);
+    }, [itemsList, query, filters,selectedCategory]);
 
     const onDelete = useCallback(async (ids) =>{
         const idsArr = Array.isArray(ids) ? ids :[ids];
@@ -193,6 +202,9 @@ const Items = () =>{
                                   deleteMode={deleteMode}
                                   setDeleteMode={setDeleteMode}
                                   onDelete={onDelete}
+
+                                  selectedCategory={selectedCategory}
+                                  setSelectedCategory={setSelectedCategory}
 
 
                 />

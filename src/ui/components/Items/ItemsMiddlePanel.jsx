@@ -6,8 +6,14 @@ import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import ReactPaginate from "react-paginate";
 
 
+const STATUS_ENUM = {
+    "active":"Active 🟢",
+    "sold":"Sold 🟡",
+    "toship":"To Ship 🟣"
+}
 
-const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,error,onReload,setAdding,adding,query,setQuery,filters,setFilters,deleteMode,setDeleteMode,onDelete}) => {
+
+const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,error,onReload,setAdding,adding,query,setQuery,filters,setFilters,deleteMode,setDeleteMode,onDelete,selectedCategory,setSelectedCategory}) => {
     const rows = useMemo(() => itemsList ?? [], [itemsList]);
 
     const itemsPerPage = 6;
@@ -92,21 +98,27 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
 
           <div className="imp-toolbar">
               <div className="imp-chips">
-                  <button className="chip selected">Active</button>
-                  <button className="chip">Draft</button>
-                  <button className="chip">Inactive</button>
-                  <button className="chip">Errors</button>
+                  <button className={`chip ${selectedCategory === null ? 'selected': ''}`}  onClick={()=>setSelectedCategory(null)}>All ⚫</button>
+                  <button className={`chip ${selectedCategory === 'active' ? 'selected': ''}`} onClick={()=>setSelectedCategory('active')}>Active 🟢</button>
+                  <button className={`chip ${selectedCategory === 'sold' ? 'selected': ''}`} onClick={()=>setSelectedCategory('sold')}>Sold 🟡</button>
+                  <button className={`chip ${selectedCategory === 'toship' ? 'selected': ''}`} onClick={()=>setSelectedCategory('toship')}>To Ship 🟣</button>
               </div>
 
-              <button
-                  className={`btn-delete-mode ${deleteMode ? 'on' : ''}`}
-                  onClick={() => setDeleteMode(v => !v)}
-                  title="Toggle delete mode"
-              >
-                  🗑️ {deleteMode ? 'Cancel' : 'Delete'}
-              </button>
+
 
               <div className="imp-tools">
+                  <div className="imp-refresher">
+                      <button onClick={()=>onReload()}>🔄</button>
+                  </div>
+                  <div className="imp-deleter">
+                      <button
+                          className={`btn-delete-mode ${deleteMode ? 'on' : ''}`}
+                          onClick={() => setDeleteMode(v => !v)}
+                          title="Toggle delete mode"
+                      >
+                          🗑️ {deleteMode ? 'Cancel' : 'Delete'}
+                      </button>
+                  </div>
                   <details className="imp-filters">
                       <summary className="imp-btn">Filters</summary>
                       <div className="imp-filters-pop">
@@ -187,47 +199,56 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
                       <th>Size</th>
                       <th>Stock</th>
                       <th>Purchase Price</th>
+                      <th>Status</th>
                   </tr>
                   </thead>
                   <tbody>
-                  {pageSlice.map((i)=>(
-                      <tr key={i.id} onClick={() => {
-                          if (deleteMode) return;          // w trybie usuwania nie otwieramy edycji
-                          onSelect(i);
-                          setAdding(false);
-                      }}
+                  {pageSlice && pageSlice.length > 0 ?(
+                      pageSlice.map((i)=>(
+                              <tr key={i.id} onClick={() => {
+                                  if (deleteMode) return;          // w trybie usuwania nie otwieramy edycji
+                                  onSelect(i);
+                                  setAdding(false);
+                              }}
 
-                          className={selectedItem?.id === i.id ? "selected" : ""}
+                                  className={selectedItem?.id === i.id ? "selected" : ""}
 
-                      >
-                          {deleteMode && (
-                              <td>
-                                  <input
-                                      type="checkbox"
-                                      checked={isSelected(i.id)}
-                                      onChange={(e) => { e.stopPropagation(); toggleOne(i.id); }}
-                                      onClick={(e) => e.stopPropagation()}
-                                      aria-label={`Select ${i.name}`}
-                                  />
-                              </td>
-                          )}
-                          <td>
-                              <img src={dunkPNG} width={50} height={50} alt={i.name}/>
-                          </td>
-                          <td className="imp-cell-name">
-                              <span className="imp-cell-name-strong">{i.name}</span>
-                          </td>
+                              >
+                                  {deleteMode && (
+                                      <td>
+                                          <input
+                                              type="checkbox"
+                                              checked={isSelected(i.id)}
+                                              onChange={(e) => { e.stopPropagation(); toggleOne(i.id); }}
+                                              onClick={(e) => e.stopPropagation()}
+                                              aria-label={`Select ${i.name}`}
+                                          />
+                                      </td>
+                                  )}
+                                  <td>
+                                      <img src={dunkPNG} width={50} height={50} alt={i.name}/>
+                                  </td>
+                                  <td className="imp-cell-name">
+                                      <span className="imp-cell-name-strong">{i.name}</span>
+                                  </td>
 
-                          <td>{i.sku}</td>
-                          <td>{i.size}</td>
-                          <td>{i.stock}</td>
-                          <td>{i.purchase_price}</td><td className="row-actions">
+                                  <td>{i.sku}</td>
+                                  <td>{i.size}</td>
+                                  <td>{i.stock}</td>
+                                  <td>{i.purchase_price}</td>
+                                  <td>{STATUS_ENUM[i.status]}</td>
+
+                              </tr>
+                          ))
+                  )
+                      :
+                      <tr>
+                      <td colSpan={8} className="imp-table-empty">no items found...</td>
+                     </tr>
 
 
-                      </td>
+                  }
 
-                      </tr>
-                  ))}
                   </tbody>
               </table>
               {/* Pasek akcji w trybie usuwania */}
@@ -245,15 +266,20 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
                       </button>
                   </div>
               )}
-              <ReactPaginate
-                  pageCount={pageCount}
-                  onPageChange={({selected}) => setPageNumber(selected)}
-                  containerClassName={"paginationBttns"}
-                  previousLinkClassName={"previousBttn"}
-                  nextLinkClassName={"nextBttn"}
-                  disabledClassName={"paginactionDisabled"}
-                  activeClassName={"paginationActive"}
-              />
+              {pageSlice && pageSlice.length >0 ?
+                  <ReactPaginate
+                      pageCount={pageCount}
+                      onPageChange={({selected}) => setPageNumber(selected)}
+                      containerClassName={"paginationBttns"}
+                      previousLinkClassName={"previousBttn"}
+                      nextLinkClassName={"nextBttn"}
+                      disabledClassName={"paginactionDisabled"}
+                      activeClassName={"paginationActive"}
+                  />
+                  :
+                  <></>
+              }
+
           </div>
       </div>
   )
