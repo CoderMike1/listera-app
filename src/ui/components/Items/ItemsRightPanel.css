@@ -17,7 +17,7 @@
 }
 
 
-.rp-edit{
+.rp-edit,  .rp-add{
     height:100%;
     background: var(--rp-panel);
     border: 1px solid var(--rp-line);
@@ -28,19 +28,19 @@
     position: relative;
     overflow:hidden;
 }
-.rp-edit-header{
+.rp-edit-header, .rp-add-header{
     display:flex;
     justify-content: space-between;
     margin-right:13px;
     margin-left:13px;
     margin-top:30px;
 }
-.rp-edit-header > h3{
+.rp-edit-header > h3 , .rp-add-header >h3{
     font-weight: 600;
     font-size:25px;
     font-family: 'Inter', sans-serif;
 }
-.rp-edit-header > button{
+.rp-edit-header > button , .rp-add-header > button{
     height: 28px;
     font-size: 40px;
     width: 28px;
@@ -53,18 +53,18 @@
     color:red;
     cursor:pointer;
 }
-.rp-edit-header > button:hover{
+.rp-edit-header > button:hover  , .rp-add-header > button:hover{
     background: #dc7b7b;
     border-radius: 40px;
 
 }
-.rp-edit-form-grid{
+.rp-edit-form-grid  , .rp-add-form-grid{
     display:flex;
     flex-direction: column;
     gap:20px;
 }
 
-.rp-edit-form-grid > label{
+.rp-edit-form-grid > label  , .rp-add-form-grid > label{
     display:flex;
     flex-direction: column;
     padding-left: 20px;
@@ -76,31 +76,51 @@
     padding: 8px 10px ;
     border: 1px solid var(--rp-line);
     border-radius: 10px;
-    background: #c3d2e6;
+    background: #cfd1d5;
     color: var(--rp-text);
     outline: none;
     font-family: 'Inter', sans-serif;
     transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
-.rp-edit input[type="number"]::-webkit-outer-spin-button,
-.rp-edit input[type="number"]::-webkit-inner-spin-button{
-    -webkit-appearance: none;
-    margin: 0;
-}
 
-.rp-edit-buttons{
+
+.rp-edit-buttons , .rp-add-buttons{
     display:flex;
     padding:20px;
     justify-content: center;
 }
-.rp-edit-btn{
+.rp-edit-btn, .rp-add-btn{
     border:none;
     background: #fff;
     font-size: 40px;
     color:green;
     cursor:pointer;
 }
-.rp-edit-btn:hover{
+.rp-edit-btn:hover , .rp-add-btn:hover{
     background: #91da91;
     border-radius: 40px;
+}
+
+
+.rp-add-search{
+    text-align: center;
+    margin:-10px 0 20px 0;
+    padding: 0;
+    display:flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+}
+
+
+
+.rp-add-form-grid > label >input{
+    height: 20px;
+    padding: 4px 5px ;
+    border: 1px solid var(--rp-line);
+    border-radius: 10px;
+    background: #cfd1d5;
+    color: var(--rp-text);
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }

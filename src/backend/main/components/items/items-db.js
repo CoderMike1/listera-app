@@ -17,7 +17,7 @@ db.pragma("foreign_keys = ON");
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS items (
-  id TEXT PRIMARY KEY,          
+  id INTEGER PRIMARY KEY,          
   name TEXT NOT NULL,
   sku TEXT NOT NULL,
   size TEXT DEFAULT 'onesize',
@@ -33,8 +33,8 @@ CREATE INDEX IF NOT EXISTS idx_items_size ON items(size);
 `)
 
 const upsert_item = db.prepare(`
-INSERT INTO items (id, name, sku, size, stock, purchase_price, created_at, updated_at)
-VALUES (@id, @name, @sku, COALESCE(@size,'onesize'), COALESCE(@stock,0), COALESCE(@purchase_price,0), COALESCE(@created_at, datetime('now')), datetime('now'))
+INSERT INTO items (name, sku, size, stock, purchase_price, updated_at)
+VALUES ( @name, @sku, COALESCE(@size,'onesize'), COALESCE(@stock,0), COALESCE(@purchase_price,0), datetime('now'))
 ON CONFLICT(id) DO UPDATE SET
   name=excluded.name,
   sku=excluded.sku,
@@ -44,9 +44,12 @@ ON CONFLICT(id) DO UPDATE SET
   updated_at=datetime('now')
 `)
 
+
+
+
 const add_item = db.prepare(`
-INSERT INTO items (id, name, sku, size, stock, purchase_price)
-VALUES (@id, @name, @sku, COALESCE(@size,'onesize'), COALESCE(@stock,0), COALESCE(@purchase_price,0))
+INSERT INTO items (name, sku, size, stock, purchase_price)
+VALUES (@name, @sku, COALESCE(@size,'onesize'), COALESCE(@stock,0), COALESCE(@purchase_price,0))
 `)
 
 const update_item = db.prepare(`
@@ -66,6 +69,8 @@ LIMIT @limit OFFSET @offset
 `);
 
 const count_items = db.prepare(`SELECT COUNT(*) AS n FROM items`);
+
+
 
 module.exports = {
 

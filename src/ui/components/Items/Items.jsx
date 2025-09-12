@@ -47,6 +47,20 @@ const Items = () =>{
         }
     }, []);
 
+    const [query,setQuery] = useState("")
+    const [filters, setFilters] = useState({
+        stockMin: "",
+        stockMax: "",
+        priceMin: "",
+        priceMax: "",
+        sort:""
+    })
+    const [deleteMode,setDeleteMode] = useState(false)
+
+
+
+
+
     useEffect(() => {
         let alive = true;
         (async () => {
@@ -64,9 +78,6 @@ const Items = () =>{
     const onSave = useCallback(async (draft) =>{
         if(saving) return;
         setSaving(true);
-
-
-
         try{
 
             const payload = {
@@ -98,6 +109,67 @@ const Items = () =>{
     })
 
 
+    const filteredItems = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        const sMin = filters.stockMin === "" ? -Infinity : Number(filters.stockMin);
+        const sMax = filters.stockMax === "" ? +Infinity : Number(filters.stockMax);
+        const pMin = filters.priceMin === "" ? -Infinity : Number(filters.priceMin);
+        const pMax = filters.priceMax === "" ? +Infinity : Number(filters.priceMax);
+
+        let list =  itemsList.filter(it => {
+            const hitQ = !q || (it.name?.toLowerCase().includes(q) || it.sku?.toLowerCase().includes(q));
+            const stock = Number(it.stock ?? 0);
+            const price = Number(it.purchase_price ?? 0);
+            const hitStock = stock >= sMin && stock <= sMax;
+            const hitPrice = price >= pMin && price <= pMax;
+            return hitQ && hitStock && hitPrice;
+        });
+
+        switch (filters.sort) {
+            case "price_desc":
+                list = [...list].sort((a,b) => (Number(b.purchase_price ?? 0) - Number(a.purchase_price ?? 0)));
+                break;
+            case "price_asc":
+                list = [...list].sort((a,b) => (Number(a.purchase_price ?? 0) - Number(b.purchase_price ?? 0)));
+                break;
+            case "stock_desc":
+                list = [...list].sort((a,b) => (Number(b.stock ?? 0) - Number(a.stock ?? 0)));
+                break;
+            case "stock_asc":
+                list = [...list].sort((a,b) => (Number(a.stock ?? 0) - Number(b.stock ?? 0)));
+                break;
+            default:
+                break;
+        }
+
+        return list;
+
+
+    }, [itemsList, query, filters]);
+
+    const onDelete = useCallback(async (ids) =>{
+        const idsArr = Array.isArray(ids) ? ids :[ids];
+        if(!idsArr.length) return;
+
+        const ok = confirm(`Delete ${idsArr.length} item(s)?`);
+        if(!ok) return;
+
+        try {
+            for (const id of idsArr) {
+                const res = await window.items.api_delete_item(id);
+                if (!res?.ok) throw new Error(`delete failed for ${id}`);
+            }
+            await load();
+        } catch (e) {
+            console.error(e);
+            setErr(e);
+        }
+    }, [load])
+
+
+
+
+
     return (
         <div className='items-cols'>
             <aside className='panel sidebar-panel'>
@@ -105,13 +177,24 @@ const Items = () =>{
             </aside>
             <div className='panel'>
                 <ItemsMiddlePanel kpisData={kpisData}
-                                  itemsList={itemsList}
+                                  itemsList={filteredItems}
                                   onSelect={onSelect}
+                                  selectedItem={selectedItemM}
                                   loading={loading}
                                   error={err}
                                   onReload={load}
                                   setAdding={setAdding}
                                   adding={adding}
+
+                                  query={query}
+                                  setQuery={setQuery}
+                                  filters={filters}
+                                  setFilters={setFilters}
+                                  deleteMode={deleteMode}
+                                  setDeleteMode={setDeleteMode}
+                                  onDelete={onDelete}
+
+
                 />
             </div>
             <aside className='panel'>

@@ -9,6 +9,9 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding }) =>{
 
     const [searchedValue,setSearchedValue] = useState("")
 
+
+
+
     useEffect(() => {
         if(selectedItem){
             const { id, name, sku, size, stock, purchase_price } = selectedItem;
@@ -136,35 +139,6 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding }) =>{
                                 <button className="rp-add-btn primary" type="submit">✔</button>
                             </div>
                         </form>
-
-                        {/*<div className="rp-add-form-grid">*/}
-                        {/*    <label>*/}
-                        {/*        <span>Name</span>*/}
-                        {/*        <input value={form?.name ?? ""} onChange={e=>update("name",e.target.value) }/>*/}
-                        {/*    </label>*/}
-                        {/*    <label>*/}
-                        {/*        <span>Sku</span>*/}
-                        {/*        <input value={form?.sku ?? ""} onChange={e=>update("sku",e.target.value) }/>*/}
-                        {/*    </label>*/}
-                        {/*    <label>*/}
-                        {/*        <span>Size</span>*/}
-                        {/*        <input value={form?.size ?? ""} onChange={e=>update("size",e.target.value) }/>*/}
-                        {/*    </label>*/}
-                        {/*    <label>*/}
-                        {/*        <span>Stock</span>*/}
-                        {/*        <input type="number" value={form?.stock ?? 0} onChange={e=>update("stock",e.target.value) }/>*/}
-                        {/*    </label>*/}
-                        {/*    <label>*/}
-                        {/*        <span>Purchase Price</span>*/}
-                        {/*        <input type="number" step="0.01" value={form?.purchase_price ?? ""} onChange={e=>update("purchase_price",e.target.value) }/>*/}
-                        {/*    </label>*/}
-
-                        {/*</div>*/}
-
-                        {/*<div className="rp-add-buttons">*/}
-                        {/*    <button className="rp-add-btn primary" onClick={()=>onSave(form)}>✔</button>*/}
-                        {/*</div>*/}
-
 
 
                     </div>

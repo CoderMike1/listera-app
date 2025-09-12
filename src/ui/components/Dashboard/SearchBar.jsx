@@ -1,12 +1,17 @@
 import './SearchBar.css'
 
-const SearchBar = () =>{
+const SearchBar = ({setQuery,query,placeholder}) =>{
 
     return (
         <div className="searchbar-container">
             <div className="input input--search">
                 <span aria-hidden="true">🔍</span>
-                <input placeholder="Search" aria-label="Search"/>
+                <input
+                    placeholder={placeholder}
+                    aria-label="Search"
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                />
             </div>
         </div>
     )
