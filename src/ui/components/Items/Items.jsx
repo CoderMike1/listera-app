@@ -16,6 +16,7 @@ const Items = () =>{
     const [err, setErr] = useState(null);
 
     const[adding,setAdding] = useState(false)
+    const [editing,setEditing] = useState(false);
 
     const [selectedItem,setSelectedItem] = useState(null)
     const onSelect = useCallback((item) => setSelectedItem(item), []);
@@ -27,7 +28,6 @@ const Items = () =>{
                 window.items.api_get_kpis_data(),
                 window.items.api_get_all_items(),
             ]);
-            console.log(kpisRes)
             if (kpisRes.status === "fulfilled" && kpisRes.value?.ok) {
                 setKpisData(kpisRes.value.results);
             } else {
@@ -80,6 +80,12 @@ const Items = () =>{
     const onSave = useCallback(async (draft) =>{
         if(saving) return;
         setSaving(true);
+        console.log(draft)
+        if(draft?.status === 'active' && draft?.selling_price >0){
+            draft.selling_price = 0;
+            draft.sale_at = null
+        }
+
         try{
 
             const payload = {
@@ -89,9 +95,12 @@ const Items = () =>{
                 size: draft.size ?? "onesize",
                 status: draft.status ?? "active",
                 stock: draft.stock === "" || draft.stock == null ? 9: Number(draft.stock),
-                purchase_price: draft.purchase_price === "" || draft.purchase_price == null ? 0 :Number(draft.purchase_price)
+                purchase_price: draft.purchase_price === "" || draft.purchase_price == null ? 0 :Number(draft.purchase_price),
+                selling_price: draft.selling_price ?? 0,
+                sale_at: draft.sale_at ?? null,
+                purchased_at:draft.purchased_at
             }
-
+            console.log(payload)
             const res = payload.id ? await window.items.api_update_item(payload) : await window.items.api_add_item(payload)
             if(!res?.ok){
                 throw new Error("update failed")
@@ -214,11 +223,15 @@ const Items = () =>{
                     selectedItem={selectedItemM}
                     onClose={() => {
                         setSelectedItem(null);
-                        setAdding(false)
+                        setAdding(false);
+                        setEditing(false)
                     }}
                     onSave={(form) => onSave(form)}
                     setAdding={setAdding}
                     adding={adding}
+                    editing={editing}
+                    setEditing={setEditing}
+                    load={load}
 
                 />
             </aside>

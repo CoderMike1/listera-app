@@ -198,7 +198,12 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
                       <th>SKU</th>
                       <th>Size</th>
                       <th>Stock</th>
-                      <th>Purchase Price</th>
+                      {(selectedCategory === 'active' || !selectedCategory) ?
+                          <th>Purchase Price</th>
+                          :
+                          <th>Profit</th>
+                      }
+
                       <th>Status</th>
                   </tr>
                   </thead>
@@ -235,7 +240,12 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
                                   <td>{i.sku}</td>
                                   <td>{i.size}</td>
                                   <td>{i.stock}</td>
-                                  <td>{i.purchase_price}</td>
+                                  {(selectedCategory === 'active' || !selectedCategory) ?
+                                      <td>{i.purchase_price}</td>
+                                      :
+                                      <td>{i.sold_price - i.purchase_price}</td>
+                                  }
+
                                   <td>{STATUS_ENUM[i.status]}</td>
 
                               </tr>

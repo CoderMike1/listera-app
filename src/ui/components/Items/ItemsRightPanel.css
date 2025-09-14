@@ -1,126 +1,369 @@
+
 :root{
-    --rp-panel: #ffffff;
-    --rp-line: #ebe5e5;
-    --rp-soft: #f8fafc;
+    --rp-panel: #fff;
+    --rp-line: #e5e7eb;
+    --rp-soft: #f9fafb;
     --rp-text: #0f172a;
-    --rp-muted:#64748b;
-    --rp-primary:#2563eb;
+    --rp-muted:#6b7280;
+    --rp-primary:#4f46e5; /* fiolet z Twojego screena */
+    --rp-success:#059669;
+    --rp-green-surface:#e8f7e6; /* jednolite jasnozielone tło panelu */
     --rp-shadow: 0 1px 2px rgba(16,24,40,.06);
-    --rp-radius: 13px;
+    --rp-radius: 16px;
     --rp-font:'Inter', sans-serif;
 }
 
+/* ====== PANEL (wspólny dla Details/Edit/Add) ====== */
 .rp-container{
-    height:100%;
-    padding:10px;
+    background: var(--rp-green-surface);
+    height: 100%;
+    border: 1px solid var(--rp-line);
+    border-radius: var(--rp-radius);
+    box-shadow: var(--rp-shadow);
+    padding: 16px;
+    font-family: var(--rp-font), serif;
+}
+.rp-details,
+.rp-edit,
+.rp-add{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;         /* treść przewijamy wewnątrz, nie cały panel */
+}
+
+/* ====== HEADER (tytuł + czerwone X) ====== */
+.rp-details-header,
+.rp-edit-header,
+.rp-add-header {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 6px 8px 14px;
+}
+
+.rp-details-header h3,
+.rp-edit-header h3,
+.rp-add-header h3 {
+    margin:0;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: .2px;
+}
+
+.rp-details-header > button,
+.rp-edit-header > button,
+.rp-add-header  > button {
+    height: 32px; width: 32px;
+    display:flex; align-items:center; justify-content:center;
+    border:0; background:transparent; color:#ef4444;
+    font-size: 28px; line-height: 1; border-radius: 10px; cursor:pointer;
+    transition: background .15s ease, transform .03s ease;
+}
+.rp-details-header > button:hover,
+.rp-edit-header > button:hover,
+.rp-add-header  > button:hover { background: rgba(239,68,68,.08); }
+.rp-details-header > button:active,
+.rp-edit-header > button:active,
+.rp-add-header  > button:active { transform: translateY(1px); }
+
+/* ====== „KARTKI” z danymi (Facts) ====== */
+.rp-facts {
+    display:grid; gap:12px;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+}
+@media (min-width:640px){
+    .rp-facts { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+.fact {
+    background: var(--rp-soft);
+    border: 1px solid var(--rp-line);
+    border-radius: 14px;
+    padding: 10px;
+}
+.fact-label {
+    font-size: 11px; color: var(--rp-muted);
+    text-transform: uppercase; letter-spacing: .4px;
+}
+.fact-value {
+    margin-top: 4px; font-size: 14px; color: var(--rp-text); font-weight: 600;
+}
+
+/* ====== Wspólna siatka formularza (Edit/Add) ====== */
+.rp-add-form-grid,
+.rp-edit-form-grid {
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 8px;
+}
+@media (min-width:560px){
+    .rp-add-form-grid,
+    .rp-edit-form-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Wspólna „kartka” label + input */
+.rp-add-form-grid > label,
+.rp-edit-form-grid > label {
+    display:flex; flex-direction:column; gap:6px;
+    background:#fff; border:1px solid var(--rp-line);
+    border-radius:14px; padding:12px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+.rp-add-form-grid > label:hover,
+.rp-edit-form-grid > label:hover { border-color:#d1d5db; }
+.rp-add-form-grid > label:focus-within,
+.rp-edit-form-grid > label:focus-within {
+    border-color:#c7d2fe;
+    box-shadow: 0 0 0 3px rgba(99,102,241,.18);
+}
+.rp-add-form-grid > label > span,
+.rp-edit-form-grid > label > span {
+    font-size:12px; text-transform:uppercase; letter-spacing:.4px; color:var(--rp-muted);
+}
+
+/* Wspólne inputy */
+.rp-add-form-grid input,
+.rp-edit-form-grid input {
+    width:100%; border:0; outline:none; background:transparent;
+    font-size:16px; font-weight:600; color:var(--rp-text);
+    padding: 2px 0 4px;
+}
+.rp-add-form-grid input::placeholder,
+.rp-edit-form-grid input::placeholder { color:#9ca3af; }
+
+/* ====== Duży przycisk akcji (✔) – wspólny ====== */
+.rp-add-buttons,
+.rp-edit-buttons {
+    grid-column: 1 / -1;
+    margin-top: 6px; display:flex; justify-content:center;
+}
+.rp-add-buttons .rp-add-btn.primary,
+.rp-edit-buttons .rp-edit-btn.primary {
+    margin-top:30px;
+    width:100%; border:0; cursor:pointer;
+    background: var(--rp-primary); color:#fff;
+    font-weight:700; font-size:15px; padding:14px 16px;
+    border-radius:14px; box-shadow: 0 6px 16px rgba(79,70,229,.25);
+    transition: background .15s ease, transform .03s ease, box-shadow .15s ease;
+}
+.rp-add-buttons .rp-add-btn.primary:hover,
+.rp-edit-buttons .rp-edit-btn.primary:hover {
+    background:#4338ca; box-shadow:0 8px 20px rgba(67,56,202,.28);
+}
+.rp-add-buttons .rp-add-btn.primary:active,
+.rp-edit-buttons .rp-edit-btn.primary:active { transform: translateY(1px); }
+
+/* ====== Przyciski akcji w Details (Sell/Edit/Ship) – wspólne ====== */
+.rp-details-actions {
+    display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;
+}
+@media (max-width:520px){ .rp-details-actions { grid-template-columns:1fr; } }
+
+.rp-details-actions-btn button,
+.btn {
+    width:100%; appearance:none; border:1px solid var(--rp-line); background:#fff; color:#111827;
+    font-weight:600; font-size:14px; line-height:1; padding:12px 14px; border-radius:12px;
+    cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,.04);
+    transition: background .2s, border-color .2s, box-shadow .2s, transform .04s;
+}
+.rp-details-actions-btn button:hover, .btn:hover {
+    background:#f8fafc; border-color:#d1d5db; box-shadow:0 3px 8px rgba(0,0,0,.06);
+}
+.rp-details-actions-btn button:active, .btn:active { transform: translateY(1px); }
+.rp-details-actions-btn button:focus-visible, .btn:focus-visible {
+    outline:3px solid rgba(79,70,229,.25); outline-offset:2px;
+}
+.rp-details-actions-btn:first-child button { background:var(--rp-primary); border-color:var(--rp-primary); color:#fff; }
+.rp-details-actions-btn:first-child button:hover { background:#4338ca; border-color:#4338ca; }
+.rp-details-actions-btn:nth-child(3) button { background:#2e7d32; color:#fff; }
+.rp-details-actions-btn:nth-child(3) button:hover { background:#4a7e4d; }
+
+/* ====== Modal (sprzedaż) – bez zmian w logice ====== */
+.rp-modal { position:fixed; inset:0; z-index:1000; display:grid; place-items:center; }
+.rp-modal-backdrop { position:absolute; inset:0; background:rgba(17,24,39,.45); backdrop-filter: blur(3px); }
+.rp-modal-content {
+    position:relative; width:min(92vw,560px); max-height:88vh; overflow:auto;
+    background:#fff; border:1px solid var(--rp-line); border-radius:12px;
+    box-shadow:0 20px 40px rgba(0,0,0,.18); padding:16px; z-index:1001; animation: modal-in .16s ease-out;
+    font-family: var(--rp-font);
+}
+@keyframes modal-in { from{transform:translateY(6px) scale(.98); opacity:0} to{transform:translateY(0) scale(1); opacity:1} }
+.rp-modal-header { display:flex; align-items:center; justify-content:center; gap:15px; margin-bottom:10px; }
+.rp-modal-header h4 { margin:0; font-size:16px; font-weight:600; }
+.rp-modal-close { border:1px solid var(--rp-line); background:#fff; color:#111827; width:34px; height:34px; border-radius:10px; cursor:pointer; }
+.rp-modal-close:hover { background:#f3f4f6; }
+
+/* Sold form – w stylu panelu */
+.rp-sold { border:1px solid var(--rp-green-surface); background:var(--rp-green-surface); border-radius:12px; padding:12px; }
+.rp-sold-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; }
+.rp-sold-hint { font-weight:600; }
+.rp-sold-grid { display:grid; gap:12px; grid-template-columns: 1fr; }
+@media (min-width:640px){ .rp-sold-grid{ grid-template-columns: repeat(4, minmax(0,1fr)); } }
+.form-group label { display:block; font-size:14px; color:var(--rp-muted); font-weight:600; margin-bottom:4px; }
+.form-group input {
+    max-width:110px; border:1px solid #d1d5db; border-radius:10px; padding:10px; font-size:14px; background:#fff;
+}
+.form-group--checkbox input[type='checkbox']{ width:28px; height:38px; }
+.form-actions { display:flex; align-items:end; }
+.form-actions > .btn, .form-actions > button {
+    background:var(--rp-success); color:#fff; border:none; padding:10px 14px; border-radius:10px; cursor:pointer;
+}
+.form-actions > .btn:hover, .form-actions > button:hover { background:#047857; }
+.form-actions > .btn:disabled, .form-actions > button:disabled { opacity:.6; cursor:not-allowed; }
+
+
+
+
+/**/
+/* ===== LAYOUT: panel nie rośnie, przewija się środek ===== */
+.rp-container{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;         /* panel nie będzie się „rozpychał” */
+}
+
+/* Każdy tryb to kolumna o stałej wysokości */
+.rp-details,
+.rp-edit,
+.rp-add{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;         /* treść przewijamy wewnątrz, nie cały panel */
+}
+
+/* Obrazek w edycji (i w details) – niech nie wypycha layoutu */
+.rp-details-grid-image{
+    margin: 0 12px 12px;
+    align-self: flex-start;
+}
+
+/* Grid formularza ma przewijany środek i „margines” na sticky button */
+.rp-edit-form-grid,
+.rp-add-form-grid{
+    flex: 1 1 auto;
+    overflow: auto;           /* przewijaj zawartość formularza */
+    padding: 0 12px 84px;     /* miejsce na przycisk na dole */
+    box-sizing: border-box;
+    min-width: 0;             /* zapobiega rozszerzaniu przez długie wartości */
+}
+
+/* Kafelki niech się nie rozpychają siatki */
+.rp-edit-form-grid > label,
+.rp-add-form-grid  > label{
+    min-width: 0;
+}
+
+/* ===== Sticky przycisk na dole – zawsze widoczny ===== */
+.rp-edit-buttons,
+.rp-add-buttons{
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--rp-green-surface);
+    padding: 10px 12px 12px;
+    margin-top: 6px;
+    border-top: 1px solid var(--rp-line);
+    z-index: 5;               /* nad treścią formularza */
+}
+
+/* pełna szerokość, bez zmian w wyglądzie */
+.rp-edit-buttons .rp-edit-btn.primary,
+.rp-add-buttons  .rp-add-btn.primary{
+    width: 100%;
+}
+
+/* ===== Drobne ściśnięcie kafelków (mniej „wysokie”) ===== */
+.rp-edit-form-grid,
+.rp-add-form-grid{ gap: 10px; }
+
+.rp-edit-form-grid > label,
+.rp-add-form-grid  > label{
+    padding: 10px;            /* było 12px */
+}
+
+/* Inputy dat i select niech zachowują się jak pozostałe */
+.rp-edit-form-grid input[type="date"],
+.rp-add-form-grid  input[type="date"],
+.rp-edit-form-grid select,
+.rp-add-form-grid  select{
+    width: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--rp-text);
+    padding: 2px 0 4px;
+    appearance: none;
+}
+/* --- pełna wysokość aplikacji (jeśli jeszcze nie masz) --- */
+html, body, #root { height: 100%; }
+
+/* --- kontener prawego panelu nie rośnie i nie przejmuje scrolla --- */
+.rp-container{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;                 /* scroll robimy wewnątrz paneli */
+}
+
+/* --- same panele (Details/Edit/Add) są scrollowalne --- */
+.rp-details,
+.rp-edit,
+.rp-add{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;                    /* ważne w flex, by działał overflow */
+    overflow-y: auto;                 /* widoczny scroll w panelu */
+    overscroll-behavior: contain;
+}
+
+/* widoczny scrollbar (Firefox + WebKit/Chromium) */
+.rp-details, .rp-edit, .rp-add { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+.rp-details::-webkit-scrollbar,
+.rp-edit::-webkit-scrollbar,
+.rp-add::-webkit-scrollbar { width: 10px; }
+.rp-details::-webkit-scrollbar-track,
+.rp-edit::-webkit-scrollbar-track,
+.rp-add::-webkit-scrollbar-track { background: transparent; }
+.rp-details::-webkit-scrollbar-thumb,
+.rp-edit::-webkit-scrollbar-thumb,
+.rp-add::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+.rp-details::-webkit-scrollbar-thumb:hover,
+.rp-edit::-webkit-scrollbar-thumb:hover,
+.rp-add::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* --- formularze już NIE przewijają się same; przewija się cały panel --- */
+.rp-edit-form-grid,
+.rp-add-form-grid{
+    flex: 0 0 auto;
+    overflow: visible;
+    padding: 0 12px 12px;             /* bez sztucznego „marginesu na dół” */
+    box-sizing: border-box;
     min-width: 0;
 }
 
 
-.rp-edit,  .rp-add{
-    height:100%;
-    background: var(--rp-panel);
-    border: 1px solid var(--rp-line);
-    border-radius: var(--rp-radius);
-    box-shadow:0 1px 2px rgba(16,24,40,.06);
-    display:flex;
-    flex-direction: column;
-    position: relative;
-    overflow:hidden;
-}
-.rp-edit-header, .rp-add-header{
-    display:flex;
-    justify-content: space-between;
-    margin-right:13px;
-    margin-left:13px;
-    margin-top:30px;
-}
-.rp-edit-header > h3 , .rp-add-header >h3{
-    font-weight: 600;
-    font-size:25px;
-    font-family: 'Inter', sans-serif;
-}
-.rp-edit-header > button , .rp-add-header > button{
-    height: 28px;
-    font-size: 40px;
-    width: 28px;
+
+
+
+/**/
+/* --- 0) Panel = pełna wysokość viewportu i brak „rozpychania” --- */
+.rp-container{              /* mobilne safe-viewport */
+    height: 100vh;               /* fallback */
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--rp-panel);
-    border:none;
-    font-weight: 400;
-    color:red;
-    cursor:pointer;
-}
-.rp-edit-header > button:hover  , .rp-add-header > button:hover{
-    background: #dc7b7b;
-    border-radius: 40px;
-
-}
-.rp-edit-form-grid  , .rp-add-form-grid{
-    display:flex;
     flex-direction: column;
-    gap:20px;
+    overflow: hidden;
+    min-height: 0;
 }
-
-.rp-edit-form-grid > label  , .rp-add-form-grid > label{
-    display:flex;
-    flex-direction: column;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-family: 'Inter', sans-serif;
+.rp-edit-buttons{
+    margin-bottom: 25px;
 }
-.rp-edit-form-grid > label > input{
-    height: 36px;
-    padding: 8px 10px ;
-    border: 1px solid var(--rp-line);
-    border-radius: 10px;
-    background: #cfd1d5;
-    color: var(--rp-text);
-    outline: none;
-    font-family: 'Inter', sans-serif;
-    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
-}
-
-
-.rp-edit-buttons , .rp-add-buttons{
-    display:flex;
-    padding:20px;
-    justify-content: center;
-}
-.rp-edit-btn, .rp-add-btn{
-    border:none;
-    background: #fff;
-    font-size: 40px;
-    color:green;
-    cursor:pointer;
-}
-.rp-edit-btn:hover , .rp-add-btn:hover{
-    background: #91da91;
-    border-radius: 40px;
-}
-
-
-.rp-add-search{
-    text-align: center;
-    margin:-10px 0 20px 0;
-    padding: 0;
-    display:flex;
-    flex-direction: column;
-    font-family: 'Inter', sans-serif;
-}
-
-
-
-.rp-add-form-grid > label >input{
-    height: 20px;
-    padding: 4px 5px ;
-    border: 1px solid var(--rp-line);
-    border-radius: 10px;
-    background: #cfd1d5;
-    color: var(--rp-text);
-    outline: none;
-    font-family: 'Inter', sans-serif;
-    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+.fact-name{
+    max-width: 100px;
+    margin-left: -10px;
+    margin-top:5px;
 }

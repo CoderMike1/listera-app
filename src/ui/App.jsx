@@ -3,6 +3,7 @@ import './App.css'
 import Login from "./components/Login/Login";
 import Dashboard from "./components/Dashboard/Dashboard";
 import ItemsMiddlePanel from "./components/Items/Items";
+import Stats from "./components/Stats/Stats";
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
            <Route path='/login' element={<Login/>}/>
            <Route path='/dashboard' element={<Dashboard/>}/>
            <Route path='/items' element={<ItemsMiddlePanel/>}/>
+           <Route path='/stats' element={<Stats/>}/>
        </Routes>
    </HashRouter>
   )

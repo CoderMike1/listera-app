@@ -9,7 +9,9 @@ const expose = ({contextBridge,ipcRenderer}) =>{
         "api_get_all_items":() =>getAllItems(ipcRenderer),
         "api_update_item":(item)=> updateRecord(ipcRenderer,item),
         "api_add_item":(item) => addRecord(ipcRenderer,item),
-        "api_delete_item":(id) => deleteRecord(ipcRenderer,id)
+        "api_delete_item":(id) => deleteRecord(ipcRenderer,id),
+        "api_add_sold_item":(item)=> addSoldRecord(ipcRenderer,item),
+        "api_mark_item_as_shipped":(item_id) =>markRecordAsShipped(ipcRenderer,item_id)
     })
 
 
@@ -40,6 +42,16 @@ const deleteRecord = (ipcRenderer, item_id) =>{
     const resp = ipcRenderer.invoke("items_api:delete_item",item_id)
     return resp;
 }
+
+const addSoldRecord = (ipcRenderer,item) =>{
+    const resp = ipcRenderer.invoke("items_api:sold_item",item)
+    return resp;
+}
+const markRecordAsShipped = (ipcRenderer,item_id)=>{
+    const resp = ipcRenderer.invoke("items_api:mark_item_as_shipped",item_id)
+    return resp;
+}
+
 
 
 
