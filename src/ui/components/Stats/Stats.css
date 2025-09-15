@@ -1,0 +1,22 @@
+.stats-cols {
+    height: 100vh; /* całość = pełne okno */
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    background: #f6f7fb;
+    min-height: 0; /* ważne przy gridzie */
+}
+
+.panel {
+    background: #f3f5f9;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 0;   /* <<< KLUCZ: pozwól dzieciom scrollować */
+}
+.sidebar-panel {
+    width: 100%;
+}
