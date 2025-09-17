@@ -3,43 +3,20 @@ import "./SoldLastDaysChart.css";
 
 export default function SoldLastDaysChart({
                                               sales = [],
-                                                purchases=[],
+                                              purchases = [],
                                               initialRangeDays = 30,
                                               selectedStat,
                                               setSelectedStat,
                                               height
                                           }) {
-
-
-    // --- nowy stan tooltipa
+    // === Tooltip ===
     const [tt, setTt] = useState({ show: false, x: 0, y: 0, date: "", value: 0 });
 
-// formater daty (masz już fmt, użyjemy go)
     const fmtFull = (d) =>
         d.toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit" });
 
-// pomocnik – ustawianie pozycji tooltipa względem kontenera
-    const showTooltip = (e, idx) => {
-        if (!wrapRef.current) return;
-        const rect = wrapRef.current.getBoundingClientRect();
-        setTt({
-            show: true,
-            x: e.clientX - rect.left + 10,    // lekki offset w prawo
-            y: e.clientY - rect.top - 10,     // lekki offset w górę
-            date: fmtFull(days[idx]),
-            value: series[idx],
-        });
-    };
-    const hideTooltip = () => setTt((t) => ({ ...t, show: false }));
-
-
-    const [range, setRange] = useState(initialRangeDays);
-
-    const [mode, setMode] = useState("Sold");
-
-    // === Pomiar kontenera (auto-fit) ===
     const wrapRef = useRef(null);
-    const [size, setSize] = useState({ w: 360, h: 440 });
+    const [size, setSize] = useState({ w: 360, h: height ?? 440 });
 
     useLayoutEffect(() => {
         const el = wrapRef.current;
@@ -47,7 +24,6 @@ export default function SoldLastDaysChart({
         const ro = new ResizeObserver((entries) => {
             for (const e of entries) {
                 const cr = e.contentRect;
-                // minimalne wymiary, żeby osie nie nachodziły
                 const w = Math.max(260, Math.floor(cr.width));
                 const h = Math.max(160, Math.floor(cr.height));
                 setSize({ w, h });
@@ -57,52 +33,62 @@ export default function SoldLastDaysChart({
         return () => ro.disconnect();
     }, []);
 
-    // Map: YYYY-MM-DD -> count
+    // === Ustalanie zakresu i trybu ===
+    const [range, setRange] = useState(initialRangeDays);       // 30/60/90/360
+    const [mode, setMode] = useState("Sold");                   // "Sold" | "Purchased"
+
+    // === Helpery UTC ===
+    const toYMDUTC = (d) => {
+        const y = d.getUTCFullYear();
+        const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(d.getUTCDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+    };
+    const parseYMD = (s) => new Date(`${s}T00:00:00Z`);
+
+    // === Mapy: 'YYYY-MM-DD' -> count (klucze z backendu już są w tym formacie) ===
     const salesMap = useMemo(() => {
         const m = new Map();
         for (const s of sales) {
-            const d = (s.date || "").slice(0, 10);
+            const key = String(s.date || "").slice(0, 10);
             const c = typeof s.count === "number" ? s.count : 1;
-            m.set(d, (m.get(d) || 0) + c);
+            if (key) m.set(key, (m.get(key) || 0) + c);
         }
         return m;
     }, [sales]);
-    const purchasesMap = useMemo(() =>{
+
+    const purchasesMap = useMemo(() => {
         const m = new Map();
-        for(const p of purchases){
-            const d = (p.date || "").slice(0,10);
+        for (const p of purchases) {
+            const key = String(p.date || "").slice(0, 10);
             const c = typeof p.count === "number" ? p.count : 1;
-            m.set(d, (m.get(d) || 0) + c)
+            if (key) m.set(key, (m.get(key) || 0) + c);
         }
         return m;
-    },[purchases])
-
-    // Zakres dat
-    const days = useMemo(() => {
-        const arr = [];
-        const end = new Date();
-        end.setHours(0, 0, 0, 0);
-        const start = new Date(end);
-        start.setDate(end.getDate() - (range - 1));
-        const cur = new Date(start);
-        while (cur <= end) {
-            arr.push(new Date(cur));
-            cur.setDate(cur.getDate() + 1);
-        }
-        return arr;
-    }, [range]);
+    }, [purchases]);
 
     const activeMap = mode === "Sold" ? salesMap : purchasesMap;
 
-    const series = useMemo(
-        () => days.map((d) => activeMap.get(d.toISOString().slice(0, 10)) || 0),
-        [days, activeMap]
-    );
+    // === Klucze dni w UTC w wybranym zakresie ===
+    const dayKeys = useMemo(() => {
+        const keys = [];
+        const now = new Date();
+        const endUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())); // dziś 00:00Z
+        const startUTC = new Date(endUTC);
+        startUTC.setUTCDate(endUTC.getUTCDate() - (range - 1));
+        for (let d = new Date(startUTC); d <= endUTC; d.setUTCDate(d.getUTCDate() + 1)) {
+            keys.push(toYMDUTC(d));
+        }
+        return keys;
+    }, [range]);
 
-    // Wymiary bazując na pomiarze
+    // === Seria wartości po kluczach ===
+    const series = useMemo(() => dayKeys.map((k) => activeMap.get(k) || 0), [dayKeys, activeMap]);
+
+    // === Wymiary i skale ===
     const W = size.w;
     const H = size.h;
-    const P = Math.max(24, Math.min(36, Math.round(W * 0.07))); // padding zależny od szerokości
+    const P = Math.max(24, Math.min(36, Math.round(W * 0.07)));
     const innerW = W - P - 10;
     const innerH = H - P - 12;
 
@@ -113,47 +99,51 @@ export default function SoldLastDaysChart({
     const xOf = (i) => P + (i * innerW) / (series.length - 1 || 1);
     const yOf = (v) => P + innerH - (v / (niceMax || 1)) * innerH;
 
-    const dLine = series
-        .map((v, i) => `${i === 0 ? "M" : "L"} ${xOf(i)} ${yOf(v)}`)
-        .join(" ");
+    const dLine = series.map((v, i) => `${i === 0 ? "M" : "L"} ${xOf(i)} ${yOf(v)}`).join(" ");
     const dArea =
         `M ${xOf(0)} ${yOf(0)} ` +
         series.map((v, i) => `L ${xOf(i)} ${yOf(v)}`).join(" ") +
         ` L ${xOf(series.length - 1)} ${yOf(0)} Z`;
 
-    // dynamiczna typografia (skaluje się z szerokością)
-    const fs = Math.max(12, Math.min(16, Math.round(W * 0.04)));      // Oś X
+    const fs = Math.max(12, Math.min(16, Math.round(W * 0.04)));
     const fsSmall = Math.max(12, Math.min(14, Math.round(W * 0.035)));
     const strokeW = Math.max(2, Math.min(3, Math.round(W * 0.007)));
 
-    const fmt = (d) =>
-        d.toLocaleDateString(undefined, { month: "2-digit", day: "2-digit" });
+    const fmtShort = (s) =>
+        parseYMD(s).toLocaleDateString(undefined, { month: "2-digit", day: "2-digit" });
+
     const xLabels = [
-        fmt(days[0] || new Date()),
-        fmt(days[Math.floor((days.length - 1) / 2)] || new Date()),
-        fmt(days[days.length - 1] || new Date()),
+        fmtShort(dayKeys[0] || toYMDUTC(new Date())),
+        fmtShort(dayKeys[Math.floor((dayKeys.length - 1) / 2)] || toYMDUTC(new Date())),
+        fmtShort(dayKeys[dayKeys.length - 1] || toYMDUTC(new Date()))
     ];
+
+    // === Tooltip events (używamy klucza dnia, nie local Date) ===
+    const showTooltip = (e, idx) => {
+        if (!wrapRef.current) return;
+        const rect = wrapRef.current.getBoundingClientRect();
+        setTt({
+            show: true,
+            x: e.clientX - rect.left + 10,
+            y: e.clientY - rect.top - 10,
+            date: fmtFull(parseYMD(dayKeys[idx])),
+            value: series[idx]
+        });
+    };
+    const hideTooltip = () => setTt((t) => ({ ...t, show: false }));
 
     return (
         <div className="rp-sold-card">
             <div className="rp-sold-card__head">
-
-                {selectedStat !== 1 ?
-                    <button className="rp-sold-card-btn" onClick={()=>setSelectedStat(1)}>Expand</button>
-                    :
-                    <button className="rp-sold-card-btn" onClick={()=>setSelectedStat(null)}>Close</button>
-                }
+                {selectedStat !== 1 ? (
+                    <button className="rp-sold-card-btn" onClick={() => setSelectedStat(1)}>Expand</button>
+                ) : (
+                    <button className="rp-sold-card-btn" onClick={() => setSelectedStat(null)}>Close</button>
+                )}
             </div>
 
-            {/* kontener, którego rozmiar mierzymy */}
             <div className="rp-sold-chart-wrap" ref={wrapRef}>
-                <svg
-                    className="rp-sold-chart"
-                    viewBox={`0 0 ${W} ${H}`}
-                    width="100%"
-                    height="100%"
-                    preserveAspectRatio="none"
-                >
+                <svg className="rp-sold-chart" viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" preserveAspectRatio="none">
                     <rect x="0" y="0" width={W} height={H} rx="14" className="rp-chart-bg" />
 
                     <line x1={P} y1={P} x2={P} y2={P + innerH} className="rp-axis" />
@@ -217,17 +207,15 @@ export default function SoldLastDaysChart({
                         {xLabels[2]}
                     </text>
                 </svg>
-                <div
-                    className={`chart-tooltip ${tt.show ? "is-visible" : ""}`}
-                    style={{ left: tt.x, top: tt.y }}
-                >
+
+                <div className={`chart-tooltip ${tt.show ? "is-visible" : ""}`} style={{ left: tt.x, top: tt.y }}>
                     <div className="chart-tooltip__date">{tt.date}</div>
                     <div className="chart-tooltip__val">
                         {mode}: <strong>{tt.value}</strong>
                     </div>
                 </div>
-
             </div>
+
             <div className="rp-sold-body">
                 <div className="rp-sold-options" role="tablist" aria-label="Mode">
                     {["Purchased", "Sold"].map((opt) => (
@@ -243,6 +231,7 @@ export default function SoldLastDaysChart({
                         </button>
                     ))}
                 </div>
+
                 <div className="rp-sold-card__range">
                     <span className="rp-sold-span">Select date range:</span>
                     <div className="rp-sold-btns">
@@ -256,11 +245,8 @@ export default function SoldLastDaysChart({
                             </button>
                         ))}
                     </div>
-
                 </div>
             </div>
-
-
         </div>
     );
 }

@@ -113,6 +113,65 @@ const count_active_items = db.prepare(`SELECT COUNT(*) AS n FROM items WHERE sta
 const count_sold_items = db.prepare(`SELECT COUNT(*) AS s FROM items WHERE status = 'sold'`)
 const count_toship_items = db.prepare(`SELECT COUNT(*) AS ts FROM items WHERE status = 'toship'`)
 
+const get_sales_count = db.prepare(`
+    SELECT sale_at as date, SUM(stock) as count from items WHERE sale_at NOT NULL GROUP BY sale_at
+`)
+
+const get_purchases_count = db.prepare(`
+    SELECT purchased_at as date, SUM(stock) as count from items GROUP BY purchased_at
+`)
+
+const get_kpis_data_from_diff_data_range = db.prepare(`
+WITH bounds AS (
+    SELECT '24h' AS label, datetime('now','-1 day')  AS from_ts, datetime('now') AS to_ts
+    UNION ALL
+    SELECT '7d',  datetime('now','-7 days'),         datetime('now')
+    UNION ALL
+    SELECT '30d', datetime('now','-30 days'),        datetime('now')
+    UNION ALL
+    SELECT 'all', NULL,                              NULL
+)
+SELECT
+    b.label,
+
+    -- Przychód: sprzedaże w danym oknie czasowym
+    COALESCE(SUM(
+                     CASE
+                         WHEN i.sale_at IS NOT NULL
+                             AND (b.from_ts IS NULL OR i.sale_at >= b.from_ts)
+                             AND (b.to_ts   IS NULL OR i.sale_at <  b.to_ts)
+                             AND i.status IN ('sold','toship')
+                             THEN i.selling_price ELSE 0
+                         END
+             ), 0) AS total_income,
+
+    -- Wartość zakupów: zakupy w danym oknie (to jest niezależna metryka przepływu)
+    COALESCE(SUM(
+                     CASE
+                         WHEN i.purchased_at IS NOT NULL
+                             AND (b.from_ts IS NULL OR i.purchased_at >= b.from_ts)
+                             AND (b.to_ts   IS NULL OR i.purchased_at <  b.to_ts)
+                             THEN i.purchase_price ELSE 0
+                         END
+             ), 0) AS purchases_value,
+
+    -- Zysk: liczony per sprzedana sztuka, wg daty sprzedaży (COGS z tego samego rekordu)
+    COALESCE(SUM(
+                     CASE
+                         WHEN i.sale_at IS NOT NULL
+                             AND (b.from_ts IS NULL OR i.sale_at >= b.from_ts)
+                             AND (b.to_ts   IS NULL OR i.sale_at <  b.to_ts)
+                             AND i.status IN ('sold','toship')
+                             THEN (i.selling_price - i.purchase_price) ELSE 0
+                         END
+             ), 0) AS total_profit
+
+FROM bounds b
+         CROSS JOIN items i
+GROUP BY b.label
+ORDER BY CASE b.label WHEN '24h' THEN 1 WHEN '7d' THEN 2 WHEN '30d' THEN 3 WHEN 'all' THEN 4 END;
+`)
+
 
 module.exports = {
 
@@ -163,7 +222,23 @@ module.exports = {
     mark_as_shipped(item_id){
         mark_as_shipped.run({id:item_id});
         return {ok:true}
+    },
+
+    get_sales(){
+        const results = get_sales_count.all();
+
+        return {ok:true, results:results}
+
+    },
+    get_purchases(){
+      const results = get_purchases_count.all()
+      return {ok:true, results:results}
+    },
+    get_kpis_sales(){
+        const results = get_kpis_data_from_diff_data_range.all()
+        return {ok:true,results:results}
     }
+
 
 
 }

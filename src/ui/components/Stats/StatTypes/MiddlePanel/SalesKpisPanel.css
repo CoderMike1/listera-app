@@ -1,0 +1,82 @@
+.mp-skp-wrapper{
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    /*display: grid;*/
+    /*grid-template-columns: auto 1fr auto;*/
+    /*align-items: center;*/
+    /*gap:1rem;*/
+    /*max-width: 800px;*/
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.mp-skp-arrow{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 29px;
+    height: 29px;
+    border:none;
+    border-radius:999px;
+    background: #f2f2f2;
+    font-size: 28px;
+    line-height: 42px;
+    text-align: center;
+    cursor:pointer;
+    transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+.mp-skp-arrow:hover{
+    transform: scale(1.05);
+    background: #eaeaea;
+}
+.mp-skp-container{
+   height: 100%;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap:20px
+
+}
+.mp-skp-title{
+    text-align: center;
+    margin-top: 35px;
+    font-size: 22px;
+}
+
+
+.mp-skp-text{
+    background:linear-gradient(180deg,#fff,#f7f9fc);
+    font-size:40px;
+    font-weight: 700;
+    letter-spacing:.02em;
+    text-align: center;
+    margin-top:29px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    text-shadow:
+            0 1px 0 rgba(255,255,255,.7),                 /* delikatny połysk od góry */
+            0 2px 4px rgba(0,0,0,.12),                    /* głębia */
+            0 10px 24px color-mix(in srgb, #10b981 36%, transparent);
+    transition:transform .2s ease, box-shadow .3s ease, border-color .3s ease;
+    backdrop-filter:saturate(1.05) blur(0.3px);
+    padding:12px;
+    font-family: 'Inter', sans-serif;
+}
+.mp-skp-card__range{
+    margin-top: -20px;
+}
+.mp-skp-card-btn{
+    position: absolute;
+    top:15px;
+    right:15px;
+    background: #bad7ba;
+    border:1px solid #2e7d32;
+    border-radius:12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor:pointer;
+}

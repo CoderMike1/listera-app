@@ -1,15 +1,11 @@
 import './StatsMiddlePanel.css'
 import SoldLastDaysChart from "./StatTypes/MiddlePanel/SoldLastDaysChart";
-
-const sales = [
-    { date: "2025-08-16" },
-    { date: "2025-08-28", count: 20 },
-    { date: "2025-08-29", count: 100 },
-    { date: "2025-09-03", count: 8 },
-];
+import SalesKpisPanel from "./StatTypes/MiddlePanel/SalesKpisPanel";
 
 
-const StatsMiddlePanel = ({selectedStat,setSelectedStat}) =>{
+
+
+const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData}) =>{
 
     return (
 
@@ -25,7 +21,7 @@ const StatsMiddlePanel = ({selectedStat,setSelectedStat}) =>{
                     <SoldLastDaysChart sales={sales} initialRangeDays={30} selectedStat={selectedStat} setSelectedStat={setSelectedStat} height={230} />
                 </div>
                 <div className="sm-item">
-                    #2
+                    <SalesKpisPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} kpisData={kpisData} />
                 </div>
                 <div className="sm-item">
                     #3

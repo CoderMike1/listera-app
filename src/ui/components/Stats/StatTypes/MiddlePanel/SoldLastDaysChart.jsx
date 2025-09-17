@@ -3,12 +3,12 @@ import "./SoldLastDaysChart.css";
 
 export default function SoldLastDaysChart({
                                               sales = [],
+                                              purchases = [],            // ⬅️ dodane, domyślnie pusta tablica
                                               initialRangeDays = 30,
                                               selectedStat,
                                               setSelectedStat,
                                               height
                                           }) {
-
     const [range, setRange] = useState(initialRangeDays);
 
     // === Pomiar kontenera (auto-fit) ===
@@ -21,7 +21,6 @@ export default function SoldLastDaysChart({
         const ro = new ResizeObserver((entries) => {
             for (const e of entries) {
                 const cr = e.contentRect;
-                // minimalne wymiary, żeby osie nie nachodziły
                 const w = Math.max(260, Math.floor(cr.width));
                 const h = Math.max(160, Math.floor(cr.height));
                 setSize({ w, h });
@@ -31,71 +30,88 @@ export default function SoldLastDaysChart({
         return () => ro.disconnect();
     }, []);
 
-    // Map: YYYY-MM-DD -> count
+    // --- UTC helpers ---
+    const toYMDUTC = (d) => {
+        const y = d.getUTCFullYear();
+        const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(d.getUTCDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+    };
+    const parseYMD = (s) => new Date(`${s}T00:00:00Z`);
+
+    // Mapy: 'YYYY-MM-DD' -> count (z backendu przyjmujemy YYYY-MM-DD)
     const salesMap = useMemo(() => {
         const m = new Map();
         for (const s of sales) {
-            const d = (s.date || "").slice(0, 10);
-            const c = typeof s.count === "number" ? s.count : 1;
-            m.set(d, (m.get(d) || 0) + c);
+            const key = String(s?.date || "").slice(0, 10);
+            const c = Number.isFinite(s?.count) ? s.count : 1;
+            if (key) m.set(key, (m.get(key) || 0) + c);
         }
         return m;
     }, [sales]);
 
-    // Zakres dat
-    const days = useMemo(() => {
-        const arr = [];
-        const end = new Date();
-        end.setHours(0, 0, 0, 0);
-        const start = new Date(end);
-        start.setDate(end.getDate() - (range - 1));
-        const cur = new Date(start);
-        while (cur <= end) {
-            arr.push(new Date(cur));
-            cur.setDate(cur.getDate() + 1);
+    const purchasesMap = useMemo(() => {
+        const m = new Map();
+        for (const p of purchases) {
+            const key = String(p?.date || "").slice(0, 10);
+            const c = Number.isFinite(p?.count) ? p.count : 1;
+            if (key) m.set(key, (m.get(key) || 0) + c);
         }
-        return arr;
+        return m;
+    }, [purchases]);
+
+    // Zakres dat -> klucze dni w UTC
+    const dayKeys = useMemo(() => {
+        const keys = [];
+        const now = new Date();
+        const endUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+        const startUTC = new Date(endUTC);
+        startUTC.setUTCDate(endUTC.getUTCDate() - (range - 1));
+        for (let d = new Date(startUTC); d <= endUTC; d.setUTCDate(d.getUTCDate() + 1)) {
+            keys.push(toYMDUTC(d));
+        }
+        return keys;
     }, [range]);
 
-    const series = useMemo(
-        () =>
-            days.map((d) => salesMap.get(d.toISOString().slice(0, 10)) || 0),
-        [days, salesMap]
-    );
+    // Serie
+    const seriesSold = useMemo(() => dayKeys.map((k) => salesMap.get(k) || 0), [dayKeys, salesMap]);
+    const seriesPurch = useMemo(() => dayKeys.map((k) => purchasesMap.get(k) || 0), [dayKeys, purchasesMap]);
 
     // Wymiary bazując na pomiarze
     const W = size.w;
     const H = size.h;
-    const P = Math.max(24, Math.min(36, Math.round(W * 0.07))); // padding zależny od szerokości
+    const P = Math.max(24, Math.min(36, Math.round(W * 0.07)));
     const innerW = W - P - 10;
     const innerH = H - P - 12;
 
-    const maxY = Math.max(1, ...series);
+    const maxY = Math.max(1, ...seriesSold, ...seriesPurch); // ⬅️ skala pod obie serie
     const niceMax = niceCeil(maxY);
     const yTicks = [0, niceMax * 0.25, niceMax * 0.5, niceMax * 0.75, niceMax];
 
-    const xOf = (i) => P + (i * innerW) / (series.length - 1 || 1);
+    const n = dayKeys.length;
+    const xOf = (i) => P + (i * innerW) / (n - 1 || 1);
     const yOf = (v) => P + innerH - (v / (niceMax || 1)) * innerH;
 
-    const dLine = series
-        .map((v, i) => `${i === 0 ? "M" : "L"} ${xOf(i)} ${yOf(v)}`)
-        .join(" ");
+    // Ścieżki (area + linia dla Sold; tylko linia dla Purchases)
+    const dLineSold = seriesSold.map((v, i) => `${i === 0 ? "M" : "L"} ${xOf(i)} ${yOf(v)}`).join(" ");
     const dArea =
         `M ${xOf(0)} ${yOf(0)} ` +
-        series.map((v, i) => `L ${xOf(i)} ${yOf(v)}`).join(" ") +
-        ` L ${xOf(series.length - 1)} ${yOf(0)} Z`;
+        seriesSold.map((v, i) => `L ${xOf(i)} ${yOf(v)}`).join(" ") +
+        ` L ${xOf(n - 1)} ${yOf(0)} Z`;
 
-    // dynamiczna typografia (skaluje się z szerokością)
-    const fs = Math.max(12, Math.min(16, Math.round(W * 0.04)));      // Oś X
+    const dLinePurch = seriesPurch.map((v, i) => `${i === 0 ? "M" : "L"} ${xOf(i)} ${yOf(v)}`).join(" ");
+
+    // dynamiczna typografia
+    const fs = Math.max(12, Math.min(16, Math.round(W * 0.04)));
     const fsSmall = Math.max(12, Math.min(14, Math.round(W * 0.035)));
     const strokeW = Math.max(2, Math.min(3, Math.round(W * 0.007)));
 
-    const fmt = (d) =>
-        d.toLocaleDateString(undefined, { month: "2-digit", day: "2-digit" });
+    const fmt = (s) =>
+        parseYMD(s).toLocaleDateString(undefined, { month: "2-digit", day: "2-digit" });
     const xLabels = [
-        fmt(days[0] || new Date()),
-        fmt(days[Math.floor((days.length - 1) / 2)] || new Date()),
-        fmt(days[days.length - 1] || new Date()),
+        fmt(dayKeys[0] || toYMDUTC(new Date())),
+        fmt(dayKeys[Math.floor((n - 1) / 2)] || toYMDUTC(new Date())),
+        fmt(dayKeys[n - 1] || toYMDUTC(new Date())),
     ];
 
     return (
@@ -104,11 +120,10 @@ export default function SoldLastDaysChart({
                 <h3>Sold Last {range} Days</h3>
 
                 {selectedStat !== 1 ?
-                    <button className="sold-card-btn" onClick={()=>setSelectedStat(1)}>Expand</button>
+                    <button className="sold-card-btn" onClick={() => setSelectedStat(1)}>Expand</button>
                     :
-                    <button className="sold-card-btn" onClick={()=>setSelectedStat(null)}>Close</button>
+                    <button className="sold-card-btn" onClick={() => setSelectedStat(null)}>Close</button>
                 }
-
 
                 <div className="sold-card__range">
                     {[30, 60, 90, 360].map((r) => (
@@ -155,13 +170,18 @@ export default function SoldLastDaysChart({
                         );
                     })}
 
+                    {/* Sold: area + linia (jak było) */}
                     <path d={dArea} className="area" />
-                    <path d={dLine} className="line" style={{ strokeWidth: strokeW }} />
+                    <path d={dLineSold} className="line" style={{ strokeWidth: strokeW }} />
 
-                    {series.map((v, i) =>
-                        v > 0 ? (
-                            <circle key={i} cx={xOf(i)} cy={yOf(v)} r={strokeW + 1} className="dot" />
-                        ) : null
+                    {/* Purchases: tylko linia + kropki (nie zmieniamy układu/tekstów) */}
+                    <path d={dLinePurch} className="line line--purchases" style={{ strokeWidth: strokeW }} />
+
+                    {seriesSold.map((v, i) =>
+                        v > 0 ? <circle key={`s-${i}`} cx={xOf(i)} cy={yOf(v)} r={strokeW + 1} className="dot" /> : null
+                    )}
+                    {seriesPurch.map((v, i) =>
+                        v > 0 ? <circle key={`p-${i}`} cx={xOf(i)} cy={yOf(v)} r={strokeW + 1} className="dot dot--purchases" /> : null
                     )}
 
                     <text x={P} y={P + innerH + 14} className="tick-x" textAnchor="start" style={{ fontSize: fs }}>

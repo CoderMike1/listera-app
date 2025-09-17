@@ -1,4 +1,5 @@
 .sold-card{
+    position: relative;
     background:#fff;
     border:1px solid #e6e8ef;
     border-radius:16px;
@@ -7,7 +8,7 @@
 }
 
 .sold-card__head{
-    position: relative;
+
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -19,6 +20,7 @@
 }
 .sold-card__range{
     display:flex; gap:6px;
+    margin-top:30px;
 }
 .range-btn{
     font-size:12px;
@@ -80,8 +82,8 @@
 
 .sold-card-btn{
     position: absolute;
-    top:1px;
-    right:3px;
+    top:15px;
+    right:15px;
     background: #bad7ba;
     border:1px solid #2e7d32;
     border-radius:12px;
