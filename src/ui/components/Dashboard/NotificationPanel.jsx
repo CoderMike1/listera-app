@@ -49,18 +49,6 @@ const NotificationPanel = () =>{
                             <time className="np-item-time">3 days ago</time>
                         </li>
                     ))}
-
-
-                    {/*<li key="1" className="np-item">*/}
-                    {/*    <img className="np-thumb" src={itemPNG} width={50} height={50} alt="item"/>*/}
-
-                    {/*    <div className="np-item-body">*/}
-                    {/*        <span className="np-item-title">Added new item</span>*/}
-                    {/*        <p className="np-item-desc">Air Jordan 1</p>*/}
-                    {/*    </div>*/}
-                    {/*    <time className="np-item-time">3 days ago</time>*/}
-                    {/*</li>*/}
-
                 </ul>
 
             </div>

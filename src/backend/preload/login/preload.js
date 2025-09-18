@@ -9,9 +9,7 @@ const expose = ({contextBridge,ipcRenderer}) =>{
 
 const authorize = (ipcRenderer) =>{
 
-    const resp = ipcRenderer.invoke("login:api-authorize")
-
-    return resp;
+    return  ipcRenderer.invoke("login:api-authorize")
 
 
 }

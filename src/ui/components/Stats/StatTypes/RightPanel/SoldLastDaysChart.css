@@ -39,7 +39,7 @@
     background:#eaf1ff;
 }
 
-/* SVG */
+
 .rp-sold-chart{ width:100%; height:200px; display:block; }
 .rp-chart-bg{ fill:#ffffff; }
 .rp-axis{ stroke:#cfd5e5; stroke-width:1; }
@@ -51,7 +51,7 @@
     fill:#6b7280; font-size:10px;
 }
 .rp-area{
-    fill:#3b82f61a; /* delikatne wypełnienie */
+    fill:#3b82f61a;
     stroke:none;
 }
 .rp-line{
@@ -61,18 +61,18 @@
     fill:#2563eb;
 }
 .rp-sold-card{
-    display: flex;                 /* <- dodaj */
-    flex-direction: column;        /* <- dodaj */
-    flex: 1 1 auto;                /* <- dodaj */
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
     background:#fff;
     border:1px solid #e6e8ef;
     border-radius:16px;
     box-shadow:0 6px 24px rgba(15,23,42,.06);
-    padding:12px;                  /* wewnętrzny margines wokół SVG */
+    padding:12px;
     min-height: 0;
 }
 
-/* kontener na SVG zajmuje całe dostępne miejsce */
+
 .rp-sold-chart-wrap{
     margin-top: 10px;
     position: relative;
@@ -81,7 +81,7 @@
 }
 .rp-sold-chart{
     width: 100%;
-    height: 100%;                  /* <- klucz do pełnego wypełnienia */
+    height: 100%;
     display: block;
 }
 .rp-sold-chart { overflow: visible; }
@@ -135,7 +135,7 @@
 .rp-area, .rp-line, .rp-grid, .rp-axis { pointer-events: none; }
 .chart-tooltip{
     position: absolute;
-    transform: translate(-50%, -110%); /* nad kursorem */
+    transform: translate(-50%, -110%);
     background: #111827;
     color: #fff;
     padding: 6px 8px;
@@ -143,7 +143,7 @@
     font-size: 12px;
     line-height: 1.25;
     box-shadow: 0 8px 24px rgba(0,0,0,.18);
-    pointer-events: none;     /* nie przechwytuje myszy */
+    pointer-events: none;
     opacity: 0;
     transition: opacity .08s ease;
     white-space: nowrap;

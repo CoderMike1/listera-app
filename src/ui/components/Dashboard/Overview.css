@@ -3,30 +3,30 @@
 
 :root{
     --side-bg: #f3f5f9;
-    --bg:#f6f7fb;             /* kolor tła całej strony/panelu */
-    --surface:#fff;           /* kolor „powierzchni” kart */
-    --text:#111827;           /* główny kolor tekstu */
-    --muted:#6b7280;          /* przygaszony tekst (podtytuły itp.) */
-    --border:#e5e7eb;         /* kolor obramowań/kresek */
+    --bg:#f6f7fb;
+    --surface:#fff;
+    --text:#111827;
+    --muted:#6b7280;
+    --border:#e5e7eb;
 
-    --primary:#2563eb;        /* kolor akcentu (np. linia wykresu, przycisk) */
-    --primary-weak:#e8efff;   /* delikatne tło dla akcentów */
-    --radius:16px;            /* promień zaokrągleń kart/przycisków */
-    --shadow:                 /* cień kart (dwa cienie naraz) */
+    --primary:#2563eb;
+    --primary-weak:#e8efff;
+    --radius:16px;
+    --shadow:
             0 1px 2px rgba(0,0,0,.04),
             0 8px 30px rgba(0,0,0,.06);
 }
 
 @media(prefers-color-scheme:dark){
     :root{
-        --bg:#0f172a;           /* ciemne tło */
-        --surface:#111827;      /* ciemne powierzchnie kart */
-        --text:#e5e7eb;         /* jasny tekst na ciemnym tle */
-        --muted:#94a3b8;        /* przygaszony jasny */
-        --border:#1f2937;       /* ciemny „border” */
-        --primary:#22d3ee;      /* akcent w dark mode */
-        --primary-weak:#0b1220; /* delikatne tło akcentu w dark mode */
-        --shadow:none;          /* na ciemnym często bez cieni (ładniej) */
+        --bg:#0f172a;
+        --surface:#111827;
+        --text:#e5e7eb;
+        --muted:#94a3b8;
+        --border:#1f2937;
+        --primary:#22d3ee;
+        --primary-weak:#0b1220;
+        --shadow:none;
     }
 }
 

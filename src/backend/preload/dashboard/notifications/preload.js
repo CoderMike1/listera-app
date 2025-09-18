@@ -14,9 +14,7 @@ const expose = ({contextBridge,ipcRenderer}) =>{
 
 const getAllNotifications = (ipcRenderer) =>{
 
-    const resp = ipcRenderer.invoke("notifications-api:get-all-notifications")
-
-    return resp;
+    return  ipcRenderer.invoke("notifications-api:get-all-notifications")
 
 }
 

@@ -133,8 +133,6 @@ WITH bounds AS (
 )
 SELECT
     b.label,
-
-    -- Przychód: sprzedaże w danym oknie czasowym
     COALESCE(SUM(
                      CASE
                          WHEN i.sale_at IS NOT NULL
@@ -145,7 +143,6 @@ SELECT
                          END
              ), 0) AS total_income,
 
-    -- Wartość zakupów: zakupy w danym oknie (to jest niezależna metryka przepływu)
     COALESCE(SUM(
                      CASE
                          WHEN i.purchased_at IS NOT NULL
@@ -155,7 +152,6 @@ SELECT
                          END
              ), 0) AS purchases_value,
 
-    -- Zysk: liczony per sprzedana sztuka, wg daty sprzedaży (COGS z tego samego rekordu)
     COALESCE(SUM(
                      CASE
                          WHEN i.sale_at IS NOT NULL

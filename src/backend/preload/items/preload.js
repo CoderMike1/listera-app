@@ -20,36 +20,29 @@ const expose = ({contextBridge,ipcRenderer}) =>{
 
 const getKPISData = (ipcRenderer) =>{
 
-    const resp = ipcRenderer.invoke("items_api:get_kpis_data")
-    return resp;
+    return  ipcRenderer.invoke("items_api:get_kpis_data")
 
 }
 
 const getAllItems = (ipcRenderer) =>{
-    const resp = ipcRenderer.invoke("items_api:get_all_items")
-    return resp;
+    return  ipcRenderer.invoke("items_api:get_all_items")
 }
 const updateRecord = (ipcRenderer,item) =>{
-    const resp = ipcRenderer.invoke("items_api:update_item",item)
-    return resp;
+    return  ipcRenderer.invoke("items_api:update_item",item)
 }
 const addRecord = (ipcRenderer,item) =>{
-    const resp = ipcRenderer.invoke("items_api:add_item",item)
-    return resp;
+    return  ipcRenderer.invoke("items_api:add_item",item)
 }
 
 const deleteRecord = (ipcRenderer, item_id) =>{
-    const resp = ipcRenderer.invoke("items_api:delete_item",item_id)
-    return resp;
+    return  ipcRenderer.invoke("items_api:delete_item",item_id)
 }
 
 const addSoldRecord = (ipcRenderer,item) =>{
-    const resp = ipcRenderer.invoke("items_api:sold_item",item)
-    return resp;
+    return  ipcRenderer.invoke("items_api:sold_item",item)
 }
 const markRecordAsShipped = (ipcRenderer,item_id)=>{
-    const resp = ipcRenderer.invoke("items_api:mark_item_as_shipped",item_id)
-    return resp;
+    return  ipcRenderer.invoke("items_api:mark_item_as_shipped",item_id)
 }
 
 

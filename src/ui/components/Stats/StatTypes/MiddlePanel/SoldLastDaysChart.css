@@ -35,7 +35,7 @@
     background:#eaf1ff;
 }
 
-/* SVG */
+
 .sold-chart{ width:100%; height:200px; display:block; }
 .chart-bg{ fill:#ffffff; }
 .axis{ stroke:#cfd5e5; stroke-width:1; }
@@ -47,7 +47,7 @@
     fill:#6b7280; font-size:10px;
 }
 .area{
-    fill:#3b82f61a; /* delikatne wypełnienie */
+    fill:#3b82f61a;
     stroke:none;
 }
 .line{
@@ -57,25 +57,25 @@
     fill:#2563eb;
 }
 .sold-card{
-    display: flex;                 /* <- dodaj */
-    flex-direction: column;        /* <- dodaj */
-    flex: 1 1 auto;                /* <- dodaj */
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
     background:#fff;
     border:1px solid #e6e8ef;
     border-radius:16px;
     box-shadow:0 6px 24px rgba(15,23,42,.06);
-    padding:12px;                  /* wewnętrzny margines wokół SVG */
-    min-height: 0;                 /* ważne dla scroll/fit */
+    padding:12px;
+    min-height: 0;
 }
 
-/* kontener na SVG zajmuje całe dostępne miejsce */
+
 .sold-chart-wrap{
-    flex: 1 1 auto;                /* <- rośnie w pionie */
+    flex: 1 1 auto;
     min-height: 0;
 }
 .sold-chart{
     width: 100%;
-    height: 100%;                  /* <- klucz do pełnego wypełnienia */
+    height: 100%;
     display: block;
 }
 .sold-chart { overflow: visible; }

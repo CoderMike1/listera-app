@@ -23,7 +23,7 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
 
 
 
-    // deleting section
+    // delete section
     const [selectedIds,setSelectedIds] = useState(()=>new Set());
 
     const pageSlice = rows.slice(itemsVisited, itemsVisited + itemsPerPage);
@@ -211,7 +211,7 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
                   {pageSlice && pageSlice.length > 0 ?(
                       pageSlice.map((i)=>(
                               <tr key={i.id} onClick={() => {
-                                  if (deleteMode) return;          // w trybie usuwania nie otwieramy edycji
+                                  if (deleteMode) return;
                                   onSelect(i);
                                   setAdding(false);
                               }}
@@ -261,7 +261,7 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
 
                   </tbody>
               </table>
-              {/* Pasek akcji w trybie usuwania */}
+
               {deleteMode && (
                   <div className="imp-delete-toolbar">
                       <div>{selectedIds.size} selected</div>

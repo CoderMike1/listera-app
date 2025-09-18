@@ -230,14 +230,14 @@
     align-items: center;
     gap: 8px;
     background: #fff;
-    border-top: 1px solid #e5e7eb;      /* linia oddzielająca od tabeli */
+    border-top: 1px solid #e5e7eb;
     font-family: 'Inter', sans-serif;
 }
 
-/* ReactPaginate generuje <li> -> usuń bullet-y */
+
 .paginationBttns li{ list-style: none; }
 
-/* Wygląd pojedynczego przycisku */
+
 .paginationBttns a{
     display: inline-flex;
     min-width: 28px;
@@ -252,13 +252,13 @@
     cursor: pointer;
 }
 
-/* Hover */
+
 .paginationBttns a:hover{
     background: #f8fafc;
     border-color: #dbe3ef;
 }
 
-/* Active (bieżąca strona) */
+
 .paginationActive a{
     background: #007bff;
     border-color: #007bff;
@@ -267,17 +267,17 @@
 
 }
 
-/* Poprzednia / następna – trochę szersze dla tekstu */
+
 .previousBttn, .nextBttn{ min-width: 30px; }
 
-/* Disabled */
+
 .paginationDisabled a{
     opacity: .5;
     cursor: not-allowed;
     pointer-events: none;
 }
 
-/* Dostępność: focus ring */
+
 .paginationBttns a:focus-visible{
     outline: 2px solid #93c5fd;
     outline-offset: 2px;

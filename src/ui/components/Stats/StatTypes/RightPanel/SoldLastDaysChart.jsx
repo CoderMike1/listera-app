@@ -9,7 +9,7 @@ export default function SoldLastDaysChart({
                                               setSelectedStat,
                                               height
                                           }) {
-    // === Tooltip ===
+
     const [tt, setTt] = useState({ show: false, x: 0, y: 0, date: "", value: 0 });
 
     const fmtFull = (d) =>
@@ -33,11 +33,11 @@ export default function SoldLastDaysChart({
         return () => ro.disconnect();
     }, []);
 
-    // === Ustalanie zakresu i trybu ===
-    const [range, setRange] = useState(initialRangeDays);       // 30/60/90/360
-    const [mode, setMode] = useState("Sold");                   // "Sold" | "Purchased"
 
-    // === Helpery UTC ===
+    const [range, setRange] = useState(initialRangeDays);
+    const [mode, setMode] = useState("Sold");
+
+
     const toYMDUTC = (d) => {
         const y = d.getUTCFullYear();
         const m = String(d.getUTCMonth() + 1).padStart(2, "0");
@@ -46,7 +46,7 @@ export default function SoldLastDaysChart({
     };
     const parseYMD = (s) => new Date(`${s}T00:00:00Z`);
 
-    // === Mapy: 'YYYY-MM-DD' -> count (klucze z backendu już są w tym formacie) ===
+
     const salesMap = useMemo(() => {
         const m = new Map();
         for (const s of sales) {
@@ -69,7 +69,7 @@ export default function SoldLastDaysChart({
 
     const activeMap = mode === "Sold" ? salesMap : purchasesMap;
 
-    // === Klucze dni w UTC w wybranym zakresie ===
+
     const dayKeys = useMemo(() => {
         const keys = [];
         const now = new Date();
@@ -82,10 +82,9 @@ export default function SoldLastDaysChart({
         return keys;
     }, [range]);
 
-    // === Seria wartości po kluczach ===
     const series = useMemo(() => dayKeys.map((k) => activeMap.get(k) || 0), [dayKeys, activeMap]);
 
-    // === Wymiary i skale ===
+
     const W = size.w;
     const H = size.h;
     const P = Math.max(24, Math.min(36, Math.round(W * 0.07)));
@@ -118,7 +117,7 @@ export default function SoldLastDaysChart({
         fmtShort(dayKeys[dayKeys.length - 1] || toYMDUTC(new Date()))
     ];
 
-    // === Tooltip events (używamy klucza dnia, nie local Date) ===
+
     const showTooltip = (e, idx) => {
         if (!wrapRef.current) return;
         const rect = wrapRef.current.getBoundingClientRect();

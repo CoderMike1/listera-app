@@ -6,8 +6,7 @@ import SearchBar from "./SearchBar";
 
 
 function LineChart({ data = [], endDate }) {
-    // --- ustawienia i marginesy (Y-etykiety obok wykresu, X pod wykresem) ---
-    const vbW = 110, vbH = 60;                     // trochę większy viewBox → czytelniejsze etykiety
+    const vbW = 110, vbH = 60;
     const margin = { top: 6, right: 4, bottom: 10, left: 18 };
 
     const x0 = margin.left;
@@ -16,12 +15,12 @@ function LineChart({ data = [], endDate }) {
     const plotW = vbW - margin.left - margin.right;
     const plotH = yBottom - yTop;
 
-    // --- dane wejściowe → mapa po dacie ---
+
     const map = new Map(
         (Array.isArray(data) ? data : []).map(d => [normalizeISO(d.date), Number(d.sales) || 0])
     );
 
-    // --- ostatnie 30 dni (łącznie, od najstarszego do najnowszego) ---
+
     const end = endDate ? toUTC(normalizeISO(endDate)) : todayUTC();
     const days = [];
     for (let i = 29; i >= 0; i--) {
@@ -30,21 +29,21 @@ function LineChart({ data = [], endDate }) {
         days.push({ iso, label: iso.slice(5), sales: map.get(iso) ?? 0 }); // label = MM-DD
     }
 
-    // --- skale ---
+
     const maxVal = Math.max(0, ...days.map(d => d.sales));
     const { niceMax, step } = niceScale(maxVal, 5);
-    const x = i => x0 + (i / (days.length - 1)) * plotW;              // 0..29 → x
-    const y = v => yBottom - (v / (niceMax || 1)) * plotH;            // wartość → y
+    const x = i => x0 + (i / (days.length - 1)) * plotW;
+    const y = v => yBottom - (v / (niceMax || 1)) * plotH;
 
-    // --- ścieżki (linia + obszar) ---
+
     const lineD = days.map((d, i) => `${i ? "L" : "M"} ${x(i)},${y(d.sales)}`).join(" ");
     const areaD = `${lineD} L ${x(days.length - 1)},${yBottom} L ${x(0)},${yBottom} Z`;
 
-    // --- ticki Y (obok wykresu, po lewej) ---
+
     const yTicks = [];
     for (let v = 0; v <= niceMax; v += step) yTicks.push(v);
 
-    // --- ticki X: najstarsza | środkowa | ostatnia (z 30 dni) ---
+
     const iFirst = 0, iMid = Math.floor((days.length - 1) / 2), iLast = days.length - 1;
 
     return (
@@ -61,12 +60,12 @@ function LineChart({ data = [], endDate }) {
                     <stop offset="0%" stopOpacity="0.25" />
                     <stop offset="100%" stopOpacity="0" />
                 </linearGradient>
-                {/* przycięcie pola danych → nic nie wyjdzie na legendę */}
+
                 <clipPath id="clip-plot">
                     <rect x={x0} y={yTop} width={plotW} height={plotH} />
                 </clipPath>
             </defs>
-            {/* --- SIATKA (delikatna, pod danymi) --- */}
+
             <g clipPath="url(#clip-plot)">
                 {yTicks.map(v => {
                     const yy = y(v);
@@ -77,24 +76,24 @@ function LineChart({ data = [], endDate }) {
                             y1={yy}
                             x2={x0 + plotW}
                             y2={yy}
-                            stroke="#cbd5e1"        // jasny szary (możesz podmienić)
+                            stroke="#cbd5e1"
                             strokeWidth="0.3"
                             opacity="0.5"
                         />
                     );
                 })}
             </g>
-            {/* DANE (pod spodem i przycięte) */}
+
             <g clipPath="url(#clip-plot)">
                 <path className="chart__area" d={areaD} fill="url(#g)" />
                 <path className="chart__line" d={lineD} />
             </g>
 
-            {/* OSIE (na wierzchu) */}
+
             <line x1={x0} y1={yTop} x2={x0} y2={yBottom} className="chart__axis" />
             <line x1={x0} y1={yBottom} x2={x0 + plotW} y2={yBottom} className="chart__axis" />
 
-            {/* Y: etykiety OBOK (na lewo od osi) */}
+
             <g className="chart__ticks" fontSize="7" fontWeight="600">
                 {yTicks.map(v => {
                     const yy = y(v);
@@ -122,7 +121,7 @@ function LineChart({ data = [], endDate }) {
         </svg>
     );
 
-    // --- utils: ładna skala Y ---
+
     function niceScale(maxValue, tickCount = 5) {
         const m = Math.max(0, maxValue);
         if (m === 0) return { niceMax: 1, step: 1 };

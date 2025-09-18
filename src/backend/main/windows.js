@@ -22,7 +22,6 @@ const createMainWindow = () =>{
 
     win.once("ready-to-show",() => win.show())
 
-    // win.loadFile(path.join(__dirname,"..","renderer","dashboard","index.html"))
 
     if(isDev){
         win.loadURL(DEV_URL+"#/login")

@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
 
-/* Podstawy – brak pasków, pełna wysokość */
+
 html, body, #root { height: 100%; }
 body { margin: 0; overflow: hidden; }
 
-/* Strona logowania - pełny viewport, tło i centrowanie */
+
 .login-page {
     width: 100vw;
     height: 100dvh;
@@ -15,7 +15,7 @@ body { margin: 0; overflow: hidden; }
     overflow: clip;
 }
 
-/* Delikatne animowane tło */
+
 .login-page::before {
     content: "";
     position: absolute;
@@ -42,7 +42,7 @@ body { margin: 0; overflow: hidden; }
     100% { background-position: 0% 50%; }
 }
 
-/* Karta z treścią na środku */
+
 .login-card {
     display: grid;
     place-items: center;
@@ -52,20 +52,20 @@ body { margin: 0; overflow: hidden; }
 }
 .app-brand {
     display: flex;
-    flex-direction: column;   /* jeden pod drugim */
+    flex-direction: column;
     align-items: center;
-    gap: 2px;                 /* niemal „na styk” – zmień np. na 0–4px */
-    line-height: 1;           /* ciaśniej */
-    margin-bottom: 24px;      /* odstęp od przycisku Login */
+    gap: 2px;
+    line-height: 1;
+    margin-bottom: 24px;
 }
-/* Tytuł i wersja */
+
 .app-title {
     font-family: 'Outfit', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     font-weight: 800;
     font-size: clamp(28px, 6vw, 52px);
     margin: 0;
     letter-spacing: 0.5px;
-    /* gradientowy tekst */
+
     background: linear-gradient(90deg, #1f6fff, #8847ff 50%, #00c2ff);
     -webkit-background-clip: text;
     background-clip: text;
@@ -79,7 +79,7 @@ body { margin: 0; overflow: hidden; }
     opacity: .7;
 }
 
-/* Przycisk */
+
 .login-btn {
     margin-top: -20px;
     padding: 14px 28px;
@@ -97,7 +97,7 @@ body { margin: 0; overflow: hidden; }
 .login-btn:active  { transform: translateY(1px); filter: brightness(.96); }
 .login-btn:disabled { opacity: .7; cursor: not-allowed; }
 
-/* Status */
+
 .login-status { font-size: .95rem; }
 .login-status.success { color: #2e7d32; }
 .login-status.error   { color: #c62828; }

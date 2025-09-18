@@ -3,13 +3,13 @@
 
 
 :root {
-    --side-bg: #f3f5f9;      /* tło paska */
-    --side-border: #e5e7eb;  /* kolor obramowania */
-    --link: #334155;         /* kolor tekstu linków */
-    --link-muted: #64748b;   /* bledszy tekst/ikony */
-    --active-bg: #e8efff;    /* tło aktywnego linku */
-    --active: #2563eb;       /* akcent (np. aktywny link) */
-    --radius: 12px;          /* zaokrąglenia */
+    --side-bg: #f3f5f9;
+    --side-border: #e5e7eb;
+    --link: #334155;
+    --link-muted: #64748b;
+    --active-bg: #e8efff;
+    --active: #2563eb;
+    --radius: 12px;
 }
 
 @media (prefers-color-scheme:dark){

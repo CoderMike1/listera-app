@@ -13,17 +13,14 @@ const expose = ({contextBridge,ipcRenderer}) =>{
 
 const getSales = (ipcRenderer) =>{
 
-    const resp = ipcRenderer.invoke("stats_api:get_sales")
-    return resp;
+    return  ipcRenderer.invoke("stats_api:get_sales")
 
 }
 const getPurchases = (ipcRenderer) =>{
-    const resp = ipcRenderer.invoke("stats_api:get_purchases")
-    return resp;
+    return  ipcRenderer.invoke("stats_api:get_purchases")
 }
 const getKpisData = (ipcRenderer) =>{
-    const resp = ipcRenderer.invoke("stats_api:get_kpis_data")
-    return resp;
+    return  ipcRenderer.invoke("stats_api:get_kpis_data")
 }
 
 

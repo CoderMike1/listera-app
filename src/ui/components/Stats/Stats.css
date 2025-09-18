@@ -1,11 +1,11 @@
 .stats-cols {
-    height: 100vh; /* całość = pełne okno */
+    height: 100vh;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     gap: 16px;
     padding: 16px;
     background: #f6f7fb;
-    min-height: 0; /* ważne przy gridzie */
+    min-height: 0;
 }
 
 .panel {
@@ -15,7 +15,7 @@
 
     display: flex;
     flex-direction: column;
-    min-height: 0;   /* <<< KLUCZ: pozwól dzieciom scrollować */
+    min-height: 0;
 }
 .sidebar-panel {
     width: 100%;

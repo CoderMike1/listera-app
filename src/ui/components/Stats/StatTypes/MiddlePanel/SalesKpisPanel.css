@@ -1,13 +1,7 @@
 .mp-skp-wrapper{
     font-family: 'Inter', sans-serif;
     position: relative;
-    /*display: grid;*/
-    /*grid-template-columns: auto 1fr auto;*/
-    /*align-items: center;*/
-    /*gap:1rem;*/
-    /*max-width: 800px;*/
-    /*display: flex;*/
-    /*justify-content: space-between;*/
+
     height: 100%;
     display: flex;
     justify-content: space-between;
@@ -58,8 +52,8 @@
     border:1px solid #e5e7eb;
     border-radius:12px;
     text-shadow:
-            0 1px 0 rgba(255,255,255,.7),                 /* delikatny połysk od góry */
-            0 2px 4px rgba(0,0,0,.12),                    /* głębia */
+            0 1px 0 rgba(255,255,255,.7),
+            0 2px 4px rgba(0,0,0,.12),
             0 10px 24px color-mix(in srgb, #10b981 36%, transparent);
     transition:transform .2s ease, box-shadow .3s ease, border-color .3s ease;
     backdrop-filter:saturate(1.05) blur(0.3px);

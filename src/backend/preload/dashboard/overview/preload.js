@@ -14,16 +14,13 @@ const expose = ({contextBridge,ipcRenderer}) =>{
 
 const getSalesFrom30Days = (ipcRenderer) =>{
 
-    const resp = ipcRenderer.invoke("overview-api:get-sales-from-last-30-days")
-    return resp;
+    return ipcRenderer.invoke("overview-api:get-sales-from-last-30-days")
 
 }
 const getKPISData = (ipcRenderer) =>{
-    const resp = ipcRenderer.invoke("overview-api:get-kpis-data")
-    return resp;
+    return ipcRenderer.invoke("overview-api:get-kpis-data")
 }
 const getListingStatus = (ipcRenderer) =>{
-    const resp = ipcRenderer.invoke("overview-api:get-listing-status")
-    return resp;
+    return ipcRenderer.invoke("overview-api:get-listing-status")
 }
 module.exports = {expose}

@@ -336,12 +336,12 @@ html, body, #root { height: 100%; }
 .rp-edit::-webkit-scrollbar-thumb:hover,
 .rp-add::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-/* --- formularze już NIE przewijają się same; przewija się cały panel --- */
+
 .rp-edit-form-grid,
 .rp-add-form-grid{
     flex: 0 0 auto;
     overflow: visible;
-    padding: 0 12px 12px;             /* bez sztucznego „marginesu na dół” */
+    padding: 0 12px 12px;
     box-sizing: border-box;
     min-width: 0;
 }
@@ -350,10 +350,10 @@ html, body, #root { height: 100%; }
 
 
 
-/**/
-/* --- 0) Panel = pełna wysokość viewportu i brak „rozpychania” --- */
-.rp-container{              /* mobilne safe-viewport */
-    height: 100vh;               /* fallback */
+
+
+.rp-container{
+    height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;

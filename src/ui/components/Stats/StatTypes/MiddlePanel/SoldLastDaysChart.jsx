@@ -11,7 +11,7 @@ export default function SoldLastDaysChart({
                                           }) {
     const [range, setRange] = useState(initialRangeDays);
 
-    // === Pomiar kontenera (auto-fit) ===
+
     const wrapRef = useRef(null);
     const [size, setSize] = useState({ w: 360, h: height });
 
@@ -30,7 +30,7 @@ export default function SoldLastDaysChart({
         return () => ro.disconnect();
     }, []);
 
-    // --- UTC helpers ---
+
     const toYMDUTC = (d) => {
         const y = d.getUTCFullYear();
         const m = String(d.getUTCMonth() + 1).padStart(2, "0");
@@ -39,7 +39,7 @@ export default function SoldLastDaysChart({
     };
     const parseYMD = (s) => new Date(`${s}T00:00:00Z`);
 
-    // Mapy: 'YYYY-MM-DD' -> count (z backendu przyjmujemy YYYY-MM-DD)
+
     const salesMap = useMemo(() => {
         const m = new Map();
         for (const s of sales) {
@@ -60,7 +60,7 @@ export default function SoldLastDaysChart({
         return m;
     }, [purchases]);
 
-    // Zakres dat -> klucze dni w UTC
+
     const dayKeys = useMemo(() => {
         const keys = [];
         const now = new Date();
@@ -73,11 +73,11 @@ export default function SoldLastDaysChart({
         return keys;
     }, [range]);
 
-    // Serie
+
     const seriesSold = useMemo(() => dayKeys.map((k) => salesMap.get(k) || 0), [dayKeys, salesMap]);
     const seriesPurch = useMemo(() => dayKeys.map((k) => purchasesMap.get(k) || 0), [dayKeys, purchasesMap]);
 
-    // Wymiary bazując na pomiarze
+
     const W = size.w;
     const H = size.h;
     const P = Math.max(24, Math.min(36, Math.round(W * 0.07)));
@@ -92,7 +92,6 @@ export default function SoldLastDaysChart({
     const xOf = (i) => P + (i * innerW) / (n - 1 || 1);
     const yOf = (v) => P + innerH - (v / (niceMax || 1)) * innerH;
 
-    // Ścieżki (area + linia dla Sold; tylko linia dla Purchases)
     const dLineSold = seriesSold.map((v, i) => `${i === 0 ? "M" : "L"} ${xOf(i)} ${yOf(v)}`).join(" ");
     const dArea =
         `M ${xOf(0)} ${yOf(0)} ` +
@@ -101,7 +100,7 @@ export default function SoldLastDaysChart({
 
     const dLinePurch = seriesPurch.map((v, i) => `${i === 0 ? "M" : "L"} ${xOf(i)} ${yOf(v)}`).join(" ");
 
-    // dynamiczna typografia
+
     const fs = Math.max(12, Math.min(16, Math.round(W * 0.04)));
     const fsSmall = Math.max(12, Math.min(14, Math.round(W * 0.035)));
     const strokeW = Math.max(2, Math.min(3, Math.round(W * 0.007)));
@@ -170,11 +169,11 @@ export default function SoldLastDaysChart({
                         );
                     })}
 
-                    {/* Sold: area + linia (jak było) */}
+
                     <path d={dArea} className="area" />
                     <path d={dLineSold} className="line" style={{ strokeWidth: strokeW }} />
 
-                    {/* Purchases: tylko linia + kropki (nie zmieniamy układu/tekstów) */}
+
                     <path d={dLinePurch} className="line line--purchases" style={{ strokeWidth: strokeW }} />
 
                     {seriesSold.map((v, i) =>

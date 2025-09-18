@@ -29,7 +29,6 @@ const registerItemsHandlers = () =>{
     })
 
     ipcMain.handle("items_api:sold_item",(_e,item)=>{
-        console.log(item)
         if(item.sold_stock < item.form_data.stock)
         {
             //zmniejszamy active stock
@@ -49,7 +48,7 @@ const registerItemsHandlers = () =>{
                     created_at:item.form_data.created_at,
                     selling_price:item.selling_price,
                     sale_at:item.sale_at,
-                    purchase_at:item.purchase_at
+                    purchased_at:item.purchased_at
                 }
 
                 return items.add_sold(payload)
@@ -67,7 +66,7 @@ const registerItemsHandlers = () =>{
                     created_at:item.form_data.created_at,
                     selling_price:item.selling_price,
                     sale_at:item.sale_at,
-                    purchase_at:item.purchase_at
+                    purchased_at:item.purchased_at
                 }
 
                 return items.add_sold(payload)

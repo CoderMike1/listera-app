@@ -5,7 +5,7 @@ const registerLoginHandlers = () =>{
 
     ipcMain.handle("login:api-authorize",() =>{
 
-        // jakies procesy
+        // auth process in the background
 
         return {ok:true}
 
