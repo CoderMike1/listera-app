@@ -168,6 +168,9 @@ GROUP BY b.label
 ORDER BY CASE b.label WHEN '24h' THEN 1 WHEN '7d' THEN 2 WHEN '30d' THEN 3 WHEN 'all' THEN 4 END;
 `)
 
+const get_listings_amount = db.prepare(`
+    SELECT status as label, SUM(stock) as count from items GROUP BY status
+`)
 
 module.exports = {
 
@@ -233,6 +236,9 @@ module.exports = {
     get_kpis_sales(){
         const results = get_kpis_data_from_diff_data_range.all()
         return {ok:true,results:results}
+    },
+    get_listings_amount(){
+        return get_listings_amount.all()
     }
 
 

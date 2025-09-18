@@ -1,11 +1,12 @@
 import './StatsMiddlePanel.css'
 import SoldLastDaysChart from "./StatTypes/MiddlePanel/SoldLastDaysChart";
 import SalesKpisPanel from "./StatTypes/MiddlePanel/SalesKpisPanel";
+import ListingStatus from "./StatTypes/MiddlePanel/ListingStatus";
 
 
 
 
-const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData}) =>{
+const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingAmount}) =>{
 
     return (
 
@@ -24,23 +25,23 @@ const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData}) =>{
                     <SalesKpisPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} kpisData={kpisData} />
                 </div>
                 <div className="sm-item">
-                    #3
+                    <ListingStatus selectedStat={selectedStat} setSelectedStat={setSelectedStat} listingAmount={listingAmount}/>
                 </div>
                 <div className="sm-item">
-                    #4
+                    ktory zalega najbardziej item, ile dni po zakupie
                 </div>
                 <div className="sm-item">
-                    #5
+                    najlepiej sprzedajace sie buty, najwiekszy profit
                 </div>
                 <div className="sm-item">
-                    #6
+                    informacje dotyczace tego obecnego miesiaca
                 </div>
-                <div className="sm-item">
-                    #7
-                </div>
-                <div className="sm-item">
-                    #8
-                </div>
+                {/*<div className="sm-item">*/}
+                {/*    #7*/}
+                {/*</div>*/}
+                {/*<div className="sm-item">*/}
+                {/*    #8*/}
+                {/*</div>*/}
 
 
             </div>

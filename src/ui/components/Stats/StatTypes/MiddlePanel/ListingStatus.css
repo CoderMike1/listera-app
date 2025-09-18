@@ -1,0 +1,79 @@
+.mp-ls-container{
+    position:relative;
+}
+
+.mp-ls-chart--donut{
+    height: 130px;
+}
+.mp-ls-donut__track{
+    fill:none;
+    stroke:#80ead4;
+    stroke-width: 3.5;
+}
+.mp-ls-body{
+    display: flex;
+    flex-direction: column;
+}
+.mp-ls-donut__value{
+    fill:none;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+.mp-ls-donut_text{
+    font-family: 'Inter', sans-serif;
+    font-size:4px;
+}
+.mp-ls-legend{
+    display:flex;
+    justify-content: space-between;
+    gap:12px;
+    margin-top:8px;
+    font-family: 'Inter', sans-serif;
+    padding: 0 10px 0 10px;
+}
+.mp-ls-donut__value--active { stroke: #10b981; }
+.mp-ls-donut__value--sold   { stroke: #ce156e; }
+.mp-ls-donut__value--toship { stroke: #3b82f6; }
+
+.mp-ls-dot--active{
+    background: #10b981;
+}
+.mp-ls-dot--sold{
+    background: #ce156e;
+}
+.mp-ls-dot--toship{
+    background: #3b82f6;
+}
+
+.mp-ls-legend-dot-part{
+    display:flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    gap:2px;
+}
+.mp-ls-dot{
+    width: 10px;
+    height: 10px;
+    border-radius:999px;
+    display: inline-block;
+}
+
+.mp-ls-card-btn{
+    position: absolute;
+    top:15px;
+    right:15px;
+    background: #bad7ba;
+    border:1px solid #2e7d32;
+    border-radius:12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor:pointer;
+}
+.mp-ls-title{
+    text-align: center;
+    margin-top: 35px;
+    font-size: 22px;
+}

@@ -1,0 +1,96 @@
+.rp-skp-container{
+    padding:12px 12px 8px 12px;
+    font-family: 'Inter', sans-serif;
+}
+
+.rp-skp__head{
+    position: relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 4px 8px 6px;
+}
+.rp-skp-btn{
+    position: absolute;
+    top:1px;
+    right:3px;
+    background: #bad7ba;
+    border:1px solid #2e7d32;
+    border-radius:12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor:pointer;
+}
+.rp-skp-options{
+    display: inline-flex;
+    gap: 6px;
+    padding: 4px;
+    border: 1px solid #d7dbe6;
+    background: #eef2f9;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.skp-btn{
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #475569;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.skp-btn.is-active{
+    background: #ffffff;
+    color: #0f172a;
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.skp-btn:hover{ background: #e6edf9; }
+.skp-btn:focus-visible{ outline: 2px solid #93c5fd; outline-offset: 2px; }
+
+.skp-btn.is-active{
+    background: #ffffff;
+    color: #0f172a;
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.rp-skp-options{
+    display:flex;
+    flex-direction: row;
+    gap:6px;
+}
+.rp-skp-date-range-options{
+    display:flex;
+    flex-direction: column;
+    gap:6px;
+}
+.rp-skp-btns{
+    display: flex;
+    flex-direction: row;
+}
+.rp-skp-text{
+    background:linear-gradient(180deg,#fff,#f7f9fc);
+    font-size:100px;
+    font-weight: 700;
+    letter-spacing:.02em;
+    text-align: center;
+    margin-top:55px;
+    height: 300px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    text-shadow:
+            0 1px 0 rgba(255,255,255,.7),
+            0 2px 4px rgba(0,0,0,.12),
+            0 10px 24px color-mix(in srgb, #10b981 36%, transparent);
+    transition:transform .2s ease, box-shadow .3s ease, border-color .3s ease;
+    backdrop-filter:saturate(1.05) blur(0.3px);
+    padding:12px;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

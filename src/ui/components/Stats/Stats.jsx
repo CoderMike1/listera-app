@@ -10,6 +10,7 @@ const Stats = () =>{
     const [salesCount, setSalesCount] = useState([])
     const [purchasesCount,setPurchasesCount] = useState([])
     const [kpisData,setKpisData] = useState([])
+    const [listingAmount,setListingAmount] = useState([])
 
     useEffect (() =>{
         const f = async ()=>{
@@ -27,7 +28,6 @@ const Stats = () =>{
                 throw new Error("jakis error siema")
             }
             else{
-                console.log(resp.results)
                 setPurchasesCount(resp.results)
             }
         }
@@ -41,9 +41,21 @@ const Stats = () =>{
             }
         }
 
+        const f4 = async() =>{
+            const resp = await window.stats.api_get_listings_amount();
+            if(!resp.ok){
+                throw new Error("jakis error siema")
+            }
+            else{
+                setListingAmount(resp.results)
+            }
+        }
+
+
         f()
         f2()
         f3()
+        f4()
     },[selectedStat])
 
 
@@ -54,7 +66,7 @@ const Stats = () =>{
                 <Sidebar/>
             </aside>
             <div className='panel'>
-                <StatsMiddlePanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} kpisData={kpisData} />
+                <StatsMiddlePanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} kpisData={kpisData} listingAmount={listingAmount} />
             </div>
             <aside className='panel'>
                <StatsRightPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} purchases={purchasesCount} kpisData={kpisData} />

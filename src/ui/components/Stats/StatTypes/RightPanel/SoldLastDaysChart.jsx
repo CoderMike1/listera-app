@@ -237,7 +237,7 @@ export default function SoldLastDaysChart({
                         {[30, 60, 90, 360].map((r) => (
                             <button
                                 key={r}
-                                className={`rp-range-btn ${range === r ? "is-active" : ""}`}
+                                className={`seg-btn ${range === r ? "is-active" : ""}`}
                                 onClick={() => setRange(r)}
                             >
                                 {r} days

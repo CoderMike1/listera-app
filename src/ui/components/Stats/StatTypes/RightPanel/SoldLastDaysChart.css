@@ -13,10 +13,7 @@
     justify-content:space-between;
     padding:6px 4px 8px 6px;
 }
-.rp-sold-card__head h3{
-    margin:0;
-    font-weight:700;
-}
+
 .rp-sold-card__range{
     display:flex;
     flex-direction: column;
@@ -26,19 +23,6 @@
     display:flex;
     gap:10px;
 }
-.rp-range-btn{
-    font-size:12px;
-    padding:4px 8px;
-    border:1px solid #d7dbe6;
-    border-radius:10px;
-    background:#f7f9fc;
-    cursor:pointer;
-}
-.rp-range-btn.is-active{
-    border-color:#3b82f6;
-    background:#eaf1ff;
-}
-
 
 .rp-sold-chart{ width:100%; height:200px; display:block; }
 .rp-chart-bg{ fill:#ffffff; }

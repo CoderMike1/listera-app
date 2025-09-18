@@ -172,18 +172,17 @@ function Donut({ active = 22 }) {
     const arc = (active / 100) * c;
     const sold = 100 - active;
 
-    // środek i promień dla napisów (trochę mniejszy niż r, żeby były wewnątrz pierścienia)
+
     const cx = 18, cy = 18;
     const labelR = 11;
 
-    // chcemy start od godz. 12, więc kąt początkowy = -90°
+
     const start = -Math.PI / 2;
 
-    // środki kątowe obu łuków
     const thetaActiveMid = start + (active / 100) * 2 * Math.PI / 2;
     const thetaSoldMid   = start + (active / 100) * 2 * Math.PI + (sold / 100) * 2 * Math.PI / 2;
 
-    // współrzędne etykiet
+
     const ax = cx + labelR * Math.cos(thetaActiveMid);
     const ay = cy + labelR * Math.sin(thetaActiveMid);
     const sx = cx + labelR * Math.cos(thetaSoldMid);

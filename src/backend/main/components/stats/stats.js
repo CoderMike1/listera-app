@@ -17,6 +17,23 @@ const registerStatsHandlers = () =>{
         return items.get_kpis_sales()
     })
 
+    ipcMain.handle("stats_api:get_listings_amount", ()=>{
+        const resp =  items.get_listings_amount();
+
+        const results = {
+            "active":0,
+            "sold":0,
+            "toship":0
+        }
+
+        resp.map(l =>{
+            results[l['label']] = l['count']
+        })
+
+
+
+        return {ok:true, results:results};
+    })
 
 }
 
