@@ -8,11 +8,13 @@
 - Dashboard - added notification panel and quick summary about stats
 - Items - allows to add/delete/edit inventory, also you can set items as a SOLD / TO SHIP / ACTIVE
 - Stats - page where you can explore through a lot of interesting information about your inventory, profit/income summary
+- Marketplace - IN PROGRESS
+- Settings - IN PROGRESS
 
 
 Project's making for Dustify Secret
 
-
+Project is not finished yet
 
 
 # SCREENSHOTS
