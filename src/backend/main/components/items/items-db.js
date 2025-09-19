@@ -172,6 +172,16 @@ const get_listings_amount = db.prepare(`
     SELECT status as label, SUM(stock) as count from items GROUP BY status
 `)
 
+const get_aged_inventory = db.prepare(`
+SELECT id, name,size,sku,stock,
+       CAST(julianday('now') - julianday(purchased_at) AS INTEGER) AS days
+FROM items
+WHERE purchased_at IS NOT NULL
+ORDER BY days DESC
+LIMIT 5;
+`)
+
+
 module.exports = {
 
     getKpis(){
@@ -239,6 +249,9 @@ module.exports = {
     },
     get_listings_amount(){
         return get_listings_amount.all()
+    },
+    get_aged_inventory(){
+        return get_aged_inventory.all()
     }
 
 

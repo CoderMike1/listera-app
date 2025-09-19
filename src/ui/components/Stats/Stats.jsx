@@ -11,6 +11,7 @@ const Stats = () =>{
     const [purchasesCount,setPurchasesCount] = useState([])
     const [kpisData,setKpisData] = useState([])
     const [listingAmount,setListingAmount] = useState([])
+    const [agedInventory,setAgedInventory] = useState([])
 
     useEffect (() =>{
         const f = async ()=>{
@@ -50,15 +51,24 @@ const Stats = () =>{
                 setListingAmount(resp.results)
             }
         }
+        const f5 = async()=>{
+            const resp = await window.stats.api_get_aged_inventory();
+            if(!resp.ok){
+                throw new Error()
+            }
+            else{
+                setAgedInventory(resp.results)
+            }
+
+        }
 
 
         f()
         f2()
         f3()
         f4()
+        f5()
     },[selectedStat])
-
-
     return (
 
         <div className="stats-cols">
@@ -66,10 +76,10 @@ const Stats = () =>{
                 <Sidebar/>
             </aside>
             <div className='panel'>
-                <StatsMiddlePanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} kpisData={kpisData} listingAmount={listingAmount} />
+                <StatsMiddlePanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} kpisData={kpisData} listingAmount={listingAmount} agedInventory={agedInventory}/>
             </div>
             <aside className='panel'>
-               <StatsRightPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} purchases={purchasesCount} kpisData={kpisData} />
+               <StatsRightPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} purchases={purchasesCount} kpisData={kpisData} listingAmount={listingAmount} />
             </aside>
 
         </div>

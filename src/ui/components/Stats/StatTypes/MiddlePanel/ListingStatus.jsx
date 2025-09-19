@@ -4,8 +4,6 @@ import React from "react";
 
 const ListingStatus = ({selectedStat,setSelectedStat,listingAmount}) =>{
 
-    const active = 22
-    console.log(listingAmount)
     const parts = [
         {"label":"Active","key":"active",value:listingAmount['active']},
         {"label":"Sold","key":"sold",value:listingAmount['sold']},
@@ -15,9 +13,8 @@ const ListingStatus = ({selectedStat,setSelectedStat,listingAmount}) =>{
 
     const r = 15.915;
     const c = 2 * Math.PI * r;
-    const arc = (active / 100) * c;
     const cx = 18, cy = 18;
-    const labelR = 11;
+    const labelR = 10;
 
     const start = -Math.PI / 2;
 

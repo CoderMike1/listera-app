@@ -34,6 +34,10 @@ const registerStatsHandlers = () =>{
 
         return {ok:true, results:results};
     })
+    ipcMain.handle("stats_api:get_aged_inventory",()=>{
+        const results = items.get_aged_inventory();
+        return {ok:true,results:results}
+    })
 
 }
 

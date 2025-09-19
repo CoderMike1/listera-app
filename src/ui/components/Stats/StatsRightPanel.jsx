@@ -1,12 +1,13 @@
 import SoldLastDaysChart from "./StatTypes/RightPanel/SoldLastDaysChart";
 import './StatsRightPanel.css'
 import SalesKpisPanel from "./StatTypes/RightPanel/SalesKpisPanel";
+import ListingStatus from "./StatTypes/RightPanel/ListingStatus";
 
 
 
 
 
-const StatsRightPanel = ({selectedStat,setSelectedStat,sales,purchases,kpisData}) =>{
+const StatsRightPanel = ({selectedStat,setSelectedStat,sales,purchases,kpisData,listingAmount}) =>{
 
     return (
         <div className="sr-container">
@@ -20,7 +21,11 @@ const StatsRightPanel = ({selectedStat,setSelectedStat,sales,purchases,kpisData}
                 <div className="sr-stat">
                     <SalesKpisPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} kpisData={kpisData} />
                 </div>
-
+            }
+            {selectedStat === 3 &&
+                <div className="sr-stat">
+                    <ListingStatus selectedStat={selectedStat} setSelectedStat={setSelectedStat} listingAmount={listingAmount} />
+                </div>
 
             }
 

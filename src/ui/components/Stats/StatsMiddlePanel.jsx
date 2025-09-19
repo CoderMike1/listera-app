@@ -2,11 +2,16 @@ import './StatsMiddlePanel.css'
 import SoldLastDaysChart from "./StatTypes/MiddlePanel/SoldLastDaysChart";
 import SalesKpisPanel from "./StatTypes/MiddlePanel/SalesKpisPanel";
 import ListingStatus from "./StatTypes/MiddlePanel/ListingStatus";
+import AgedInventoryStat from "./StatTypes/MiddlePanel/AgedInventoryStat";
+import {useMemo} from "react";
 
 
 
 
-const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingAmount}) =>{
+const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingAmount,agedInventory}) =>{
+
+    console.log(agedInventory)
+
 
     return (
 
@@ -28,7 +33,7 @@ const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingA
                     <ListingStatus selectedStat={selectedStat} setSelectedStat={setSelectedStat} listingAmount={listingAmount}/>
                 </div>
                 <div className="sm-item">
-                    ktory zalega najbardziej item, ile dni po zakupie
+                    <AgedInventoryStat selectedStat={selectedStat} setSelectedStat={setSelectedStat} agedInventory={agedInventory.slice(0,2) || []}/>
                 </div>
                 <div className="sm-item">
                     najlepiej sprzedajace sie buty, najwiekszy profit
