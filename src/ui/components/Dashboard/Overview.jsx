@@ -1,192 +1,195 @@
 
 import './Overview.css'
-import {useEffect, useState} from "react";
+import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import SearchBar from "./SearchBar";
 
 
-
-function LineChart({ data = [], endDate }) {
-    const vbW = 110, vbH = 60;
-    const margin = { top: 6, right: 4, bottom: 10, left: 18 };
-
-    const x0 = margin.left;
-    const yTop = margin.top;
-    const yBottom = vbH - margin.bottom;
-    const plotW = vbW - margin.left - margin.right;
-    const plotH = yBottom - yTop;
-
-
-    const map = new Map(
-        (Array.isArray(data) ? data : []).map(d => [normalizeISO(d.date), Number(d.sales) || 0])
-    );
-
-
-    const end = endDate ? toUTC(normalizeISO(endDate)) : todayUTC();
-    const days = [];
-    for (let i = 29; i >= 0; i--) {
-        const d = addDaysUTC(end, -i);
-        const iso = toISO(d);
-        days.push({ iso, label: iso.slice(5), sales: map.get(iso) ?? 0 }); // label = MM-DD
-    }
+const LineChart = ({sales = [],
+                       height=220}) =>{
+    const range = 30;
+    const wrapRef = useRef(null);
+    const [size, setSize] = useState({ w: 360, h: height });
+    console.log(sales)
+    useLayoutEffect(() => {
+        const el = wrapRef.current;
+        if (!el) return;
+        const ro = new ResizeObserver((entries) => {
+            for (const e of entries) {
+                const cr = e.contentRect;
+                const w = Math.max(260, Math.floor(cr.width));
+                const h = Math.max(160, Math.floor(cr.height));
+                setSize({ w, h });
+            }
+        });
+        ro.observe(el);
+        return () => ro.disconnect();
+    }, []);
 
 
-    const maxVal = Math.max(0, ...days.map(d => d.sales));
-    const { niceMax, step } = niceScale(maxVal, 5);
-    const x = i => x0 + (i / (days.length - 1)) * plotW;
-    const y = v => yBottom - (v / (niceMax || 1)) * plotH;
+    const toYMDUTC = (d) => {
+        const y = d.getUTCFullYear();
+        const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(d.getUTCDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+    };
+    const parseYMD = (s) => new Date(`${s}T00:00:00Z`);
 
 
-    const lineD = days.map((d, i) => `${i ? "L" : "M"} ${x(i)},${y(d.sales)}`).join(" ");
-    const areaD = `${lineD} L ${x(days.length - 1)},${yBottom} L ${x(0)},${yBottom} Z`;
+    const salesMap = useMemo(() => {
+        const m = new Map();
+        for (const s of sales) {
+            const key = String(s?.date || "").slice(0, 10);
+            const c = Number.isFinite(s?.count) ? s.count : 1;
+            if (key) m.set(key, (m.get(key) || 0) + c);
+        }
+        return m;
+    }, [sales]);
+
+    const dayKeys = useMemo(() => {
+        const keys = [];
+        const now = new Date();
+        const endUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+        const startUTC = new Date(endUTC);
+        startUTC.setUTCDate(endUTC.getUTCDate() - (range - 1));
+        for (let d = new Date(startUTC); d <= endUTC; d.setUTCDate(d.getUTCDate() + 1)) {
+            keys.push(toYMDUTC(d));
+        }
+        return keys;
+    }, [range]);
 
 
-    const yTicks = [];
-    for (let v = 0; v <= niceMax; v += step) yTicks.push(v);
+    const seriesSold = useMemo(() => dayKeys.map((k) => salesMap.get(k) || 0), [dayKeys, salesMap]);
 
 
-    const iFirst = 0, iMid = Math.floor((days.length - 1) / 2), iLast = days.length - 1;
+    const W = size.w;
+    const H = size.h;
+    const P = Math.max(24, Math.min(36, Math.round(W * 0.07)));
+    const innerW = W - P - 10;
+    const innerH = H - P - 12;
+
+    const maxY = Math.max(1, ...seriesSold);
+    const niceMax = niceCeil(maxY);
+    const yTicks = [0, niceMax * 0.25, niceMax * 0.5, niceMax * 0.75, niceMax];
+
+    const n = dayKeys.length;
+    const xOf = (i) => P + (i * innerW) / (n - 1 || 1);
+    const yOf = (v) => P + innerH - (v / (niceMax || 1)) * innerH;
+
+    const dLineSold = seriesSold.map((v, i) => `${i === 0 ? "M" : "L"} ${xOf(i)} ${yOf(v)}`).join(" ");
+    const dArea =
+        `M ${xOf(0)} ${yOf(0)} ` +
+        seriesSold.map((v, i) => `L ${xOf(i)} ${yOf(v)}`).join(" ") +
+        ` L ${xOf(n - 1)} ${yOf(0)} Z`;
+
+
+    const fs = Math.max(12, Math.min(16, Math.round(W * 0.04)));
+    const fsSmall = Math.max(12, Math.min(14, Math.round(W * 0.035)));
+    const strokeW = Math.max(2, Math.min(3, Math.round(W * 0.007)));
+
+    const fmt = (s) =>
+        parseYMD(s).toLocaleDateString(undefined, { month: "2-digit", day: "2-digit" });
+    const xLabels = [
+        fmt(dayKeys[0] || toYMDUTC(new Date())),
+        fmt(dayKeys[Math.floor((n - 1) / 2)] || toYMDUTC(new Date())),
+        fmt(dayKeys[n - 1] || toYMDUTC(new Date())),
+    ];
 
     return (
-        <svg
-            className="chart chart--line"
-            viewBox={`0 0 ${vbW} ${vbH}`}
-            width="100%"
-            height="100%"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-        >
-            <defs>
-                <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopOpacity="0.25" />
-                    <stop offset="100%" stopOpacity="0" />
-                </linearGradient>
+        <div className="sold-card">
+            <div className="sold-chart-wrap" ref={wrapRef}>
+                <svg
+                    className="sold-chart"
+                    viewBox={`0 0 ${W} ${H}`}
+                    width="100%"
+                    height="100%"
+                    preserveAspectRatio="none"
+                >
+                    <rect x="0" y="0" width={W} height={H} rx="14" className="chart-bg" />
 
-                <clipPath id="clip-plot">
-                    <rect x={x0} y={yTop} width={plotW} height={plotH} />
-                </clipPath>
-            </defs>
+                    <line x1={P} y1={P} x2={P} y2={P + innerH} className="axis" />
+                    <line x1={P} y1={P + innerH} x2={P + innerW} y2={P + innerH} className="axis" />
 
-            <g clipPath="url(#clip-plot)">
-                {yTicks.map(v => {
-                    const yy = y(v);
-                    return (
-                        <line
-                            key={`grid-${v}`}
-                            x1={x0}
-                            y1={yy}
-                            x2={x0 + plotW}
-                            y2={yy}
-                            stroke="#cbd5e1"
-                            strokeWidth="0.3"
-                            opacity="0.5"
-                        />
-                    );
-                })}
-            </g>
-
-            <g clipPath="url(#clip-plot)">
-                <path className="chart__area" d={areaD} fill="url(#g)" />
-                <path className="chart__line" d={lineD} />
-            </g>
+                    {yTicks.map((t, i) => {
+                        const y = yOf(t);
+                        return (
+                            <g key={i}>
+                                <line x1={P} y1={y} x2={P + innerW} y2={y} className="grid" />
+                                <text
+                                    x={P - 6}
+                                    y={y}
+                                    className="tick-y"
+                                    dominantBaseline="middle"
+                                    style={{ fontSize: fsSmall }}
+                                >
+                                    {Math.round(t)}
+                                </text>
+                            </g>
+                        );
+                    })}
 
 
-            <line x1={x0} y1={yTop} x2={x0} y2={yBottom} className="chart__axis" />
-            <line x1={x0} y1={yBottom} x2={x0 + plotW} y2={yBottom} className="chart__axis" />
+                    <path d={dArea} className="area" />
+                    <path d={dLineSold} className="line" style={{ strokeWidth: strokeW }} />
 
 
-            <g className="chart__ticks" fontSize="7" fontWeight="600">
-                {yTicks.map(v => {
-                    const yy = y(v);
-                    return (
-                        <g key={v}>
-                            <line x1={x0} x2={x0 + 2.5} y1={yy} y2={yy} className="chart__tick" />
-                            <text x={x0 - 2} y={yy} textAnchor="end" dominantBaseline="middle" className="chart__tick__text">
-                                {v}
-                            </text>
-                        </g>
-                    );
-                })}
-            </g>
+                    {seriesSold.map((v, i) =>
+                        v > 0 ? <circle key={`s-${i}`} cx={xOf(i)} cy={yOf(v)} r={strokeW + 1} className="dot" /> : null
+                    )}
 
-            <g className="chart__ticks" fontSize="6" fontWeight="600">
-                <line x1={x(iFirst)} y1={yBottom} x2={x(iFirst)} y2={yBottom - 2.5} className="chart__tick" />
-                <text x={x(iFirst)} y={yBottom + 3} textAnchor="start" dominantBaseline="hanging" className="chart__tick__text">{days[iFirst].label}</text>
-
-                <line x1={x(iMid)} y1={yBottom} x2={x(iMid)} y2={yBottom - 2.5} className="chart__tick" />
-                <text x={x(iMid)} y={yBottom + 3} textAnchor="middle" dominantBaseline="hanging" className="chart__tick__text">{days[iMid].label}</text>
-
-                <line x1={x(iLast)} y1={yBottom} x2={x(iLast)} y2={yBottom - 2.5} className="chart__tick" />
-                <text x={x(iLast)} y={yBottom + 3} textAnchor="end" dominantBaseline="hanging" className="chart__tick__text">{days[iLast].label}</text>
-            </g>
-        </svg>
+                    <text x={P} y={P + innerH + 14} className="tick-x" textAnchor="start" style={{ fontSize: fs }}>
+                        {xLabels[0]}
+                    </text>
+                    <text
+                        x={P + innerW / 2}
+                        y={P + innerH + 14}
+                        className="tick-x"
+                        textAnchor="middle"
+                        style={{ fontSize: fs }}
+                    >
+                        {xLabels[1]}
+                    </text>
+                    <text
+                        x={P + innerW}
+                        y={P + innerH + 14}
+                        className="tick-x"
+                        textAnchor="end"
+                        style={{ fontSize: fs }}
+                    >
+                        {xLabels[2]}
+                    </text>
+                </svg>
+            </div>
+        </div>
     );
-
-
-    function niceScale(maxValue, tickCount = 5) {
-        const m = Math.max(0, maxValue);
-        if (m === 0) return { niceMax: 1, step: 1 };
-        const roughStep = m / (tickCount - 1);
-        const pow10 = Math.pow(10, Math.floor(Math.log10(roughStep)));
-        const candidates = [1, 2, 2.5, 5, 10].map(k => k * pow10);
-        const step = candidates.find(s => s >= roughStep) ?? candidates[candidates.length - 1];
-        const niceMax = Math.ceil(m / step) * step;
-        return { niceMax, step };
-    }
-
-    function todayUTC() {
-        const now = new Date();
-        return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    }
-    function toUTC(iso) {
-        const [y, m, d] = iso.split("-").map(Number);
-        return new Date(Date.UTC(y, m - 1, d));
-    }
-    function addDaysUTC(date, delta) {
-        const d = new Date(date.getTime());
-        d.setUTCDate(d.getUTCDate() + delta);
-        return d;
-    }
-    function toISO(date) {
-        const y = date.getUTCFullYear();
-        const m = String(date.getUTCMonth() + 1).padStart(2, "0");
-        const d = String(date.getUTCDate()).padStart(2, "0");
-        return `${y}-${m}-${d}`;
-    }
-    function normalizeISO(s) {
-        if (!s) return s;
-        const str = String(s).trim();
-        if (/^\d{4}[-/]\d{2}[-/]\d{2}$/.test(str)) {
-            return str.replace(/\//g, "-");
-        }
-        if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
-            const [dd, mm, yyyy] = str.split("-");
-            return `${yyyy}-${mm}-${dd}`;
-        }
-        return str;
-    }
 }
 
-function Donut({ active = 22 }) {
+const Donut = ({listingAmount}) =>{
+
+    const activeCount = Number(listingAmount.active) || 0;
+    const soldCount = (Number(listingAmount.sold) || 0) + (Number(listingAmount.toship) || 0)
+
+
+    const total = Math.max(1,activeCount+soldCount);
+    let activePct = (activeCount / total) * 100;
+    activePct = Math.max(0,Math.min(100,activePct))
+    const soldPct = 100 - activePct;
+
     const r = 15.915;
-    const c = 2 * Math.PI * r;
-    const arc = (active / 100) * c;
-    const sold = 100 - active;
+    const c = 2*Math.PI * r;
+    const arc = (activePct/100) * c;
 
-
-    const cx = 18, cy = 18;
-    const labelR = 11;
-
-
+    const cx = 18, cy=18;
+    const labelR = 10;
     const start = -Math.PI / 2;
 
-    const thetaActiveMid = start + (active / 100) * 2 * Math.PI / 2;
-    const thetaSoldMid   = start + (active / 100) * 2 * Math.PI + (sold / 100) * 2 * Math.PI / 2;
-
+    const thetaActiveMid = start + (activePct / 100) * Math.PI;
+    const thetaSoldMid = start + (activePct / 100) * 2 * Math.PI + (soldPct / 100);
 
     const ax = cx + labelR * Math.cos(thetaActiveMid);
     const ay = cy + labelR * Math.sin(thetaActiveMid);
     const sx = cx + labelR * Math.cos(thetaSoldMid);
     const sy = cy + labelR * Math.sin(thetaSoldMid);
+
 
     return (
         <svg className="chart chart--donut" viewBox="0 0 36 36" aria-hidden="true">
@@ -197,24 +200,25 @@ function Donut({ active = 22 }) {
                 cy={cy}
                 r={r}
                 strokeDasharray={`${arc} ${c - arc}`}
-               />
+            />
             <g className="donut__labels" fontSize="3" fontWeight="600">
-                <text className="donut_text" x={ax} y={ay} textAnchor="end" dominantBaseline="middle">
-                    {active}%
+                <text className="donut_text" x={ax} y={ay} textAnchor="middle" dominantBaseline="middle">
+                    {Math.round(activePct)}%
                 </text>
-                <text className="donut_text" x={sx} y={sy} textAnchor="start" dominantBaseline="middle">
-                    {sold}%
+                <text className="donut_text" x={sx} y={sy} textAnchor="middle" dominantBaseline="middle">
+                    {Math.round(soldPct)}%
                 </text>
             </g>
         </svg>
-    );
+    )
 }
+
 
 const Overview = () =>{
 
     const [lastSales,setLastSales] = useState([])
     const [kpisData,setKpisData] = useState([])
-    const [listingStatusData,setListingStatusData] = useState([])
+    const [listingAmount,setListingAmount] = useState([])
 
 
     const todayLabel = new Intl.DateTimeFormat("en-US", {
@@ -226,40 +230,40 @@ const Overview = () =>{
 
     useEffect(()=>{
         const r1 = async ()=>{
-            const resp = await window.overview.api_get_sales_from_last_30_days()
+            const resp = await window.stats.api_get_sales()
+
             if(!resp.ok){
                 throw new Error()
             }
             else{
-                setLastSales(resp.result)
+                setLastSales(resp.results)
             }
         }
 
         const r2 = async () =>{
             const resp = await window.overview.api_get_kpis_data()
+            console.log(resp)
             if(!resp.ok){
                 throw new Error()
             }
             else{
-                setKpisData(resp.result)
+                setKpisData(resp.results)
             }
         }
 
-        const r3 = async () =>{
+        const r3 = async () => {
             const resp = await window.overview.api_get_listing_status()
-            if(!resp.ok){
+            if (!resp.ok) {
                 throw new Error()
-            }
-            else{
-                setListingStatusData(resp.result)
+            } else {
+                setListingAmount(resp.results)
             }
         }
 
         r1()
         r2()
         r3()
-
-    })
+    },[])
 
     return (
         <div className="middle-container">
@@ -282,12 +286,12 @@ const Overview = () =>{
                 <article className="card">
                     <div className="card__title">Sold Last 30 Days</div>
                     <LineChart
-                        data={lastSales}
+                        sales={lastSales}
                      />
                 </article>
                 <article className="card">
                     <div className="card__title">Listing Status</div>
-                    <Donut active={listingStatusData.active} />
+                    <Donut listingAmount={listingAmount} />
                     <div className="legend">
                         <div className="legend-dot-part">
                             <span className="dot dot--primary" />
@@ -310,4 +314,15 @@ const Overview = () =>{
 
 }
 
+function niceCeil(n) {
+    if (n <= 10) return 10;
+    const pow10 = Math.pow(10, Math.floor(Math.log10(n)));
+    const step = [1, 2, 5, 10].find((s) => n <= s * pow10) || 10;
+    return step * pow10;
+}
+
+
+
+
 export default Overview
+

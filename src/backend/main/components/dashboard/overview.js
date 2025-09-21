@@ -1,5 +1,6 @@
 
 const {ipcMain} = require("electron")
+const items = require("../items/items-db");
 
 const registerOverviewHandlers = () =>{
 
@@ -11,7 +12,7 @@ const registerOverviewHandlers = () =>{
         { date: "2025-09-01", sales: 100 },
         { date: "2025-08-28", sales: 20 },
         ]
-        return {ok:true,result:data}
+        return {ok:true,results:data}
 
     })
 
@@ -25,15 +26,27 @@ const registerOverviewHandlers = () =>{
             {label: "Errors", value:"7"}
         ]
 
-        return {ok:true, result:KPIS_data}
+        return {ok:true, results:KPIS_data}
 
     })
 
     ipcMain.handle("overview-api:get-listing-status",() =>{
 
-        const data = {active:44}
+        const resp =  items.get_listings_amount();
 
-        return {ok:true,result:data}
+        const results = {
+            "active":0,
+            "sold":0,
+            "toship":0
+        }
+
+        resp.map(l =>{
+            results[l['label']] = l['count']
+        })
+
+
+
+        return {ok:true, results:results};
 
     })
 

@@ -19,7 +19,6 @@ const ListingStatus = ({selectedStat,setSelectedStat,listingAmount}) =>{
     const start = -Math.PI / 2;
 
     const total = Math.max(1, parts.reduce((s, p) => s + (p.value || 0), 0));
-
     let offsetLen = 0;
     let accFrac = 0;
 

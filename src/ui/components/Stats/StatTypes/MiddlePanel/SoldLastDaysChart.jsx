@@ -3,7 +3,7 @@ import "./SoldLastDaysChart.css";
 
 export default function SoldLastDaysChart({
                                               sales = [],
-                                              purchases = [],            // ⬅️ dodane, domyślnie pusta tablica
+                                              purchases = [],
                                               initialRangeDays = 30,
                                               selectedStat,
                                               setSelectedStat,
