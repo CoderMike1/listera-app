@@ -79,7 +79,7 @@ const Stats = () =>{
                 <StatsMiddlePanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} kpisData={kpisData} listingAmount={listingAmount} agedInventory={agedInventory}/>
             </div>
             <aside className='panel'>
-               <StatsRightPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} purchases={purchasesCount} kpisData={kpisData} listingAmount={listingAmount} />
+               <StatsRightPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} purchases={purchasesCount} kpisData={kpisData} listingAmount={listingAmount} agedInventory={agedInventory}/>
             </aside>
 
         </div>

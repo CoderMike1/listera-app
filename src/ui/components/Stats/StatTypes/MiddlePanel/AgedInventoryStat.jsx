@@ -3,15 +3,6 @@ import './AgedInventoryStat.css'
 import dunkPNG from '../../../../assets/dunk1.png'
 
 const AgedInventoryStat = ({selectedStat,setSelectedStat,agedInventory}) =>{
-    console.log(agedInventory)
-    // const agedInventory1 = [
-    //     {id:1,image:dunkPNG,name:"Jordan 1 Low",sku:"abcdhs",size:"36",stock:1,days:33},
-    //     {id:2,image:dunkPNG,name:"Dunk Low Panda",sku:"abcdhs",size:"43 1/3",stock:3,days:3},
-    //     // {id:3,image:dunkPNG,name:"Jordan 1 High Taxi AVCD783",sku:"abcdhs",size:"45.5",stock:2,days:11},
-    //     // {id:4,image:dunkPNG,name:"Jordan 1 Low",sku:"abcdhs",size:"39",stock:1,days:21},
-    //     // {id:5,image:dunkPNG,name:"Jordan 1 Low",sku:"abcdhs",size:"37",stock:1,days:5}
-    //
-    // ]
 
     const maxDays = 2 * agedInventory[0]?.days  || 0
 

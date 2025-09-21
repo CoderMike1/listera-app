@@ -36,17 +36,13 @@ const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingA
                     <AgedInventoryStat selectedStat={selectedStat} setSelectedStat={setSelectedStat} agedInventory={agedInventory.slice(0,2) || []}/>
                 </div>
                 <div className="sm-item">
-                    najlepiej sprzedajace sie buty, najwiekszy profit
+                    {/*najlepiej sprzedajace sie buty, najwiekszy profit*/}
+                    SOON
                 </div>
                 <div className="sm-item">
-                    informacje dotyczace tego obecnego miesiaca
+                    {/*informacje dotyczace tego obecnego miesiaca*/}
+                    SOON
                 </div>
-                {/*<div className="sm-item">*/}
-                {/*    #7*/}
-                {/*</div>*/}
-                {/*<div className="sm-item">*/}
-                {/*    #8*/}
-                {/*</div>*/}
 
 
             </div>

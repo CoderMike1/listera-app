@@ -1,0 +1,96 @@
+.rp-ais-container{
+    background: #fff;
+    border:1px solid #e6e8ef;
+    border-radius:16px;
+    box-shadow: 0 6px 24px rgba(15,23,42,.06);
+    padding:12px 12px 8px 12px;
+}
+.rp-ais-head{
+    position: relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 4px 8px 6px;
+}
+.rp-ais-btn{
+    position: absolute;
+    top:1px;
+    right:3px;
+    background: #bad7ba;
+    border:1px solid #2e7d32;
+    border-radius:12px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor:pointer;
+}
+.rp-ais-items-list{
+    margin: 50px 0 0;
+    padding:10px;
+    border:1px solid rgba(46, 125, 50, 0.27);
+    border-radius:16px;
+    box-shadow: 0 6px 24px rgba(15,23,42,.09);
+    list-style: none;
+    display:grid;
+    gap:12px;
+}
+.rp-ais-item{
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap:10px;
+    align-items: center;
+}
+.rp-ais-item-avatar > img{
+    width: 50px;
+    height: 50px;
+    border-radius:999px;
+    background: linear-gradient(180deg, #e5e7eb, #d1d5db);
+}
+.rp-ais-item-body{
+    min-width: 0;
+}
+.rp-ais-item-body-name{
+    font-weight: 600;
+    color:#0f172a;
+    line-height: 1.2;
+}
+.rp-ais-item-body-desc{
+    display: flex;
+    margin-left: 10px;
+    color: #6b7280;
+}
+.rp-ais-item-body-sku, .rp-ais-item-body-size{
+    font-size:15px;
+}
+
+.rp-ais-bar {
+    --bar-h: 14px;
+    position: relative;
+    margin-top: 8px;
+    height: var(--bar-h);
+    background: #eef2f7;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.rp-ais-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: var(--bar-w, 0%);
+    background: var(--bar-color, #10b981);
+    border-radius: 999px;
+    transition: width 220ms ease;
+}
+.rp-ais-bar-badge {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    transform: translateY(-50%);
+    font-size: 13px;
+    border-color: black;
+    font-weight: 700;
+    padding: 11px 8px;
+    color: #fff;
+    background: var(--bar-color, #10b981);
+    border-radius: 8px;
+}

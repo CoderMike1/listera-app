@@ -3,17 +3,13 @@ const fs = require("fs")
 const Database = require("better-sqlite3")
 const {app} = require("electron")
 
-
-
 const DB_PATH = path.join(app.getPath("userData"), "items.db")
 fs.mkdirSync(path.dirname(DB_PATH), {recursive:true})
-
 
 const db = new Database(DB_PATH)
 db.pragma("journal_mode = WAL");
 db.pragma("synchronous = NORMAL");
 db.pragma("foreign_keys = ON");
-
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS items (
@@ -40,7 +36,7 @@ const upsert_item = db.prepare(`
 INSERT INTO items (name, sku, size, stock, purchase_price, updated_at)
 VALUES ( @name, @sku, COALESCE(@size,'onesize'), COALESCE(@stock,0), COALESCE(@purchase_price,0), datetime('now'))
 ON CONFLICT(id) DO UPDATE SET
-  name=excluded.name,
+  name=excluded.name,   
   sku=excluded.sku,
   size=excluded.size,
   stock=excluded.stock,
@@ -84,7 +80,6 @@ UPDATE items SET
 WHERE id=@id
 `)
 
-
 const update_to_ship_item = db.prepare(`
 UPDATE items SET
     status='toship',
@@ -99,7 +94,6 @@ const reduce_stock = db.prepare(`
 const mark_as_shipped = db.prepare(`
     UPDATE items SET status='sold' WHERE id=@id
 `)
-
 
 const delete_item = db.prepare(`DELETE FROM items WHERE id = ?`)
 
@@ -181,7 +175,6 @@ ORDER BY days DESC
 LIMIT 5;
 `)
 
-
 module.exports = {
 
     getKpis(){
@@ -253,7 +246,4 @@ module.exports = {
     get_aged_inventory(){
         return get_aged_inventory.all()
     }
-
-
-
 }
