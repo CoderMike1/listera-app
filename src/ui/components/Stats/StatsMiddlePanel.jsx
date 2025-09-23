@@ -10,7 +10,6 @@ import {useMemo} from "react";
 
 const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingAmount,agedInventory}) =>{
 
-    console.log(agedInventory)
 
 
     return (

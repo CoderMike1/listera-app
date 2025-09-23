@@ -5,13 +5,16 @@ const {registerDashboardHandlers} = require('./components/dashboard/dashboard')
 const {registerNotificationsHandlers} = require("./components/dashboard/notifications");
 const {registerItemsHandlers} = require("./components/items/items");
 const {registerStatsHandlers} = require("./components/stats/stats")
+const {ensureCsvExists} = require("./components/marketplace/tasks");
+const {registerMarketplaceHandlers} = require("./components/marketplace/marketplace");
 app.whenReady().then(() =>{
-
+    ensureCsvExists()
     registerLoginHandlers()
     registerDashboardHandlers()
     registerNotificationsHandlers()
     registerItemsHandlers()
     registerStatsHandlers()
+    registerMarketplaceHandlers()
 
     createMainWindow()
 })

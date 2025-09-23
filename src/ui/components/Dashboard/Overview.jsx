@@ -9,7 +9,6 @@ const LineChart = ({sales = [],
     const range = 30;
     const wrapRef = useRef(null);
     const [size, setSize] = useState({ w: 360, h: height });
-    console.log(sales)
     useLayoutEffect(() => {
         const el = wrapRef.current;
         if (!el) return;
