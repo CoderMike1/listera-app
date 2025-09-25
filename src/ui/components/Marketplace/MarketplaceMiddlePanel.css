@@ -113,6 +113,13 @@
 .mmp-table thead th{
     padding:10px 0 10px 0;
     border-bottom: 1px solid #e5e7eb;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
 }
 .mmp-table tbody td{
     /*padding:0px 14px;*/
@@ -149,3 +156,32 @@
     padding-bottom:10px;
     font-family: 'Inter', sans-serif;
 }
+.mmp-td-action-buttons{
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    justify-content: end;
+    align-items: center;
+}
+.mmp-action-btn{
+    appearance: none;
+    border: 0;
+    background: #fff;
+    border-radius: 10px;
+    width: 33px;
+    height: 33px;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .12s ease, transform .06s ease, box-shadow .12s ease;
+    box-shadow: 0 1px 2px rgba(16,24,40,.08);
+}
+.mmp-action-btn:hover    { background: #f2f5f9; }
+.mmp-action-btn:active   { transform: translateY(1px); }
+.mmp-action-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(80,120,255,.2); }
+
+.mmp-action-btn.run:hover    { background: #eef7ff; }
+.mmp-action-btn.edit:hover   { background: #f3f0ff; }
+.mmp-action-btn.stop:hover   { background: #fff4ea; }
+.mmp-action-btn.delete:hover { background: #ffeef0; }

@@ -1,5 +1,6 @@
 const path = require("path")
 const {app, BrowserWindow} = require("electron")
+const {login} = require("./components/marketplace/sites/hypeboost/main");
 
 const isDev = !app.isPackaged;
 const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:5173";
@@ -19,6 +20,8 @@ const createMainWindow = () =>{
             sandbox: false,
         }
     });
+
+
 
     win.once("ready-to-show",() => win.show())
 

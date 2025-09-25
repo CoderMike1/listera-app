@@ -73,7 +73,7 @@ export default function AutocompleteItemSelect({ items = [], onSelect }) {
 
     return (
         <div className="ais-root">
-            <label className="ais-label">Item</label>
+            <label className="ais-label">Search Item</label>
             <input
                 ref={inputRef}
                 className="ais-input"

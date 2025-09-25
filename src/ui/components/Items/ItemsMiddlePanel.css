@@ -144,6 +144,7 @@
 .imp-table thead th{
     padding:10px 0 10px 0;
     border-bottom: 1px solid #e5e7eb;
+
 }
 .imp-table tbody td{
     /*padding:0px 14px;*/
@@ -151,6 +152,7 @@
     vertical-align: middle;
     color:#0f172a;
     text-align: center;
+
 }
 .imp-table tbody tr:hover{
     background: #f9fbff;

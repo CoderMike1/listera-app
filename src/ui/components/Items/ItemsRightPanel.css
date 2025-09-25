@@ -294,7 +294,7 @@
     outline: none;
     background: transparent;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--rp-text);
     padding: 2px 0 4px;
     appearance: none;
@@ -345,12 +345,6 @@ html, body, #root { height: 100%; }
     box-sizing: border-box;
     min-width: 0;
 }
-
-
-
-
-
-
 
 .rp-container{
     height: 100vh;
