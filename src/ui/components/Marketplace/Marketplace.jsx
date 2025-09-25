@@ -7,12 +7,14 @@ import MarketplaceRightPanel from "./MarketplaceRightPanel";
 
 const Marketplace = () =>{
 
-    const [adding,setAdding] = useState(false)
 
     const [tasks,setTasks] = useState([])
 
     const [itemsList, setItemsList] = useState([]);
     const [kpisData,setKpisData] = useState('')
+
+    const [selectedItem,setSelectedItem] = useState(null)
+    const onSelect = useCallback((item) => setSelectedItem(item), []);
 
     const load = useCallback(async () => {
         try {
@@ -46,28 +48,6 @@ const Marketplace = () =>{
         return () => { alive = false; };
     }, [load]);
 
-    useEffect(()=>{
-        const f1 = async()=>{
-            const resp = await window.marketplace.api_get_tasks()
-            if(!resp.ok){
-                throw new Error()
-            }
-            else{
-                setTasks(resp.results)
-            }
-        }
-        f1()
-    },[adding])
-
-    const reload = async ()=>{
-        const resp = await window.marketplace.api_get_tasks()
-        if(!resp.ok){
-            throw new Error()
-        }
-        else{
-            setTasks(resp.results)
-        }
-    }
 
 
      return (
@@ -76,10 +56,10 @@ const Marketplace = () =>{
                  <Sidebar/>
              </aside>
              <div className="panel">
-                <MarketplaceMiddlePanel tasks={itemsList} adding={adding} setAdding={setAdding} reload={reload}/>
+                <MarketplaceMiddlePanel tasks={itemsList} onSelect={onSelect} selectedItem={selectedItem}/>
              </div>
              <aside className="panel">
-                 <MarketplaceRightPanel adding={adding} setAdding={setAdding} items={itemsList}/>
+                 <MarketplaceRightPanel items={itemsList} selectedItem={selectedItem} onClose={()=>setSelectedItem(null)}/>
              </aside>
          </div>
      )

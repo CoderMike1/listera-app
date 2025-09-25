@@ -1,114 +1,209 @@
 import './MarketplaceRightPanel.css'
 import {useMemo, useState} from "react";
-import AutocompleteItemSelect from "./AutocompleteItemSelect";
+import dunkPNG from "../../assets/dunk1.png";
 
-const MarketplaceRightPanel = ({adding,setAdding,items})=>{
+const MarketplaceRightPanel = ({items,selectedItem,onClose})=>{
 
-    const [selectedItem,setSelectedItem] = useState("")
-    const [marketplace,setMarketplace] = useState("")
-    const [payoutPrice, setPayoutPrice] = useState("")
-    const [mode,setMode] = useState("")
+    const [adding,setAdding] = useState(false)
+    const [payoutPrice,setPayoutPrice] = useState("")
+    const [listingStock,setListingStock] = useState(0)
 
-    const handleSubmit = async (e)=>{
+
+    const marketplaceStatuses = [
+        // { name: 'StockX',   status: 'Listed',   listingPayout: 120, listingPrice: 150 },
+        // { name: 'Klekt',    status: 'Listed',   listingPayout: 120, listingPrice: 150 },
+        // { name: 'Alias',    status: 'Unlisted', listingPayout: null, listingPrice: null },
+        { name: 'Hypeboost',status: 'Unlisted',    listingPayout: null, listingPrice: null },
+    ];
+
+    function badgeClass(status) {
+        const s = (status || '').toLowerCase();
+        if (s === 'listed')   return 'is-listed';
+        if (s === 'running')  return 'is-running';
+        if (s === 'error')    return 'is-error';
+        return 'is-unlisted';
+    }
+    const showDetails = selectedItem || null;
+
+    const addListing = (e) =>{
         e.preventDefault()
 
-        const payload = {
-            name:String(selectedItem.name ?? ""),
-            sku: String(selectedItem.sku ?? ""),
-            size: String(selectedItem.size ?? ""),
-            payout_price: String(payoutPrice),
-            marketplace: String(marketplace),
-            mode: String(mode)
-        }
+        console.log("gitara")
 
-        const resp = await window.marketplace.api_add_task(payload)
-        if(!resp.ok){
-            throw new Error("sdsa")
-        }
-        else{
-            setSelectedItem(null);
-            setMarketplace("");
-            setPayoutPrice("");
-            setMode("")
-            setAdding(false);
-        }
+        setAdding(false)
+        setPayoutPrice("")
+        setListingStock(0)
     }
+    const deleteListing = (e) =>{
+
+
+
+    }
+
 
     return (
         <div className="mrp-container">
             {
-                adding &&
-                <div className="mrp-add">
-                    <div className="mrp-add-header">
-                        <h3>Add Task</h3>
-                        <button className="mrp-edit-button ghost" onClick={()=>{ setAdding(false) }}>x</button>
+                showDetails &&
+                <div className="mrp-details">
+                    <div className="mrp-details-header">
+                        <h3>Details</h3>
+                        <button className="mrp-edit-button ghost" onClick={()=> {
+                            onClose()
+                        }}>x</button>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="mrp-form-grid">
-                        <AutocompleteItemSelect
-                            items={items}
-                            onSelect={(it) => setSelectedItem(it)}
-                        />
-                        <div className={`mrp-preview ${selectedItem ? "is-filled":""}`}>
-                            <div><b>Name:</b> {selectedItem?.name || "—"}</div>
-                            <div><b>SKU:</b> {selectedItem?.sku || "—"}</div>
-                            <div><b>Size:</b> {selectedItem?.size || "—"}</div>
+                    <div className="mrp-details-grid">
+                        <div className="mrp-details-grid-image">
+                            <img src={dunkPNG} alt='dunk' width={150} height={150}/>
+                            <div className="fact fact-name">
+                                <div className="fact-label">Name</div>
+                                <div className="fact-value">{selectedItem.name}</div>
+                            </div>
                         </div>
-
-                        <label className="mrp-label">
-                            <span>Marketplace</span>
-                            <select
-                                className="mrp-select"
-                                value={marketplace}
-                                onChange={(e)=>setMarketplace(e.target.value)}
-                                required
-                            >
-                                <option value="">— Select —</option>
-                                <option value="stockx">StockX</option>
-                                <option value="klekt">Klekt</option>
-                                <option value="alias">Alias</option>
-                                <option value="hypeboost">Hypeboost</option>
-                            </select>
-                        </label>
-
-                        <label className="mrp-label">
-                            <span>Mode</span>
-                            <select
-                                className="mrp-select"
-                                value={mode}
-                                onChange={(e)=>setMode(e.target.value)}
-                                required>
-                                <option value="">— Select —</option>
-                                <option value="add">Add Listing</option>
-                                <option value="brick_mode">Brick Mode</option>
-                            </select>
-                        </label>
-
-                        <label className="mrp-label">
-                           <span>Payout price</span>
-                            <input
-                                className="mrp-input"
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={payoutPrice}
-                                onChange={(e)=>setPayoutPrice(e.target.value)}
-                                placeholder="ex. 130"
-                                required />
-
-                        </label>
-
-                        <div className="mrp-add-buttons">
-                            <button className="mrp-add-btn primary" type="submit">✔</button>
+                        <div className="rp-facts">
+                            <div className="fact">
+                                <div className="fact-label">Size</div>
+                                <div className="fact-value">{selectedItem.size}</div>
+                            </div>
+                            <div className="fact">
+                                <div className="fact-label">Stock</div>
+                                <div className="fact-value">{selectedItem.stock}</div>
+                            </div>
+                            <div className="fact">
+                                <div className="fact-label">Purchase Price</div>
+                                <div className="fact-value">{selectedItem.purchase_price}</div>
+                            </div>
+                            <div className="fact">
+                                <div className="fact-label">Purchase Date</div>
+                                <div className="fact-value">{String(selectedItem.purchased_at ?? "").slice(0, 10) || "—"}</div>
+                            </div>
                         </div>
+                    </div>
 
+                    <div className="mrp-mkt-status">
+                        {marketplaceStatuses.map((mkt) => (
+                            <div key={mkt.name} className="mrp-mkt-card">
+                                <div className="mrp-mkt-header">
+                                    <span className="mrp-mkt-name">{mkt.name}</span>
+                                    <span className={`mrp-mkt-badge ${badgeClass(mkt.status)}`}>
+                                      {mkt.status || '—'}
+                                    </span>
+                                </div>
+                                <div className="mrp-mkt-fields">
+                                    <div className="mrp-mkt-field">
+                                        <div className="mrp-mkt-label">Listing payout</div>
+                                        <div className="mrp-mkt-value">
+                                            {mkt.listingPayout != null ? `€ ${mkt.listingPayout}` : '—'}
+                                        </div>
+                                    </div>
+                                    <div className="mrp-mkt-field">
+                                        <div className="mrp-mkt-label">Listing price</div>
+                                        <div className="mrp-mkt-value">
+                                            {mkt.listingPrice != null ? `€ ${mkt.listingPrice}` : '—'}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mrp-mkt-actions">
+                                    {mkt.status === 'Unlisted' && (
+                                        <button
+                                            className="mrp-btn primary"
+                                            type="button"
+                                            onClick={() => setAdding(true)}
+                                        >
+                                            Add
+                                        </button>
+                                    )}
+                                    {mkt.status === "Listed" && (
+                                        <button
+                                            className="mrp-btn danger"
+                                            type="button"
+                                            onClick={() => deleteListing()}
+                                        >
+                                            Delete
+                                        </button>
+                                    )}
+                                </div>
 
+                            </div>
 
-                    </form>
-
+                            ))
+                        }
+                    </div>
 
                 </div>
+
             }
+
+            {
+                adding &&
+                <div
+                    className="mrp-al-container"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="soldFormTitle"
+                    // onKeyDown={(e) => e.key === "Escape" && setShowSalesForm(false)}
+                >
+                    <div className="mrp-al-backdrop" onClick={() => setAdding(false)} />
+                    <div className="mrp-al-content" role="document">
+                        <div className="mrp-al-header">
+                            <h4>Add Listing</h4>
+                            <button
+                                className="mrp-al-close"
+                                aria-label="Close"
+                                onClick={() => setAdding(false)}
+                            >×</button>
+                        </div>
+
+                        <div className="mrp-al">
+                            {/*<div className="mrp-al-head">*/}
+                            {/*    <div className="mrp-al-hint">Enter price, date and quantity, then confirm.</div>*/}
+                            {/*</div>*/}
+                            <div className="mrp-al-grid">
+                                <div className="mrp-al-form-group">
+                                    <label>Payout price</label>
+                                    <input
+                                        type="number"
+                                        inputMode="numeric"
+                                        min="0"
+                                        value={payoutPrice}
+                                        onChange={(e) => setPayoutPrice(e.target.value)}
+                                        placeholder="e.g. 1299"
+                                        autoFocus
+                                    />
+                                </div>
+                                <div className="mrp-al-form-group">
+                                    <label>Stock</label>
+                                    <input
+                                        type="number"
+                                        inputMode="numeric"
+                                        min={1}
+                                        max={selectedItem.stock}
+                                        step={1}
+                                        value={listingStock}
+                                        onChange={(e)=>{
+                                            setListingStock(Number(e.target.value))
+                                        }}
+                                    />
+                                </div>
+
+
+                                <div className="mrp-al-form-actions">
+                                    <button
+                                        className="btn btn-success"
+                                        onClick={addListing}
+                                        disabled={!listingStock || !payoutPrice}
+                                    >
+                                        Confirm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
 
         </div>
     )

@@ -6,7 +6,7 @@ import {useMemo, useState} from "react";
 
 
 
-const MarketplaceMiddlePanel = ({tasks,adding,setAdding,reload}) =>{
+const MarketplaceMiddlePanel = ({tasks,adding,setAdding,onSelect,selectedItem}) =>{
 
     //task kpis section
     const taskKpis = [
@@ -24,28 +24,6 @@ const MarketplaceMiddlePanel = ({tasks,adding,setAdding,reload}) =>{
     const pageSlice = tasks.slice(itemsVisited, itemsVisited + itemsPerPage);
 
 
-    //actions section
-
-    const runTask = async (item) =>{
-
-    }
-
-    const stopTask = async (item) =>{
-
-    }
-
-    const editTask = async (item) =>{
-
-    }
-    const deleteTask = async (task_id) =>{
-        const resp = await window.marketplace.api_delete_task(task_id);
-        if(!resp.ok){
-            throw new Error("es")
-        }
-        else{
-            await reload()
-        }
-    }
 
     return (
         <div className="mmp-container">
@@ -93,7 +71,7 @@ const MarketplaceMiddlePanel = ({tasks,adding,setAdding,reload}) =>{
                     <tbody>
                     {pageSlice && pageSlice.length > 0 ?(
                             pageSlice.map((t) =>(
-                            <tr>
+                            <tr key={t.id} onClick={()=>onSelect(t)}>
                                 <td>
                                     <img src={dunkPNG} width={50} height={50} alt={t.name}/>
                                 </td>

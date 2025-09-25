@@ -199,7 +199,6 @@
 .rp-sold-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; }
 .rp-sold-hint { font-weight:600; }
 .rp-sold-grid { display:grid; gap:12px; grid-template-columns: 1fr; }
-@media (min-width:640px){ .rp-sold-grid{ grid-template-columns: repeat(4, minmax(0,1fr)); } }
 .form-group label { display:block; font-size:14px; color:var(--rp-muted); font-weight:600; margin-bottom:4px; }
 .form-group input {
     max-width:110px; border:1px solid #d1d5db; border-radius:10px; padding:10px; font-size:14px; background:#fff;

@@ -4,17 +4,17 @@
     --rp-soft: #f9fafb;
     --rp-text: #0f172a;
     --rp-muted:#6b7280;
-    --rp-primary:#4f46e5;
+    --rp-primary:#4f46e5; /* fiolet z Twojego screena */
     --rp-success:#059669;
-    --rp-blue-surface: rgba(142, 223, 255, 0.49);
+    --rp-green-surface:#e8f7e6; /* jednolite jasnozielone tło panelu */
     --rp-shadow: 0 1px 2px rgba(16,24,40,.06);
     --rp-radius: 16px;
     --rp-font:'Inter', sans-serif;
 }
 
-
+/* ====== PANEL (wspólny dla Details/Edit/Add) ====== */
 .mrp-container{
-    background: var(--rp-blue-surface);
+    background: var(--rp-green-surface);
     height: 100%;
     border: 1px solid var(--rp-line);
     border-radius: var(--rp-radius);
@@ -22,29 +22,33 @@
     padding: 16px;
     font-family: var(--rp-font), serif;
 }
-
-.mrp-add{
+.mrp-details{
     display:flex;
     flex-direction: column;
     height: 100%;
     overflow:hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
 }
-.mrp-add-header{
+.mrp-details-header{
     display:flex;
     justify-content: space-between;
     align-items: center;
     margin: 6px 8px 14px;
 }
-.mrp-add-header h3{
+.mrp-details-header h3{
     margin:0;
     font-weight: 700;
     font-size:28px;
-    letter-spacing: .2px;
+    letter-spacing:.2px;
 }
-.mrp-add-header > button{
+.mrp-details-header > button{
     height: 32px;
-    width: 32px;
-    display: flex;
+    width:32px;
+    display:flex;
     align-items: center;
     justify-content: center;
     border:0;
@@ -54,128 +58,210 @@
     line-height: 1;
     border-radius:10px;
     cursor:pointer;
-    transition: background .15s ease, transform 0.3s ease;
+    transition: background .15s ease, transform .03s ease;
+}
+.mrp-details-header >button:hover{
+    background: rgba(239,68,68,.08);
+}
+.mrp-details-header > button:active{
+ transform: translateY(1px);
 }
 
-.mrp-form-grid{
-    display:grid;
+.mrp-details-grid-image{
+    margin: 0 12px 12px;
+    align-self: flex-start;
+}
+
+.mrp-mkt-status{
+    display: grid;
     grid-template-columns: 1fr;
-    gap:12px;
-    margin-top:8px;
-
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-top:30px;
+    margin-bottom: 50px;
 }
-.mrp-form-grid > label{
-    display:flex;
-    flex-direction: column;
-    gap:6px;
+.mrp-mkt-card{
     background: #fff;
-    border:1px solid var(--rp-line);
+    border:1px solid #e6e8eb;
     border-radius:14px;
     padding:12px;
-    transition: border-color .15s ease, box-shadow .15s ease;
+    box-shadow:0 1px 0 rgba(16,24,40,0.02),
+    0 1px 2px rgba(16,24,40,0.06);
+}
+.mrp-mkt-header{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    margin-bottom:10px;
+}
+.mrp-mkt-name{
+    font-weight: 700;
+    letter-spacing: .2px;
+}
+.mrp-mkt-badge{
+    font-size:12px;
+    font-weight: 700;
+    padding:4px 8px;
+    border-radius:999px;
+    border:1px solid transparent;
+}
+.mrp-mkt-badge.is-listed  { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
+.mrp-mkt-badge.is-running { background:#eff6ff; color:#1e40af; border-color:#bfdbfe; }
+.mrp-mkt-badge.is-unlisted{ background:#f3f4f6; color:#374151; border-color:#e5e7eb; }
+.mrp-mkt-badge.is-error   { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
 
-}
 
-.mrp-select, .mrp-input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #dcdfe3;
-    border-radius: 8px;
-    outline: none;
+.mrp-mkt-fields {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
 }
-.mrp-select:focus, .mrp-input:focus {
-    border-color: #8bb0ff;
-    box-shadow: 0 0 0 3px rgba(80,120,255,0.15);
+.mrp-mkt-field{
+    background: #fff;
+    border:1px solid #e6e8eb;
+    border-radius:14px;
+    padding:10px 12px;
 }
-.mrp-form-grid > label > span {
-    font-size:15px; text-transform:uppercase; letter-spacing:.4px; color:var(--rp-muted);
+.mrp-mkt-label{
+    text-transform: uppercase;
+    font-size:11px;
+    letter-spacing: .04em;
+    color:#6b7280;
+    margin-bottom:6px;
 }
-.mrp-form-grid > label > input{
-    width:100%; border:0; outline:none; background:transparent;
-    font-size:16px; font-weight:700; color:var(--rp-text);
-    padding: 2px 0 4px;
+.mrp-mkt-value{
+    font-weight: 800;
+    color:#0f172a
 }
-.mrp-form-grid > label > select{
-    width: 100%;
-    border: 0;
-    outline: none;
-    background: transparent;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--rp-text);
-    padding: 2px 0 4px;
+.mrp-mkt-actions{
+    margin-top:10px;
+    display:flex;
+    gap:8px;
+    justify-content: flex-end;
+}
+.mrp-btn{
     appearance: none;
+    border:1px solid transparent;
+    border-radius:12px;
+    padding: 8px 12px;
+    font-weight: 700;
+    font-size:13px;
+    cursor:pointer;
+    background: #fff;
+    transition: background-color .12s ease, box-shadow .12s ease, transform .06s ease;
+    box-shadow: 0 1px 2px rgba(16,24,40,.06);
 }
-.mrp-add-buttons {
-    display: flex;
-    justify-content: center;
-    padding: 16px 0;
+.mrp-btn:hover { background: #f3f4f6; }
+.mrp-btn:active { transform: translateY(1px); }
+.mrp-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(80,120,255,.2); }
+.mrp-btn.primary {
+    color: #0f172a;
+    background: #eef7ff;
+    border-color: #c7ddff;
+}
+.mrp-btn.danger{
+    color: #b91c1c;
+    background: #fee2e2;
+    border-color: #fecaca;
+    box-shadow: 0 1px 2px rgba(185,28,28,0.08);
 }
 
-/* Zmienna koloru (łatwo zmienisz w jednym miejscu) */
-:root {
-    --mrp-primary: #4a47e0;       /* odcień jak na screenie */
-    --mrp-primary-dark: #3e3ad6;
-    --mrp-ring: rgba(74, 71, 224, 0.22);
+
+/*adding section*/
+.mrp-al-container{
+    position: fixed;
+    inset:0;
+    z-index:1000;
+    display:grid;
+    place-items: center;
 }
+.mrp-al-backdrop{
+    position:absolute;
+    inset:0;
+    background: rgba(17,24,39,.45);
+    backdrop-filter: blur(3px);
 
-/* Bazowy styl przycisku */
-.mrp-add-btn {
-    appearance: none;
-    -webkit-appearance: none;
-    border: 0;
-    cursor: pointer;
-
-    min-width: 240px;             /* szerokość podobna do screen */
-    height: 56px;                 /* wysoki, „poduszkowy” */
-    padding: 0 24px;
-    border-radius: 18px;          /* mocne zaokrąglenie */
-
-    display: inline-flex;
+}
+.mrp-al-content{
+    position:relative;
+    width: min(92vw,560px);
+    max-height: 88vh;
+    overflow:auto;
+    background: #fff;
+    border:1px solid var(--rp-line);
+    border-radius:12px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.18);
+    padding:16px;
+    z-index:1001;
+    animation: modal-in .16s ease-out;
+    font-family: var(--rp-font);
+}
+.mrp-al-header{
+    display:flex;
     align-items: center;
     justify-content: center;
-
-    font-size: 16px;              /* duży znak ✓ */
+    gap:15px;
+    margin-bottom:10px
+}
+.mrp-al-header h4{
+    margin:0;
+    font-size:16px;
     font-weight: 600;
-    line-height: 1;
-    letter-spacing: .2px;
-
-    color: #ffffff;
-    background: var(--mrp-primary);
-
-    /* delikatny połysk + miękki cień pod spodem */
-    box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.2),
-            0 12px 22px rgba(0,0,0,0.08),
-            0 14px 32px rgba(74, 71, 224, 0.35);
-
-    transition:
-            transform .12s ease,
-            box-shadow .12s ease,
-            background-color .12s ease;
 }
-
-/* Wariant primary (kolory) */
-.mrp-add-btn.primary {
-    background: var(--mrp-primary);
+.mrp-al-close{
+    border:1px solid var(--rp-line);
+    background: #fff;
+    color:#111827;
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    cursor:pointer;
 }
-
-/* Hover – lekko „unosi” i wzmacnia cień */
-.mrp-add-btn.primary:hover {
-    transform: translateY(-1px);
-    background: var(--mrp-primary);
-    box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.22),
-            0 14px 26px rgba(0,0,0,0.10),
-            0 18px 38px rgba(74, 71, 224, 0.40);
+.mrp-al-close:hover{
+    background: #f3f4f6;
 }
+.mrp-al{
+    border:1px solid var(--rp-green-surface);
+    background: var(--rp-green-surface);
+    border-radius:12px;
+    padding:12px;
 
-/* Active – „wciska się” i cień maleje */
-.mrp-add-btn.primary:active {
-    transform: translateY(0);
-    background: var(--mrp-primary-dark);
-    box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.18),
-            0 8px 16px rgba(0,0,0,0.08),
-            0 8px 18px rgba(74, 71, 224, 0.28);
 }
+.mrp-al-grid{
+    display:grid;
+    gap:12px;
+    grid-template-columns: 1fr;
+}
+.mrp-al-form-group label{
+    display:block;
+    font-size:14px;
+    color:var(--rp-muted);
+    font-weight: 600;
+    margin-bottom:4px;
+}
+.mrp-al-form-group input{
+    max-width: 110px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    padding:10px;
+    font-size:14px;
+    background: #fff;
+
+}
+.mrp-al-form-actions{
+    display:flex;
+    align-items: end;
+}
+.mrp-al-form-actions > .btn, .mrp-al-form-actions > button{
+    background: var(--rp-success);
+    color:#fff;
+    border:none;
+    padding:10px 14px;
+    border-radius:10px;
+    cursor:pointer;
+
+}
+.mrp-al-form-actions > .btn:hover, .mrp-al-form-actions > button:hover { background:#047857; }
+.mrp-al-form-actions > .btn:disabled, .mrp-al-form-actions > button:disabled { opacity:.6; cursor:not-allowed; }
