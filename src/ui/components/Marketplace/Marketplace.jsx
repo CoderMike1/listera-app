@@ -7,27 +7,24 @@ import MarketplaceRightPanel from "./MarketplaceRightPanel";
 
 const Marketplace = () =>{
 
-
-    const [tasks,setTasks] = useState([])
+    const [itemsStatus,setItemsStatus] = useState([]);
+    const [running,setRunning] = useState(null);
+    const [marketplacesStatuses,setMarketplacesStatuses] = useState([]);
 
     const [itemsList, setItemsList] = useState([]);
-    const [kpisData,setKpisData] = useState('')
+    const [isLoading,setIsLoading] = useState(false);
+    const [runningCount,setRunningCount] = useState(0)
+    const [errorCount,setErrorCount] = useState(0);
+
 
     const [selectedItem,setSelectedItem] = useState(null)
     const onSelect = useCallback((item) => setSelectedItem(item), []);
 
     const load = useCallback(async () => {
         try {
-            const [kpisRes, itemsRes] = await Promise.allSettled([
-                window.items.api_get_kpis_data(),
+            const [ itemsRes] = await Promise.allSettled([
                 window.items.api_get_all_items(),
-            ]);
-            if (kpisRes.status === "fulfilled" && kpisRes.value?.ok) {
-                setKpisData(kpisRes.value.results);
-            } else {
-                console.error("kpis error", kpisRes);
-            }
-
+            ])
             if (itemsRes.status === "fulfilled" && itemsRes.value?.ok) {
                 setItemsList(itemsRes.value.results.filter(x => x.status === "active"));
             } else {
@@ -48,6 +45,74 @@ const Marketplace = () =>{
         return () => { alive = false; };
     }, [load]);
 
+    const checkMarketplace = async () =>{
+
+        const tasks = await window.marketplace.api_get_tasks()
+
+        const byId = {}
+
+        for(const t of tasks.results){
+            if(!byId[t.id]) byId[t.id] = {};
+
+            byId[t.id][t.site]  = {status:t.status,listingPayout:t.payout_price,listingPrice:t.listing_price}
+
+        }
+
+        const nextItemsStatus = {}
+
+        for(const it of itemsList){
+            const id = String(it.id);
+            const any = tasks.results.find(r => String(r.id) === id);
+            if(id === String(running)){
+                nextItemsStatus[id] = 'running'
+            }
+            else{
+                nextItemsStatus[id] = (any?.status ?? 'unlisted');
+            }
+
+        }
+
+        setMarketplacesStatuses(prev => {
+            const next = { ...prev };
+            for (const [id, sites] of Object.entries(byId)) {
+                next[id] = { ...(prev[id] || {}), ...sites };
+            }
+            return next;
+        });
+
+        setItemsStatus(prev => ({ ...prev, ...nextItemsStatus }));
+
+    }
+    const setRun = (flag,id) => {
+
+        setRunningCount(prev => {
+            const next = flag === "running" ? prev + 1 : Math.max(0,prev-1);
+            return next;
+        })
+
+        setErrorCount(prev =>{
+            const next = flag === "error" ? prev+1 : prev;
+            return  next;
+        })
+        if(flag==='running'){
+            setRunning(id)
+        }
+        else{
+            setRunning(null)
+        }
+
+    }
+
+
+    useEffect(()=>{
+
+
+        const f = async ()=>{
+            await checkMarketplace()
+        }
+        f()
+
+    },[itemsList,runningCount])
 
 
      return (
@@ -56,10 +121,10 @@ const Marketplace = () =>{
                  <Sidebar/>
              </aside>
              <div className="panel">
-                <MarketplaceMiddlePanel tasks={itemsList} onSelect={onSelect} selectedItem={selectedItem}/>
+                <MarketplaceMiddlePanel tasks={itemsList} onSelect={onSelect} selectedItem={selectedItem} itemsStatus={itemsStatus} runningCount={runningCount} errorCount={errorCount}/>
              </div>
              <aside className="panel">
-                 <MarketplaceRightPanel items={itemsList} selectedItem={selectedItem} onClose={()=>setSelectedItem(null)}/>
+                 <MarketplaceRightPanel items={itemsList} selectedItem={selectedItem} onClose={()=>setSelectedItem(null)} setRun={setRun} marketplacesStatuses={marketplacesStatuses}/>
              </aside>
          </div>
      )

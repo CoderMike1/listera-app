@@ -7,6 +7,8 @@ const {registerItemsHandlers} = require("./components/items/items");
 const {registerStatsHandlers} = require("./components/stats/stats")
 const {ensureCsvExists} = require("./components/marketplace/tasks");
 const {registerMarketplaceHandlers} = require("./components/marketplace/marketplace");
+const {registerSettingsHandlers, loadSettings} = require("./components/settings");
+
 app.whenReady().then(() =>{
     ensureCsvExists()
     registerLoginHandlers()
@@ -15,6 +17,8 @@ app.whenReady().then(() =>{
     registerItemsHandlers()
     registerStatsHandlers()
     registerMarketplaceHandlers()
+    registerSettingsHandlers()
+
 
     createMainWindow()
 })

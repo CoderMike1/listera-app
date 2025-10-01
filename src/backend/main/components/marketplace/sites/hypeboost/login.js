@@ -7,6 +7,12 @@ const login = async () =>{
     const jar = new CookieJar();
     const f = fetchCookie(global.fetch, jar);
 
+
+    //const {login_hypeboost,password_hypeboost} = await window.settings.api_get_hypeboost_credentials()
+    const login_hypeboost = "mtest123@michasmail.com";
+    const password_hypeboost = "Szczupak123!"
+
+
     const r1 = await f("https://hypeboost.com/en/login",{
         method:"GET",
         headers:{
@@ -31,8 +37,8 @@ const login = async () =>{
         else{
             const login_payload = new URLSearchParams({
                 _token:token,
-                email:"mtest123@michasmail.com",
-                password:"Szczupak123!",
+                email:login_hypeboost,
+                password:password_hypeboost,
             })
 
             const p1 = await f("https://hypeboost.com/en/login",{

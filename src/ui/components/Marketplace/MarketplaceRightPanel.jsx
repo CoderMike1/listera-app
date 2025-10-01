@@ -2,19 +2,17 @@ import './MarketplaceRightPanel.css'
 import {useMemo, useState} from "react";
 import dunkPNG from "../../assets/dunk1.png";
 
-const MarketplaceRightPanel = ({items,selectedItem,onClose})=>{
+
+const SITES = ['HypeBoost','Stockx']
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesStatuses})=>{
 
     const [adding,setAdding] = useState(false)
     const [payoutPrice,setPayoutPrice] = useState("")
     const [listingStock,setListingStock] = useState(0)
-
-
-    const marketplaceStatuses = [
-        // { name: 'StockX',   status: 'Listed',   listingPayout: 120, listingPrice: 150 },
-        // { name: 'Klekt',    status: 'Listed',   listingPayout: 120, listingPrice: 150 },
-        // { name: 'Alias',    status: 'Unlisted', listingPayout: null, listingPrice: null },
-        { name: 'Hypeboost',status: 'Unlisted',    listingPayout: null, listingPrice: null },
-    ];
+    const [minimumPrice,setMinimumPrice] = useState("")
 
     function badgeClass(status) {
         const s = (status || '').toLowerCase();
@@ -25,21 +23,59 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose})=>{
     }
     const showDetails = selectedItem || null;
 
-    const addListing = (e) =>{
-        e.preventDefault()
+    const addListing = async (e) =>{
+        e?.preventDefault?.();
 
-        console.log("gitara")
+
 
         setAdding(false)
         setPayoutPrice("")
         setListingStock(0)
+        setMinimumPrice("")
+        setRun('running',selectedItem.id);
+        await sleep(20000)
+        try{
+            const add_listing_form = {
+                site: "HypeBoost",
+                sku: String(selectedItem.sku ?? ''),
+                size: String(selectedItem.size ?? ''),
+                payout_price: String(payoutPrice ?? ''),
+                minimum_price: String(minimumPrice ?? ''),
+            };
+
+            const resp = await window.marketplace.api_add_listing(add_listing_form)
+            console.log(resp)
+            const {payout_price,listing_price,listing_id,site} = resp.results
+            const task_form = {
+                id:selectedItem.id,
+                listing_id:listing_id,
+                name:selectedItem.name,
+                size:selectedItem.size,
+                stock:1,
+                sku:selectedItem.sku,
+                payout_price:payout_price,
+                listing_price:listing_price,
+                mode:"standard",
+                status:"listed",
+                site:site,
+                created_at: new Date().toISOString()
+
+            }
+            await window.marketplace.api_add_task(task_form)
+            setRun('listed',selectedItem.id);
+        }
+        catch(e){
+            setRun('error',selectedItem.id)
+            console.log(e)
+        }
+
+
     }
     const deleteListing = (e) =>{
 
 
 
     }
-
 
     return (
         <div className="mrp-container">
@@ -82,52 +118,63 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose})=>{
                     </div>
 
                     <div className="mrp-mkt-status">
-                        {marketplaceStatuses.map((mkt) => (
-                            <div key={mkt.name} className="mrp-mkt-card">
-                                <div className="mrp-mkt-header">
-                                    <span className="mrp-mkt-name">{mkt.name}</span>
-                                    <span className={`mrp-mkt-badge ${badgeClass(mkt.status)}`}>
+                        {SITES.map((site) => {
+
+                            const mkt = marketplacesStatuses?.[selectedItem.id]?.[site] || {
+                                status: 'unlisted',
+                                listingPayout: null,
+                                listingPrice: null
+                            };
+
+                            return (
+                                <div key={site} className="mrp-mkt-card">
+                                    <div className="mrp-mkt-header">
+                                        <span className="mrp-mkt-name">{site}</span>
+                                        <span className={`mrp-mkt-badge ${badgeClass(mkt.status)}`}>
                                       {mkt.status || '—'}
                                     </span>
-                                </div>
-                                <div className="mrp-mkt-fields">
-                                    <div className="mrp-mkt-field">
-                                        <div className="mrp-mkt-label">Listing payout</div>
-                                        <div className="mrp-mkt-value">
-                                            {mkt.listingPayout != null ? `€ ${mkt.listingPayout}` : '—'}
+                                    </div>
+                                    <div className="mrp-mkt-fields">
+                                        <div className="mrp-mkt-field">
+                                            <div className="mrp-mkt-label">Listing payout</div>
+                                            <div className="mrp-mkt-value">
+                                                {mkt.listingPayout != null ? `€ ${mkt.listingPayout}` : '—'}
+                                            </div>
+                                        </div>
+                                        <div className="mrp-mkt-field">
+                                            <div className="mrp-mkt-label">Listing price</div>
+                                            <div className="mrp-mkt-value">
+                                                {mkt.listingPrice != null ? `€ ${mkt.listingPrice}` : '—'}
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="mrp-mkt-field">
-                                        <div className="mrp-mkt-label">Listing price</div>
-                                        <div className="mrp-mkt-value">
-                                            {mkt.listingPrice != null ? `€ ${mkt.listingPrice}` : '—'}
-                                        </div>
+                                    <div className="mrp-mkt-actions">
+                                        {mkt.status === 'unlisted' && (
+                                            <button
+                                                className="mrp-btn primary"
+                                                type="button"
+                                                onClick={() => setAdding(true)}
+                                            >
+                                                Add
+                                            </button>
+                                        )}
+                                        {mkt.status === "listed" && (
+                                            <button
+                                                className="mrp-btn danger"
+                                                type="button"
+                                                onClick={() => deleteListing()}
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
                                     </div>
-                                </div>
-                                <div className="mrp-mkt-actions">
-                                    {mkt.status === 'Unlisted' && (
-                                        <button
-                                            className="mrp-btn primary"
-                                            type="button"
-                                            onClick={() => setAdding(true)}
-                                        >
-                                            Add
-                                        </button>
-                                    )}
-                                    {mkt.status === "Listed" && (
-                                        <button
-                                            className="mrp-btn danger"
-                                            type="button"
-                                            onClick={() => deleteListing()}
-                                        >
-                                            Delete
-                                        </button>
-                                    )}
-                                </div>
 
-                            </div>
+                                </div>
+                            )
 
-                            ))
+
+                        }
+                            )
                         }
                     </div>
 
@@ -173,6 +220,18 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose})=>{
                                     />
                                 </div>
                                 <div className="mrp-al-form-group">
+                                    <label>Minimum price</label>
+                                    <input
+                                        type="number"
+                                        inputMode="numeric"
+                                        min="0"
+                                        value={minimumPrice}
+                                        onChange={(e) => setMinimumPrice(e.target.value)}
+                                        placeholder="e.g. 1299"
+                                        autoFocus
+                                    />
+                                </div>
+                                <div className="mrp-al-form-group">
                                     <label>Stock</label>
                                     <input
                                         type="number"
@@ -186,6 +245,7 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose})=>{
                                         }}
                                     />
                                 </div>
+
 
 
                                 <div className="mrp-al-form-actions">

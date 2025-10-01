@@ -5,18 +5,21 @@ const { parse } = require('csv-parse/sync');
 const { stringify } = require('csv-stringify/sync');
 const CSV_HEADERS = [
     'id',
+    'listing_id',
     'name',
     'size',
+    'stock',
     'sku',
     'payout_price',
+    'listing_price',
     'mode',
+    'status',
+    'site',
     'created_at'
 ]
-
-
 const getCsvPath = () =>{
     const dir = app.getPath("userData");
-    const file = path.join(dir, 'tasks.csv');
+    const file = path.join(dir, 'listings.csv');
     return file;
 }
 
@@ -38,30 +41,39 @@ const readTasks = () =>{
         columns:true,
         skip_empty_lines:true,
     })
-
     return records.map(r => ({
-        id:String(r.id ?? ''),
-        name:String(r.name ?? ''),
-        size:String(r.size ?? ''),
-        sku:String(r.sku ?? ''),
-        payout_price:String(r.payout_price ?? ''),
-        mode:String(r.mode ?? ''),
-        created_at:String(r.created_at ?? '')
-    }))
+        id: String(r.id ?? ''),
+        listing_id:   String(r.listing_id ?? '' ),
+        name:         String(r.name ?? ''),
+        size:         String(r.size ?? ''),
+        stock:        String(r.stock ?? ''),                    // new
+        sku:          String(r.sku ?? ''),
+        payout_price: String(r.payout_price ?? ''),
+        listing_price:String(r.listing_price ?? r.price ?? ''), // new
+        mode:         String(r.mode ?? ''),
+        status:       String(r.status ?? ''),
+        site : String(r.site ?? ''),
+        created_at:   String(r.created_at ?? r.createdAt ?? '')
+    }));
 }
 const addTask = (task)=>{
     const tasks = readTasks()
     const now = new Date().toISOString()
 
     const newTask = {
-        id: task.id || cryptoRandomId(),
-        name:task.name || '',
-        size:task.size || '',
-        sku: task.sku || '',
-        payout_price: task.payout_price || '',
-        mode: task.mode || '',
-        created_at: now
-    }
+        id: String(task.id ?? ''),
+        listing_id:    String(task.listing_id ?? ''),
+        name:          String(task.name ?? ''),
+        size:          String(task.size ?? ''),
+        stock:         String(task.stock ?? ''),
+        sku:           String(task.sku ?? ''),
+        payout_price:  String(task.payout_price ?? ''),
+        listing_price: String(task.listing_price),
+        mode:          String(task.mode ?? ''),
+        status:        String(task.status ?? ''),
+        site: String(task.site ?? ''),
+        created_at:    String(task.created_at ?? now ?? new Date().toISOString())
+    };
 
     tasks.push(newTask)
 
@@ -90,7 +102,5 @@ const deleteTask = (task_id) =>{
     writeTasks(filtered);
     return true;
 }
-const cryptoRandomId =()=> {
-    return Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
+
 module.exports = {ensureCsvExists,readTasks,addTask,deleteTask}

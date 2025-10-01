@@ -6,13 +6,13 @@ import {useMemo, useState} from "react";
 
 
 
-const MarketplaceMiddlePanel = ({tasks,adding,setAdding,onSelect,selectedItem}) =>{
+const MarketplaceMiddlePanel = ({tasks,onSelect,selectedItem,itemsStatus,runningCount,errorCount}) =>{
 
     //task kpis section
     const taskKpis = [
         {label:"All Tasks",value:tasks.length || 0, icon:"📋"},
-        {label:"Running Tasks",value:0,icon:"▶️️"},
-        {label:"Errors",value:0,icon:"🚨"}
+        {label:"Running Tasks",value:runningCount,icon:"▶️️"},
+        {label:"Errors",value:errorCount,icon:"🚨"}
     ]
 
 
@@ -29,10 +29,7 @@ const MarketplaceMiddlePanel = ({tasks,adding,setAdding,onSelect,selectedItem}) 
         <div className="mmp-container">
             <div className="mmp-top-headers">
                 <SearchBar placeholder="Search by task name..."/>
-                <button className="btn-add" onClick={()=>{setAdding(!adding);}}>
-                    <span className="btn-add-span">+</span>
-                    Add Task
-                </button>
+
             </div>
 
             <div className="mmp-kpis">
@@ -81,8 +78,8 @@ const MarketplaceMiddlePanel = ({tasks,adding,setAdding,onSelect,selectedItem}) 
                                 <td>{t.sku}</td>
                                 <td>{t.size}</td>
                                 <td>{t.stock}</td>
-                                <td>Stockx</td>
-                                <td>Created</td>
+                                <td>{itemsStatus[t.id] === 'listed' ? 'HypeBoost' : ""}</td>
+                                <td>{itemsStatus[t.id]}</td>
                                 {/*<td className="mmp-td-action-buttons">*/}
                                 {/*    <button title="Run" className="mmp-action-btn run" onClick={()=>runTask(t)}>▶️</button>*/}
                                 {/*    <button title="Edit" className="mmp-action-btn edit" onClick={()=>editTask(t)}>✏️</button>*/}

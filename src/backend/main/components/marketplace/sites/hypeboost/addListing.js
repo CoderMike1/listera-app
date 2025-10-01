@@ -1,15 +1,11 @@
 const cheerio = require("cheerio");
 
-const sku = "DZ7293-100"
-const size = "45"
-const payout_price = "199"
-const minimum_price = "140"
 
-const addListing = async (f) =>{
+const addListing = async (f,sku,size,payout_price,minimum_price) =>{
 
     console.log("adding new listing...")
 
-    const {size_id, product_id, token, lowest_price, product_image, product_link} = await getSizeInfo(f);
+    const {size_id, product_id, token, lowest_price, product_image, product_link} = await getSizeInfo(f,sku,size);
 
 
     const lowest_payout = await calculatePayout(f,token,lowest_price);
@@ -69,12 +65,69 @@ const addListing = async (f) =>{
     }
     const text_json = await p1.json()
     const check = text_json["success"];
-    return check;
+    if(check){
+        const listing_id = await getListingId(f,product_id,size_id,listing_price)
+        return {payout_price:listing_payout,listing_price:listing_price,listing_id:listing_id,site:"HypeBoost"}
+    }
 }
 
 
+const getListingId = async (f,product_id,size_id,listing_price) =>{
+    let flag = false;
+    let page = 1;
+    while(!flag){
+        const r1 = await f(`https://hypeboost.com/en/account/sales/current?p=${page}`,{
+            method:"GET",
+            headers:{
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+            }
+        })
+        if(!r1.ok){
+            throw new Error("sada")
+        }
+        else{
+            const content = await  r1.text()
 
-const getSizeInfo = async (f) => {
+            const $ = cheerio.load(content)
+
+            const listings = $('div.grid-row').toArray();
+
+            if(listings.length === 0){
+                flag= true;
+                return null;
+            }
+
+            for(const el of listings){
+                const $el = $(el);
+
+                const listing_size_id =
+                    $el.find('input.sizeid').attr('value') ?? '';
+
+                const listing_full_price =
+                    $el.find('input.price').attr('value') ?? '';
+
+                const listing_base_product_id =
+                    $el.find('input.baseproductid').attr('value') ?? '';
+
+                if(listing_size_id === size_id && listing_full_price === String(listing_price) && listing_base_product_id === product_id){
+
+                    return $el.find('input.productid').attr('value') ?? ''
+
+                }
+            }
+
+            page +=1
+        }
+
+
+    }
+
+
+}
+
+
+const getSizeInfo = async (f,sku,size) => {
 
     //get size info
 
@@ -317,18 +370,18 @@ const calculateFullPrice = async (f,token,price) =>{
             if (!Number.isNaN(val)) percentage = val / 100;
         }
     }
-    let operational_fee_value = null;
-    const firstTd = $('td').first();
-    if (firstTd.length) {
-        const opTxt = firstTd.next().next().text().trim();
-
-        const cleaned = opTxt
-            .replace(/^Operational fee\s*-\s*€\s*/i, '')
-            .replace(/\s/g, '')
-            .replace(',', '.');
-        const num = parseFloat(cleaned);
-        if (!Number.isNaN(num)) operational_fee_value = num;
-    }
+    let operational_fee_value = 15;
+    // const firstTd = $('td').first();
+    // if (firstTd.length) {
+    //     const opTxt = firstTd.next().next().text().trim();
+    //
+    //     const cleaned = opTxt
+    //         .replace(/^Operational fee\s*-\s*€\s*/i, '')
+    //         .replace(/\s/g, '')
+    //         .replace(',', '.');
+    //     const num = parseFloat(cleaned);
+    //     if (!Number.isNaN(num)) operational_fee_value = num;
+    // }
 
     const result =Math.round((price+operational_fee_value) / (1-percentage))
 

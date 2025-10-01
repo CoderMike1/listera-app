@@ -241,7 +241,6 @@ const Overview = () =>{
 
         const r2 = async () =>{
             const resp = await window.overview.api_get_kpis_data()
-            console.log(resp)
             if(!resp.ok){
                 throw new Error()
             }
