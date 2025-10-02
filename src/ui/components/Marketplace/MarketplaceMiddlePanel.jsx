@@ -1,6 +1,5 @@
 import SearchBar from "../Dashboard/SearchBar";
 import './MarketplaceMiddlePanel.css'
-import dunkPNG from '../../assets/dunk1.png'
 import ReactPaginate from "react-paginate";
 import {useMemo, useState} from "react";
 
@@ -14,7 +13,6 @@ const MarketplaceMiddlePanel = ({tasks,onSelect,selectedItem,itemsStatus,running
         {label:"Running Tasks",value:runningCount,icon:"▶️️"},
         {label:"Errors",value:errorCount,icon:"🚨"}
     ]
-
 
     //pagination section
     const itemsPerPage = 5;
@@ -45,9 +43,9 @@ const MarketplaceMiddlePanel = ({tasks,onSelect,selectedItem,itemsStatus,running
             </div>
             <div className="mmp-toolbar">
                 <div className="mmp-chips">
-                    <button className="mmp-chips-btn">Run</button>
-                    <button className="mmp-chips-btn">Stop</button>
-                    <button className="mmp-chips-btn">Delete</button>
+                    {/*<button className="mmp-chips-btn">Run</button>*/}
+                    {/*<button className="mmp-chips-btn">Stop</button>*/}
+                    {/*<button className="mmp-chips-btn">Delete</button>*/}
                     <button className="mmp-chips-btn" onClick={()=>reload()}>Refresh</button>
                 </div>
             </div>
@@ -68,9 +66,9 @@ const MarketplaceMiddlePanel = ({tasks,onSelect,selectedItem,itemsStatus,running
                     <tbody>
                     {pageSlice && pageSlice.length > 0 ?(
                             pageSlice.map((t) =>(
-                            <tr key={t.id} onClick={()=>onSelect(t)}>
+                            <tr key={t.name} onClick={()=>onSelect(t)}>
                                 <td>
-                                    <img src={dunkPNG} width={50} height={50} alt={t.name}/>
+                                    <img src={t.image} height={50} alt={t.name}/>
                                 </td>
                                 <td className="mmp-cell-name">
                                     <span className="mmp-cell-name-strong">{t.name}</span>

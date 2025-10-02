@@ -95,9 +95,9 @@ const writeTasks = (tasks) =>{
 
 const updateTask = () =>{
 }
-const deleteTask = (task_id) =>{
+const deleteTask = (task_listing_id) =>{
     const tasks = readTasks();
-    const filtered = tasks.filter(t => t.id !== task_id);
+    const filtered = tasks.filter(t => t.listing_id !== task_listing_id);
     if (filtered.length === tasks.length) return false;
     writeTasks(filtered);
     return true;

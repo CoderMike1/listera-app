@@ -7,10 +7,11 @@ const {registerItemsHandlers} = require("./components/items/items");
 const {registerStatsHandlers} = require("./components/stats/stats")
 const {ensureCsvExists} = require("./components/marketplace/tasks");
 const {registerMarketplaceHandlers} = require("./components/marketplace/marketplace");
-const {registerSettingsHandlers, loadSettings} = require("./components/settings");
+const {registerSettingsHandlers, loadSettings, checkSettingsFormat} = require("./components/settings");
 
 app.whenReady().then(() =>{
     ensureCsvExists()
+    checkSettingsFormat()
     registerLoginHandlers()
     registerDashboardHandlers()
     registerNotificationsHandlers()
@@ -18,6 +19,7 @@ app.whenReady().then(() =>{
     registerStatsHandlers()
     registerMarketplaceHandlers()
     registerSettingsHandlers()
+
 
 
     createMainWindow()

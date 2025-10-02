@@ -1,17 +1,16 @@
 import './MarketplaceRightPanel.css'
 import {useMemo, useState} from "react";
-import dunkPNG from "../../assets/dunk1.png";
 
 
-const SITES = ['HypeBoost','Stockx']
+const SITES = ['HypeBoost']
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesStatuses})=>{
+const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesStatuses,running})=>{
 
     const [adding,setAdding] = useState(false)
     const [payoutPrice,setPayoutPrice] = useState("")
-    const [listingStock,setListingStock] = useState(0)
+    const [listingStock,setListingStock] = useState()
     const [minimumPrice,setMinimumPrice] = useState("")
 
     function badgeClass(status) {
@@ -33,26 +32,28 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
         setListingStock(0)
         setMinimumPrice("")
         setRun('running',selectedItem.id);
-        await sleep(20000)
         try{
             const add_listing_form = {
                 site: "HypeBoost",
                 sku: String(selectedItem.sku ?? ''),
                 size: String(selectedItem.size ?? ''),
+                stock: String(listingStock ?? selectedItem.stock),
                 payout_price: String(payoutPrice ?? ''),
                 minimum_price: String(minimumPrice ?? ''),
             };
 
             const resp = await window.marketplace.api_add_listing(add_listing_form)
-            console.log(resp)
+
             const {payout_price,listing_price,listing_id,site} = resp.results
+
             const task_form = {
                 id:selectedItem.id,
                 listing_id:listing_id,
                 name:selectedItem.name,
                 size:selectedItem.size,
-                stock:1,
                 sku:selectedItem.sku,
+                item_stock: selectedItem.stock,
+                stock:listingStock,
                 payout_price:payout_price,
                 listing_price:listing_price,
                 mode:"standard",
@@ -71,8 +72,29 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
 
 
     }
-    const deleteListing = (e) =>{
+    const deleteListing = (listing_id,site) => async (e) =>{
+        e?.preventDefault?.();
 
+        setRun('running',selectedItem.id);
+
+        const form = {
+            listing_id:listing_id,
+            site:site
+        }
+        try{
+            const resp = await window.marketplace.api_delete_listing(form)
+            if(resp.ok){
+                const del = await window.marketplace.api_delete_task(listing_id)
+                if(del.ok){
+                    setRun('unlisted',selectedItem.id);
+                }
+            }
+
+        }
+        catch(e){
+            setRun('error',selectedItem.id)
+            console.log(e)
+        }
 
 
     }
@@ -91,7 +113,7 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
 
                     <div className="mrp-details-grid">
                         <div className="mrp-details-grid-image">
-                            <img src={dunkPNG} alt='dunk' width={150} height={150}/>
+                            <img src={selectedItem.image} alt='dunk'  height={150}/>
                             <div className="fact fact-name">
                                 <div className="fact-label">Name</div>
                                 <div className="fact-value">{selectedItem.name}</div>
@@ -155,16 +177,16 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
                                                 type="button"
                                                 onClick={() => setAdding(true)}
                                             >
-                                                Add
+                                                {running ? 'Adding' : 'Add'}
                                             </button>
                                         )}
                                         {mkt.status === "listed" && (
                                             <button
                                                 className="mrp-btn danger"
                                                 type="button"
-                                                onClick={() => deleteListing()}
+                                                onClick={deleteListing(mkt.listing_id,site)}
                                             >
-                                                Delete
+                                                {running ? 'Deleting' : 'Delete'}
                                             </button>
                                         )}
                                     </div>
@@ -232,17 +254,17 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
                                     />
                                 </div>
                                 <div className="mrp-al-form-group">
-                                    <label>Stock</label>
+                                    <label>Stock (only full stock of product at the moment)</label>
                                     <input
                                         type="number"
                                         inputMode="numeric"
-                                        min={1}
+                                        // min={1}
                                         max={selectedItem.stock}
-                                        step={1}
-                                        value={listingStock}
-                                        onChange={(e)=>{
-                                            setListingStock(Number(e.target.value))
-                                        }}
+                                        // step={1}
+                                        defaultValue={selectedItem.stock}
+                                        // onChange={(e)=>{
+                                        //     setListingStock(Number(e.target.value))
+                                        // }}
                                     />
                                 </div>
 
@@ -252,7 +274,7 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
                                     <button
                                         className="btn btn-success"
                                         onClick={addListing}
-                                        disabled={!listingStock || !payoutPrice}
+                                        disabled={!payoutPrice || !minimumPrice}
                                     >
                                         Confirm
                                     </button>
@@ -271,3 +293,4 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
 }
 
 export default MarketplaceRightPanel
+

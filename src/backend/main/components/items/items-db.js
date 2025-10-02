@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS items (
   name TEXT NOT NULL,
   sku TEXT NOT NULL,
   size TEXT DEFAULT 'onesize',
+    image TEXT,
   stock INTEGER DEFAULT 0,
   purchase_price REAL DEFAULT 0,
     selling_price REAL DEFAULT 0,
@@ -46,16 +47,17 @@ ON CONFLICT(id) DO UPDATE SET
 
 
 const add_item = db.prepare(`
-INSERT INTO items (name, sku, size,status, stock, purchase_price,purchased_at)
-VALUES (@name, @sku, COALESCE(@size,'onesize'),@status, COALESCE(@stock,0), COALESCE(@purchase_price,0),COALESCE(@purchased_at,datetime('now')))
+INSERT INTO items (name, sku, size,image,status, stock, purchase_price,purchased_at)
+VALUES (@name, @sku, COALESCE(@size,'onesize'),@image,@status, COALESCE(@stock,0), COALESCE(@purchase_price,0),COALESCE(@purchased_at,datetime('now')))
 `)
 const add_sold_item = db.prepare(`
 INSERT INTO items (
-  name, sku, size, status, stock, purchase_price, purchased_at, selling_price, sale_at
+  name, sku, size,image, status, stock, purchase_price, purchased_at, selling_price, sale_at
 ) VALUES (
   @name,
   @sku,
   COALESCE(@size,'onesize'),
+  @image,
   @status,
   COALESCE(@stock,0),
   COALESCE(@purchase_price,0),
@@ -167,10 +169,11 @@ const get_listings_amount = db.prepare(`
 `)
 
 const get_aged_inventory = db.prepare(`
-SELECT id, name,size,sku,stock,
+SELECT id, name,image,size,sku,stock,
        CAST(julianday('now') - julianday(purchased_at) AS INTEGER) AS days
 FROM items
 WHERE purchased_at IS NOT NULL
+AND status == 'active'
 ORDER BY days DESC
 LIMIT 5;
 `)

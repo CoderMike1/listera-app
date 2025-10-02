@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import ItemsMiddlePanel from "./components/Items/Items";
 import Stats from "./components/Stats/Stats";
 import Marketplace from "./components/Marketplace/Marketplace";
+import Settings from './components/Settings/Settings'
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
            <Route path='/items' element={<ItemsMiddlePanel/>}/>
            <Route path='/stats' element={<Stats/>}/>
            <Route path='/marketplace' element={<Marketplace/>}/>
+           <Route path='/settings' element={<Settings/>}/>
        </Routes>
    </HashRouter>
   )

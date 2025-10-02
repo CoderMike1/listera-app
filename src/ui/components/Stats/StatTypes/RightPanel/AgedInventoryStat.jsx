@@ -25,7 +25,7 @@ const AgedInventoryStat = ({selectedStat,setSelectedStat,agedInventory}) =>{
                     return (
                         <li className="rp-ais-item" role="listitem" key={idx}>
                             <div className="rp-ais-item-avatar" aria-hidden="true">
-                                <img src={dunkPNG} width={50} height={50}/>
+                                <img src={item.image} height={40} alt={item.name}/>
                             </div>
                             <div className="rp-ais-item-body">
                                 <div className="rp-ais-item-body-name">{item.name}</div>

@@ -46,8 +46,8 @@
     align-items: center;
 }
 .mp-ais-item-avatar > img{
-    width: 50px;
-    height: 50px;
+    width: auto;
+    height: 30px;
     border-radius:999px;
     background: linear-gradient(180deg, #e5e7eb, #d1d5db);
 }
@@ -58,6 +58,9 @@
     font-weight: 600;
     color:#0f172a;
     line-height: 1.2;
+    min-width: 0;                           /* ⬅️ pozwól się zwężać w flex */
+    overflow: hidden;                        /* ⬅️ bezpiecznik */
+    text-overflow: ellipsis;
 }
 .mp-ais-item-body-desc{
     display: flex;

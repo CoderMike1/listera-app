@@ -1,6 +1,7 @@
 const {ipcMain} = require("electron")
 
 const items = require('./items-db')
+const {getProductData} = require("./getProductData");
 
 const registerItemsHandlers = () =>{
 
@@ -42,6 +43,7 @@ const registerItemsHandlers = () =>{
                     name:item.form_data.name,
                     sku:item.form_data.sku,
                     size:item.form_data.size,
+                    image:item.form_data.image,
                     status:"sold",
                     stock:item.sold_stock,
                     purchase_price:item.form_data.purchase_price,
@@ -93,6 +95,10 @@ const registerItemsHandlers = () =>{
 
         return items.mark_as_shipped(item_id)
 
+    })
+
+    ipcMain.handle("items_api:search_product_by_query",(_e,query)=>{
+        return getProductData(query)
     })
 
 

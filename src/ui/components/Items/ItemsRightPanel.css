@@ -26,6 +26,7 @@
 .rp-details,
 .rp-edit,
 .rp-add{
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -237,7 +238,6 @@
     margin: 0 12px 12px;
     align-self: flex-start;
 }
-
 /* Grid formularza ma przewijany środek i „margines” na sticky button */
 .rp-edit-form-grid,
 .rp-add-form-grid{
@@ -356,7 +356,49 @@ html, body, #root { height: 100%; }
     margin-bottom: 25px;
 }
 .fact-name{
-    max-width: 100px;
+    //max-width: 100px;
     margin-left: -10px;
     margin-top:5px;
+}
+
+.rp-search-results{
+    position: absolute;
+    top: 137px;
+    right: 34px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    max-height: 320px;
+    overflow: auto;
+    z-index: 9999;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+}
+.rp-search-item{
+    display:flex;
+    align-items: center;
+    gap:12px;
+    padding: 10px 12px;
+    cursor: pointer;
+}
+.rp-search-item:hover{
+    background: #d1e8d1;
+}
+.rp-search-img{
+    width:49px;
+    height: auto;
+    border-radius:6px;
+    object-fit: cover;
+}
+.rp-search-text{
+    line-height:1.15;
+}
+.rp-search-title { font-weight: 600; }
+.rp-search-sku { font-size: 12px; color: #64748b; }
+
+.imp-cell-image{
+    width: auto;
+    height: 45px;
 }

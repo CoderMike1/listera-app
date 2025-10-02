@@ -21,7 +21,7 @@ const createMainWindow = () =>{
         }
     });
 
-
+    win.webContents.openDevTools()
 
     win.once("ready-to-show",() => win.show())
 

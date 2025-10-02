@@ -20,6 +20,9 @@ const Marketplace = () =>{
     const [selectedItem,setSelectedItem] = useState(null)
     const onSelect = useCallback((item) => setSelectedItem(item), []);
 
+
+
+
     const load = useCallback(async () => {
         try {
             const [ itemsRes] = await Promise.allSettled([
@@ -45,16 +48,17 @@ const Marketplace = () =>{
         return () => { alive = false; };
     }, [load]);
 
+
+
+
     const checkMarketplace = async () =>{
-
         const tasks = await window.marketplace.api_get_tasks()
-
         const byId = {}
 
         for(const t of tasks.results){
             if(!byId[t.id]) byId[t.id] = {};
 
-            byId[t.id][t.site]  = {status:t.status,listingPayout:t.payout_price,listingPrice:t.listing_price}
+            byId[t.id][t.site]  = {status:t.status,listingPayout:t.payout_price,listingPrice:t.listing_price,listing_id:t?.listing_id}
 
         }
 
@@ -72,13 +76,7 @@ const Marketplace = () =>{
 
         }
 
-        setMarketplacesStatuses(prev => {
-            const next = { ...prev };
-            for (const [id, sites] of Object.entries(byId)) {
-                next[id] = { ...(prev[id] || {}), ...sites };
-            }
-            return next;
-        });
+        setMarketplacesStatuses(byId);
 
         setItemsStatus(prev => ({ ...prev, ...nextItemsStatus }));
 
@@ -124,7 +122,7 @@ const Marketplace = () =>{
                 <MarketplaceMiddlePanel tasks={itemsList} onSelect={onSelect} selectedItem={selectedItem} itemsStatus={itemsStatus} runningCount={runningCount} errorCount={errorCount}/>
              </div>
              <aside className="panel">
-                 <MarketplaceRightPanel items={itemsList} selectedItem={selectedItem} onClose={()=>setSelectedItem(null)} setRun={setRun} marketplacesStatuses={marketplacesStatuses}/>
+                 <MarketplaceRightPanel items={itemsList} selectedItem={selectedItem} onClose={()=>setSelectedItem(null)} setRun={setRun} marketplacesStatuses={marketplacesStatuses} running={running}/>
              </aside>
          </div>
      )

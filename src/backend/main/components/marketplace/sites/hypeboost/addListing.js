@@ -1,7 +1,7 @@
 const cheerio = require("cheerio");
 
 
-const addListing = async (f,sku,size,payout_price,minimum_price) =>{
+const addListing = async (f,sku,size,payout_price,minimum_price,stock) =>{
 
     console.log("adding new listing...")
 
@@ -49,20 +49,21 @@ const addListing = async (f,sku,size,payout_price,minimum_price) =>{
         accept_no_vat_deduction:true,
         accept_return_and_payout:true
     })
+    let p1;
+    for(const _ of stock)
+        p1 = await f(`${product_link}/confirm`,{
+            method:"POST",
+            headers:{
+                "accept": "*/*",
+                "x-requested-with": "XMLHttpRequest",
+                "user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+            },
+            body:p_body
+        })
 
-    const p1 = await f(`${product_link}/confirm`,{
-        method:"POST",
-        headers:{
-            "accept": "*/*",
-            "x-requested-with": "XMLHttpRequest",
-            "user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
-        },
-        body:p_body
-    })
-
-    if(!p1.ok){
-        throw new Error("error while adding new item")
-    }
+        if(!p1.ok){
+            throw new Error("error while adding new item")
+        }
     const text_json = await p1.json()
     const check = text_json["success"];
     if(check){

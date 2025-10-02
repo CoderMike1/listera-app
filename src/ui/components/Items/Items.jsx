@@ -4,10 +4,13 @@ import ItemsMiddlePanel from "./ItemsMiddlePanel";
 import ItemsRightPanel from "./ItemsRightPanel";
 import {useCallback, useEffect, useMemo, useState} from "react";
 
+import noImage from "../../assets/no-image.png"
 
 
 
 const Items = () =>{
+
+    const [currencySettings,setCurrencySettings] = useState("");
 
     const [kpisData, setKpisData] = useState([]);
     const [itemsList, setItemsList] = useState([]);
@@ -24,9 +27,11 @@ const Items = () =>{
         setLoading(true);
         setErr(null);
         try {
-            const [kpisRes, itemsRes] = await Promise.allSettled([
+            const [kpisRes, itemsRes,currencyRes] = await Promise.allSettled([
                 window.items.api_get_kpis_data(),
                 window.items.api_get_all_items(),
+                window.settings.api_get_currency_settings()
+
             ]);
             if (kpisRes.status === "fulfilled" && kpisRes.value?.ok) {
                 setKpisData(kpisRes.value.results);
@@ -38,6 +43,11 @@ const Items = () =>{
                 setItemsList(itemsRes.value.results || []);
             } else {
                 console.error("items error", itemsRes);
+            }
+            if (currencyRes.status === "fulfilled" && currencyRes.value?.ok) {
+                setCurrencySettings(currencyRes.value.results.currency);
+            } else {
+                console.error("currency error", currencyRes);
             }
         } catch (e) {
             setErr(e);
@@ -80,7 +90,6 @@ const Items = () =>{
     const onSave = useCallback(async (draft) =>{
         if(saving) return;
         setSaving(true);
-        console.log(draft)
         if(draft?.status === 'active' && draft?.selling_price >0){
             draft.selling_price = 0;
             draft.sale_at = null
@@ -93,6 +102,7 @@ const Items = () =>{
                 name:draft.name?.trim() ?? "",
                 sku:draft.sku?.trim() ?? "",
                 size: draft.size ?? "onesize",
+                image: draft.image ?? noImage,
                 status: draft.status ?? "active",
                 stock: draft.stock === "" || draft.stock == null ? 9: Number(draft.stock),
                 purchase_price: draft.purchase_price === "" || draft.purchase_price == null ? 0 :Number(draft.purchase_price),
@@ -100,7 +110,6 @@ const Items = () =>{
                 sale_at: draft.sale_at ?? null,
                 purchased_at:draft.purchased_at
             }
-            console.log(payload)
             const res = payload.id ? await window.items.api_update_item(payload) : await window.items.api_add_item(payload)
             if(!res?.ok){
                 throw new Error("update failed")
@@ -203,6 +212,7 @@ const Items = () =>{
                                   onReload={load}
                                   setAdding={setAdding}
                                   adding={adding}
+                                  currency={currencySettings}
 
                                   query={query}
                                   setQuery={setQuery}
@@ -232,6 +242,7 @@ const Items = () =>{
                     editing={editing}
                     setEditing={setEditing}
                     load={load}
+                    currency={currencySettings}
 
                 />
             </aside>

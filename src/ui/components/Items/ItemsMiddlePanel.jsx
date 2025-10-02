@@ -1,7 +1,6 @@
 import SearchBar from "../Dashboard/SearchBar";
 import './ItemsMiddlePanel.css'
 
-import dunkPNG from '../../assets/dunk1.png'
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import ReactPaginate from "react-paginate";
 
@@ -13,7 +12,7 @@ const STATUS_ENUM = {
 }
 
 
-const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,error,onReload,setAdding,adding,query,setQuery,filters,setFilters,deleteMode,setDeleteMode,onDelete,selectedCategory,setSelectedCategory}) => {
+const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,error,onReload,setAdding,adding,currency,query,setQuery,filters,setFilters,deleteMode,setDeleteMode,onDelete,selectedCategory,setSelectedCategory}) => {
     const rows = useMemo(() => itemsList ?? [], [itemsList]);
 
     const itemsPerPage = 6;
@@ -231,7 +230,7 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
                                       </td>
                                   )}
                                   <td>
-                                      <img src={dunkPNG} width={50} height={50} alt={i.name}/>
+                                      <img className="imp-cell-image" src={i.image}  alt={i.name}/>
                                   </td>
                                   <td className="imp-cell-name">
                                       <span className="imp-cell-name-strong">{i.name}</span>
@@ -241,9 +240,9 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
                                   <td>{i.size}</td>
                                   <td>{i.stock}</td>
                                   {(selectedCategory === 'active' || !selectedCategory) ?
-                                      <td>{i.purchase_price}</td>
+                                      <td>{i.purchase_price} {currency}</td>
                                       :
-                                      <td>{i.sold_price - i.purchase_price}</td>
+                                      <td>{i.sold_price - i.purchase_price} {currency}</td>
                                   }
 
                                   <td>{STATUS_ENUM[i.status]}</td>

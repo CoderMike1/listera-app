@@ -2,15 +2,10 @@ const cheerio = require('cheerio');
 const { default: fetchCookie } = require('fetch-cookie');
 const { CookieJar } = require('tough-cookie');
 
-const login = async () =>{
+const login = async (login_hypeboost,password_hypeboost) =>{
 
     const jar = new CookieJar();
     const f = fetchCookie(global.fetch, jar);
-
-
-    //const {login_hypeboost,password_hypeboost} = await window.settings.api_get_hypeboost_credentials()
-    const login_hypeboost = "mtest123@michasmail.com";
-    const password_hypeboost = "Szczupak123!"
 
 
     const r1 = await f("https://hypeboost.com/en/login",{

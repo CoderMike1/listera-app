@@ -11,7 +11,8 @@ const expose = ({contextBridge,ipcRenderer}) =>{
         "api_add_item":(item) => addRecord(ipcRenderer,item),
         "api_delete_item":(id) => deleteRecord(ipcRenderer,id),
         "api_add_sold_item":(item)=> addSoldRecord(ipcRenderer,item),
-        "api_mark_item_as_shipped":(item_id) =>markRecordAsShipped(ipcRenderer,item_id)
+        "api_mark_item_as_shipped":(item_id) =>markRecordAsShipped(ipcRenderer,item_id),
+        "api_search_product_by_query":(query)=>searchProductByQuery(ipcRenderer,query)
     })
 
 
@@ -44,7 +45,9 @@ const addSoldRecord = (ipcRenderer,item) =>{
 const markRecordAsShipped = (ipcRenderer,item_id)=>{
     return  ipcRenderer.invoke("items_api:mark_item_as_shipped",item_id)
 }
-
+const searchProductByQuery = (ipcRenderer,query) =>{
+    return ipcRenderer.invoke("items_api:search_product_by_query",query)
+}
 
 
 

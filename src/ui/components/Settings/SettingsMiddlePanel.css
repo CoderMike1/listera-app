@@ -1,0 +1,86 @@
+
+.mp-settings-container {
+    padding: 16px;
+    height: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.settings-title {
+    margin: 0 0 12px;
+    font-size: 22px;
+    color: #111827;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.mp-settings-form {
+    display: grid;
+    gap: 12px;
+}
+
+.mp-settings-form label {
+    display: grid;
+    gap: 6px;
+}
+
+.mp-settings-form label > div {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.mp-settings-form input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 36px;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    color: #111827;
+    font-size: 14px;
+    outline: none;
+}
+
+.mp-settings-form input::placeholder {
+    color: #9ca3af;
+}
+
+.mp-settings-form input:focus-visible {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.mp-settings-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.btn {
+    height: 36px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: #fff;
+}
+.btn-primary:hover{
+    background: #819bd9;
+}
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: default;
+}

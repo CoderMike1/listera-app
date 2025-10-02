@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useRef} from "react";
 import './AgedInventoryStat.css'
-import dunkPNG from '../../../../assets/dunk1.png'
 
 const AgedInventoryStat = ({selectedStat,setSelectedStat,agedInventory}) =>{
+
 
     const maxDays = 2 * agedInventory[0]?.days  || 0
 
@@ -29,10 +29,10 @@ const AgedInventoryStat = ({selectedStat,setSelectedStat,agedInventory}) =>{
                     return (
                         <li className="mp-ais-item" role="listitem" key={idx}>
                             <div className="mp-ais-item-avatar" aria-hidden="true">
-                                <img src={dunkPNG} width={50} height={50}/>
+                                <img src={item.image}  height={50} alt={item.name}/>
                             </div>
                             <div className="mp-ais-item-body">
-                                <div className="mp-ais-item-body-name">{item.name}</div>
+                                <ACT>{item.name}</ACT>
                                 <div className="mp-ais-item-body-desc">
                                     <div className="mp-ais-item-body-sku">{item.sku}</div>
                                     <>&nbsp;|&nbsp;</>
@@ -66,3 +66,59 @@ const AgedInventoryStat = ({selectedStat,setSelectedStat,agedInventory}) =>{
 }
 
 export default AgedInventoryStat
+
+
+import { useLayoutEffect } from "react";
+
+
+function ACT({children})
+{
+    const ref = useRef(null);
+    useFitText(ref, {max:13,min:4,lines:2});
+
+    return <div className="mp-ais-item-body-name" ref={ref}>{children}</div>
+}
+function useFitText(ref, { max = 15, min = 8, lines = 2, step = 0.25 } = {}) {
+    useLayoutEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        const fit = () => {
+            el.style.whiteSpace = "normal";
+            el.style.overflow = "hidden";
+            el.style.display = "block";
+            el.style.lineHeight = "1.15";
+
+            let lo = min, hi = max, best = min;
+            const lineFactor = 1.15;
+
+            while (hi - lo > step) {
+                const mid = (lo + hi) / 2;
+                el.style.fontSize = `${mid}px`;
+                el.style.maxHeight = `${lines * mid * lineFactor}px`;
+
+                const tooWide = el.scrollWidth > el.clientWidth;
+                const tooTall = el.scrollHeight > el.clientHeight;
+                if (tooWide || tooTall) {
+                    hi = mid;
+                } else {
+                    best = mid;
+                    lo = mid;
+                }
+            }
+            el.style.fontSize = `${best}px`;
+            el.style.maxHeight = `${lines * best * lineFactor}px`;
+        };
+
+        const id = requestAnimationFrame(fit);
+
+        const ro = new ResizeObserver(fit);
+        ro.observe(el);
+        el.parentElement && ro.observe(el.parentElement);
+
+        const mo = new MutationObserver(fit);
+        mo.observe(el, { characterData: true, subtree: true, childList: true });
+
+        return () => { cancelAnimationFrame(id); ro.disconnect(); mo.disconnect(); };
+    }, [ref, max, min, lines, step]);
+}

@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import './ItemsRightPanel.css'
 
-const DEFAULT_FORM = {name:"",sku:"",size:"",stock:0,purchase_price:0,status:"active"}
+const DEFAULT_FORM = {name:"",sku:"",size:"",image:"",stock:0,purchase_price:0,status:"active"}
 
 const STATUS_ENUM = {
     "active":"Active",
@@ -9,13 +9,13 @@ const STATUS_ENUM = {
     "toship":"To Ship"
 }
 
-import dunkPNG from '../../assets/dunk1.png'
-const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editing,setEditing,load }) =>{
+const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editing,setEditing,load ,currency}) =>{
 
     const [form,setForm] = useState(null)
     const [showSalesForm,setShowSalesForm] = useState(false);
     const [loading, setLoading] = useState(false)
     const [searchedValue,setSearchedValue] = useState("")
+    const [searchResults,setSearchResults] = useState([])
 
     const [sellingPrice, setSellingPrice] = useState(0);
     const [saleDate,setSaleDate] = useState(new Date().toISOString().slice(0, 10))
@@ -27,8 +27,8 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editin
 
     useEffect(() => {
         if(selectedItem){
-            const { id, name, sku, size, stock, purchase_price,status,selling_price,sale_at,purchased_at } = selectedItem;
-            setForm({ id, name, sku, size, stock, purchase_price,status,selling_price,sale_at,purchased_at });
+            const { id, name, sku, size,image, stock, purchase_price,status,selling_price,sale_at,purchased_at } = selectedItem;
+            setForm({ id, name, sku, size,image, stock, purchase_price,status,selling_price,sale_at,purchased_at });
         }
         else{
             if(adding){
@@ -88,6 +88,52 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editin
 
     }
 
+    const searchItem = async ()=>{
+
+        const res = await window.items.api_search_product_by_query(searchedValue);
+
+        const results = [
+            {
+                product_name: 'Nike Dunk Low Retro White Black Panda',
+                product_image: 'https://res.cloudinary.com/dm5xjgl02/image/upload/v1660067602/5e6a1e57-1c7d-435a-82bd-5666a13560fe.jpg',
+                product_sku: 'DD1391-100'
+            },
+            {
+                product_name: "Nike Dunk Low Retro White Black Panda (Women's)",
+                product_image: 'https://res.cloudinary.com/dm5xjgl02/image/upload/v1660056468/e175c189-cf87-4007-bc94-e5b919c4c75c.jpg',
+                product_sku: 'DD1503-101'
+            },
+            {
+                product_name: 'Nike Dunk Low Retro White Black Panda (GS)',
+                product_image: 'https://res.cloudinary.com/dm5xjgl02/image/upload/v1660070207/59f9f4de-a8b8-46fc-841f-42961d3567e7.jpg',
+                product_sku: 'CW1590-100'
+            },
+            {
+                product_name: 'Nike Dunk High Panda Black White (2021/2024)',
+                product_image: 'https://res.cloudinary.com/dm5xjgl02/image/upload/v1660229547/7d37091c-f214-491a-a50c-d289f0f7e255.jpg',
+                product_sku: 'DD1399-105'
+            },
+            {
+                product_name: 'Nike Dunk Low Panda-Monium Green Curry Multi-Color',
+                product_image: 'https://images.stockx.com/images/Nike-Dunk-Low-Panda-Monium-Green-Curry-Multi-Color.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&trim=color&q=90&dpr=2&updated_at=1753384349',
+                product_sku: 'IB2263-300'
+            }
+        ]
+
+        setSearchResults(res);
+
+    }
+
+    const selectSearchResult = (result) =>{
+
+        const f = {name:result.product_name,sku:result.product_sku,image:result.product_image,size:"",stock:0,purchase_price:0,status:"active"}
+
+        setForm(f);
+
+        setSearchResults([])
+        setSearchedValue("");
+
+    }
 
     const isCheckDetails = !adding && form && !editing
 
@@ -106,7 +152,7 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editin
                             </div>
                             <div className="rp-details-grid">
                                 <div className="rp-details-grid-image">
-                                    <img src={dunkPNG} alt='dunk' width={150} height={150}/>
+                                    <img height={150} src={form?.image} alt='dunk'/>
                                     <div className="fact fact-name">
                                         <div className="fact-label">Name</div>
                                         <div className="fact-value">{form?.name}</div>
@@ -124,12 +170,12 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editin
                                     </div>
                                     <div className="fact">
                                         <div className="fact-label">Purchase Price</div>
-                                        <div className="fact-value">{form?.purchase_price}</div>
+                                        <div className="fact-value">{form?.purchase_price} {currency}</div>
                                     </div>
                                     {form?.status !== "active" &&
                                         <div className="fact">
                                             <div className="fact-label">Selling Price</div>
-                                            <div className="fact-value">{form?.selling_price}</div>
+                                            <div className="fact-value">{form?.selling_price} {currency}</div>
                                         </div>
 
                                     }
@@ -276,7 +322,7 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editin
                     }}>x</button>
                 </div>
                 <div className="rp-details-grid-image">
-                    <img src={dunkPNG} alt='dunk' width={150} height={150}/>
+                    <img src={form.image?? ""} alt='dunk'  height={150}/>
                 </div>
                 <form className="rp-edit-form-grid" onSubmit={handleSubmit} noValidate>
                     <label>
@@ -305,6 +351,7 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editin
                         <label>
                             <span>Selling price</span>
                             <input type="number" step="0.01" value={form?.selling_price ?? ""} onChange={e=>update("selling_price",e.target.value)}/>
+
                         </label>
                     }
                     <label>
@@ -355,7 +402,26 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editin
                         <div className="rp-add-search">
                             <h4>Search item</h4>
                             <input value={searchedValue} onChange={e=>setSearchedValue(e.target.value)}/>
+                            <button onClick={()=>searchItem()}>Search</button>
                         </div>
+
+                        {searchResults.length >0 &&
+                            (
+                                    <ul className="rp-search-results">
+                                        {searchResults.map((r) =>(
+
+                                            <li key={r.product_name} className="rp-search-item" onClick={()=>selectSearchResult(r)}>
+                                                <img className="rp-search-img" src={r.product_image} alt={r.product_name}/>
+                                                <div className="rp-search-text">
+                                                    <div className="rp-search-title">{r.product_name}</div>
+                                                    <div className="rp-search-sku">{r.product_sku}</div>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                            )
+
+                        }
 
                         <form className="rp-add-form-grid" onSubmit={handleSubmit} noValidate>
                             <label>
