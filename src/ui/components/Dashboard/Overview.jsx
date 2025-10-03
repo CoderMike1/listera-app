@@ -2,6 +2,7 @@
 import './Overview.css'
 import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import SearchBar from "./SearchBar";
+import {useLocation} from "react-router-dom";
 
 
 const LineChart = ({sales = [],
@@ -219,6 +220,7 @@ const Overview = () =>{
     const [kpisData,setKpisData] = useState([])
     const [listingAmount,setListingAmount] = useState([])
 
+    const [username,setUsername] = useState(localStorage.getItem("username"))
 
     const todayLabel = new Intl.DateTimeFormat("en-US", {
         weekday: "long",
@@ -267,7 +269,7 @@ const Overview = () =>{
         <div className="middle-container">
             <SearchBar/>
             <header className="middle-container__header">
-                <h1>Welcome back, Mike!</h1>
+                <h1>Welcome back, {username}!</h1>
                 <p className="muted">{todayLabel}</p>
             </header>
 

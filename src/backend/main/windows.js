@@ -6,7 +6,7 @@ const isDev = !app.isPackaged;
 const DEV_URL = process.env.VITE_DEV_SERVER_URL || "http://localhost:5173";
 
 
-const createMainWindow = () =>{
+const createMainWindow =  () =>{
 
     const win = new BrowserWindow({
         width:1300,
@@ -22,6 +22,9 @@ const createMainWindow = () =>{
     });
 
     win.webContents.openDevTools()
+
+
+
 
     win.once("ready-to-show",() => win.show())
 

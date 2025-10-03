@@ -20,9 +20,11 @@ const Login = () =>{
             }
             const res = await authorize();
 
-            if(res?.ok){
+            if(res?.valid){
+                const username = res?.username || ''
+                localStorage.setItem("username",username)
                 setStatus('success')
-                navigate('/dashboard',{replace:true})
+                navigate('/dashboard',{replace:true},)
             }
             else{
                 setStatus('error')

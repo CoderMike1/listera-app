@@ -59,7 +59,7 @@ const readTasks = () =>{
 const addTask = (task)=>{
     const tasks = readTasks()
     const now = new Date().toISOString()
-
+    console.log(task)
     const newTask = {
         id: String(task.id ?? ''),
         listing_id:    String(task.listing_id ?? ''),
@@ -103,4 +103,21 @@ const deleteTask = (task_listing_id) =>{
     return true;
 }
 
-module.exports = {ensureCsvExists,readTasks,addTask,deleteTask}
+const count_total_listed_items =  ()=>{
+
+    let score = 0;
+    const tasks =  readTasks()
+
+    console.log(tasks)
+
+    for(const t of tasks){
+        if(t.status === "listed"){
+            score += Number(t.stock);
+        }
+    }
+
+    return score;
+
+}
+
+module.exports = {ensureCsvExists,readTasks,addTask,deleteTask,count_total_listed_items}

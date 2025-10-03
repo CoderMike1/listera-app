@@ -1,29 +1,24 @@
 
 const {ipcMain} = require("electron")
 const items = require("../items/items-db");
+const {count_total_listed_items} = require("../marketplace/tasks");
 
 const registerOverviewHandlers = () =>{
 
-    ipcMain.handle("overview-api:get-sales-from-last-30-days",()=>{
-        const data=[
-                { date: "2023-01-01", sales: 5 },
-        { date: "2023-01-03", sales: 12 },
-        { date: "2023-01-05", sales: 16 },
-        { date: "2025-09-01", sales: 100 },
-        { date: "2025-08-28", sales: 20 },
-        ]
-        return {ok:true,results:data}
 
-    })
 
     ipcMain.handle("overview-api:get-kpis-data", () =>{
 
 
+        const items_total = items.get_total_items()
+        const listed_items_total = count_total_listed_items()
+        const last_sales = items.get_sales_from_30_days()
+
         const KPIS_data = [
-            {label: "Items Total", value: "1,250"},
-            {label: "Listed", value: "320"},
-            {label: "Sold (30d)", value: "94"},
-            {label: "Errors", value:"7"}
+            {label: "Items Total", value: items_total.total_stock},
+            {label: "Listed Items", value: listed_items_total},
+            {label: "Sold (30d)", value: last_sales.score},
+            {label: "Errors", value:"x"}
         ]
 
         return {ok:true, results:KPIS_data}

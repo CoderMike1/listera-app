@@ -178,6 +178,18 @@ ORDER BY days DESC
 LIMIT 5;
 `)
 
+const get_total_items = db.prepare(`
+    SELECT SUM(stock) as total_stock FROM items;
+`)
+
+const get_sales_from_30_days = db.prepare(`
+    SELECT COUNT(*) AS score
+        FROM items
+        WHERE status != 'active'
+          AND sale_at >= datetime('now', '-30 days');
+`)
+
+
 module.exports = {
 
     getKpis(){
@@ -248,5 +260,11 @@ module.exports = {
     },
     get_aged_inventory(){
         return get_aged_inventory.all()
+    },
+    get_total_items(){
+        return get_total_items.get()
+    },
+    get_sales_from_30_days(){
+        return get_sales_from_30_days.get()
     }
 }

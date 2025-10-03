@@ -10,7 +10,7 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
 
     const [adding,setAdding] = useState(false)
     const [payoutPrice,setPayoutPrice] = useState("")
-    const [listingStock,setListingStock] = useState()
+    const [listingStock,setListingStock] = useState(null)
     const [minimumPrice,setMinimumPrice] = useState("")
 
     function badgeClass(status) {
@@ -26,10 +26,9 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
         e?.preventDefault?.();
 
 
-
         setAdding(false)
         setPayoutPrice("")
-        setListingStock(0)
+        setListingStock(selectedItem.stock)
         setMinimumPrice("")
         setRun('running',selectedItem.id);
         try{
@@ -53,7 +52,7 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
                 size:selectedItem.size,
                 sku:selectedItem.sku,
                 item_stock: selectedItem.stock,
-                stock:listingStock,
+                stock:selectedItem.stock,
                 payout_price:payout_price,
                 listing_price:listing_price,
                 mode:"standard",
