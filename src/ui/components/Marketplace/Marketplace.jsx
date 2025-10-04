@@ -2,7 +2,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import MarketplaceMiddlePanel from "./MarketplaceMiddlePanel";
 
 import './Marketplace.css'
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import MarketplaceRightPanel from "./MarketplaceRightPanel";
 
 const Marketplace = () =>{
@@ -10,12 +10,15 @@ const Marketplace = () =>{
     const [itemsStatus,setItemsStatus] = useState([]);
     const [running,setRunning] = useState(null);
     const [marketplacesStatuses,setMarketplacesStatuses] = useState([]);
+    const [currencySettings,setCurrencySettings] = useState("");
+
 
     const [itemsList, setItemsList] = useState([]);
     const [isLoading,setIsLoading] = useState(false);
     const [runningCount,setRunningCount] = useState(0)
     const [errorCount,setErrorCount] = useState(0);
 
+    const [query,setQuery] = useState("")
 
     const [selectedItem,setSelectedItem] = useState(null)
     const onSelect = useCallback((item) => setSelectedItem(item), []);
@@ -113,16 +116,42 @@ const Marketplace = () =>{
     },[itemsList,runningCount])
 
 
+    useEffect(()=>{
+        const f = async ()=>{
+            const resp = await window.settings.api_get_currency_settings()
+            if(!resp.ok){
+                throw new Error()
+            }
+            setCurrencySettings(resp.results.currency)
+        }
+        f()
+
+    },[])
+
+    const filteredItems = useMemo(() =>{
+        const q = query.trim().toLowerCase();
+
+        let list =  itemsList.filter(it => {
+            return  !q || (it.name?.toLowerCase().includes(q) || it.sku?.toLowerCase().includes(q));
+        });
+
+
+        return list
+
+    },[query,itemsList])
+
+
+
      return (
          <div className="marketplace-cols">
              <aside className="panel sidebar-panel">
                  <Sidebar/>
              </aside>
              <div className="panel">
-                <MarketplaceMiddlePanel tasks={itemsList} onSelect={onSelect} selectedItem={selectedItem} itemsStatus={itemsStatus} runningCount={runningCount} errorCount={errorCount}/>
+                <MarketplaceMiddlePanel tasks={filteredItems} onSelect={onSelect} selectedItem={selectedItem} itemsStatus={itemsStatus} runningCount={runningCount} errorCount={errorCount} query={query} setQuery={setQuery}/>
              </div>
              <aside className="panel">
-                 <MarketplaceRightPanel items={itemsList} selectedItem={selectedItem} onClose={()=>setSelectedItem(null)} setRun={setRun} marketplacesStatuses={marketplacesStatuses} running={running}/>
+                 <MarketplaceRightPanel  selectedItem={selectedItem} onClose={()=>setSelectedItem(null)} setRun={setRun} marketplacesStatuses={marketplacesStatuses} running={running} currency={currencySettings}/>
              </aside>
          </div>
      )

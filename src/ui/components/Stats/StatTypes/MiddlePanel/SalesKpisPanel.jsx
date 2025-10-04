@@ -1,5 +1,6 @@
 import React, {useEffect, useMemo, useState} from "react";
 import './SalesKpisPanel.css'
+import { Textfit } from "react-textfit";
 const tiles = [
     {id:1,name:'Total Profit',key:'total_profit'},
     {id:2,name:'Total Income',key:'total_income'},
@@ -13,7 +14,7 @@ const RANGE = {
 
 }
 const RANGE_KEYS = ["24h", "7 days", "30 days", "all"];
-const SalesKpisPanel = ({selectedStat, setSelectedStat,kpisData}) =>{
+const SalesKpisPanel = ({selectedStat, setSelectedStat,kpisData,currency}) =>{
 
     const [index,setIndex] = useState(0);
     const [range,setRange] = useState('all')
@@ -76,13 +77,14 @@ const SalesKpisPanel = ({selectedStat, setSelectedStat,kpisData}) =>{
                     })}
                 </div>
                 <article className="mp-skp-tile is-active">
-                    <p
+                    <div
                         className="mp-skp-text"
                         style={{ color: value >= 0 ? "green" : "red" }}
                         title={`${activeTile.key} (${range})`}
                     >
-                        {value}
-                    </p>
+
+                        <Textfit mode="single" min={20} max={30} forceSingleModeWidth>{value} {currency}</Textfit>
+                    </div>
                 </article>
 
             </div>

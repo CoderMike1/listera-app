@@ -5,7 +5,7 @@ import {useMemo, useState} from "react";
 
 
 
-const MarketplaceMiddlePanel = ({tasks,onSelect,selectedItem,itemsStatus,runningCount,errorCount}) =>{
+const MarketplaceMiddlePanel = ({tasks,onSelect,selectedItem,itemsStatus,runningCount,errorCount,query,setQuery}) =>{
 
     //task kpis section
     const taskKpis = [
@@ -26,7 +26,7 @@ const MarketplaceMiddlePanel = ({tasks,onSelect,selectedItem,itemsStatus,running
     return (
         <div className="mmp-container">
             <div className="mmp-top-headers">
-                <SearchBar placeholder="Search by task name..."/>
+                <SearchBar setQuery={setQuery} query={query} placeholder="Search by name or sku..." />
 
             </div>
 

@@ -17,7 +17,7 @@ const login = async (login_hypeboost,password_hypeboost) =>{
         }
     })
     if(!r1.ok){
-        throw new Error("sdsada")
+        throw new Error("[l1] Error while getting login page...")
     }
     else{
         const content = await r1.text();
@@ -27,7 +27,10 @@ const login = async (login_hypeboost,password_hypeboost) =>{
         const token = $('input[name="_token"]').val();
 
         if(!token){
-            throw new Error('payload is null')
+            throw new Error('[l2] payload is null...')
+        }
+        if(login_hypeboost === "" || password_hypeboost === ""){
+            throw new Error("l[3] hypeboost credentials are empty...")
         }
         else{
             const login_payload = new URLSearchParams({
@@ -46,11 +49,11 @@ const login = async (login_hypeboost,password_hypeboost) =>{
                 body:login_payload
             })
             if(!p1.ok){
-                throw new Error("proxy error p1")
+                throw new Error("[l4] Error while logging account...")
             }
             else{
                 if(p1.url === "https://hypeboost.com/en/login"){
-                    console.log("error while logging in")
+                    throw new Error("[l5] Error while logging account...")
                 }
                 else{
                     const response_cookies = p1.headers.getSetCookie()

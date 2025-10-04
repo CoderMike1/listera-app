@@ -8,7 +8,7 @@ import AgedInventoryStat from "./StatTypes/RightPanel/AgedInventoryStat";
 
 
 
-const StatsRightPanel = ({selectedStat,setSelectedStat,sales,purchases,kpisData,listingAmount,agedInventory}) =>{
+const StatsRightPanel = ({selectedStat,setSelectedStat,sales,purchases,kpisData,listingAmount,agedInventory,currency}) =>{
 
     return (
         <div className="sr-container">
@@ -20,7 +20,7 @@ const StatsRightPanel = ({selectedStat,setSelectedStat,sales,purchases,kpisData,
             }
             {selectedStat === 2 &&
                 <div className="sr-stat">
-                    <SalesKpisPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} kpisData={kpisData} />
+                    <SalesKpisPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} kpisData={kpisData} currency={currency} />
                 </div>
             }
             {selectedStat === 3 &&

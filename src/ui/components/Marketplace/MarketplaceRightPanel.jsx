@@ -6,7 +6,7 @@ const SITES = ['HypeBoost']
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesStatuses,running})=>{
+const MarketplaceRightPanel = ({selectedItem,onClose,setRun,marketplacesStatuses,running,currency})=>{
 
     const [adding,setAdding] = useState(false)
     const [payoutPrice,setPayoutPrice] = useState("")
@@ -31,18 +31,21 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
         setListingStock(selectedItem.stock)
         setMinimumPrice("")
         setRun('running',selectedItem.id);
-        try{
-            const add_listing_form = {
-                site: "HypeBoost",
-                sku: String(selectedItem.sku ?? ''),
-                size: String(selectedItem.size ?? ''),
-                stock: String(listingStock ?? selectedItem.stock),
-                payout_price: String(payoutPrice ?? ''),
-                minimum_price: String(minimumPrice ?? ''),
-            };
+        const add_listing_form = {
+            site: "HypeBoost",
+            sku: String(selectedItem.sku ?? ''),
+            size: String(selectedItem.size ?? ''),
+            stock: String(listingStock ?? selectedItem.stock),
+            payout_price: String(payoutPrice ?? ''),
+            minimum_price: String(minimumPrice ?? ''),
+        };
 
-            const resp = await window.marketplace.api_add_listing(add_listing_form)
-
+        const resp = await window.marketplace.api_add_listing(add_listing_form)
+        if(!resp.ok) {
+            setRun('error',selectedItem.id)
+            await window.notify.add({level:"error",title:"Error while adding new listing",message:resp.error || "null"})
+        }
+        else {
             const {payout_price,listing_price,listing_id,site} = resp.results
 
             const task_form = {
@@ -63,12 +66,9 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
             }
             await window.marketplace.api_add_task(task_form)
             setRun('listed',selectedItem.id);
-        }
-        catch(e){
-            setRun('error',selectedItem.id)
-            console.log(e)
-        }
 
+            await window.notify.add({level:"info",title:"Added new listing",message:`Successfully added new listing! [${selectedItem.name}]`})
+        }
 
     }
     const deleteListing = (listing_id,site) => async (e) =>{
@@ -80,21 +80,21 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
             listing_id:listing_id,
             site:site
         }
-        try{
-            const resp = await window.marketplace.api_delete_listing(form)
-            if(resp.ok){
-                const del = await window.marketplace.api_delete_task(listing_id)
-                if(del.ok){
-                    setRun('unlisted',selectedItem.id);
-                }
+
+        const resp = await window.marketplace.api_delete_listing(form)
+
+        if(!resp.ok){
+            setRun('error',selectedItem.id)
+            await window.notify.add({level:"error",title:"Error while deleting listing",message:resp.error || "null"})
+        }
+        else{
+            const del = await window.marketplace.api_delete_task(listing_id)
+            if(del.ok){
+                setRun('unlisted',selectedItem.id);
+                await window.notify.add({level:"info",title:"Deleted listing",message:`Successfully deleted listing! [${selectedItem.name}]`})
             }
 
         }
-        catch(e){
-            setRun('error',selectedItem.id)
-            console.log(e)
-        }
-
 
     }
 
@@ -129,7 +129,7 @@ const MarketplaceRightPanel = ({items,selectedItem,onClose,setRun,marketplacesSt
                             </div>
                             <div className="fact">
                                 <div className="fact-label">Purchase Price</div>
-                                <div className="fact-value">{selectedItem.purchase_price}</div>
+                                <div className="fact-value">{selectedItem.purchase_price} {currency}</div>
                             </div>
                             <div className="fact">
                                 <div className="fact-label">Purchase Date</div>

@@ -5,18 +5,6 @@ const {deleteListing} = require('./deleteListing')
 
 
 
-const main = async ()=>{
-
-
-
-
-
-
-
-
-
-}
-main()
 const add_listing = async (sku,size,payout_price,minimum_price,stock,login_hypeboost,password_hypeboost)=>{
 
     const f = await login(login_hypeboost,password_hypeboost);

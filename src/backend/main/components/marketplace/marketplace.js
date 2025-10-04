@@ -26,32 +26,43 @@ const registerMarketplaceHandlers = () =>{
 
     ipcMain.handle("marketplace_api:add_listing",async (_e,form)=>{
         let results;
-        switch (form.site){
-            case "HypeBoost":
-                const {login_hypeboost,password_hypeboost} = await getHypeBoostCredentials()
-                results = await add_listing(form.sku,form.size,form.payout_price,form.minimum_price,form.stock,login_hypeboost,password_hypeboost);
+        try{
+            switch (form.site){
+                case "HypeBoost":
+                    const {login_hypeboost,password_hypeboost} = await getHypeBoostCredentials()
+                    results = await add_listing(form.sku,form.size,form.payout_price,form.minimum_price,form.stock,login_hypeboost,password_hypeboost);
 
 
-                break;
+                    break;
+            }
+
+            return {ok:true,results:results}
         }
-
-        return {ok:true,results:results}
+        catch(err){
+            const msg = err instanceof Error ? err.message : String(err);
+            return { ok: false, error: msg };
+        }
 
 
     })
     ipcMain.handle("marketplace_api:delete_listing",async (_e, form)=>{
         const {listing_id, site} = form;
+        try{
+            let results;
+            switch(site){
+                case "HypeBoost":
+                    const {login_hypeboost,password_hypeboost} = await getHypeBoostCredentials()
+                    results = await delete_listing(listing_id,login_hypeboost,password_hypeboost)
+                    break;
+            }
 
-        console.log(site)
-        let results;
-        switch(site){
-            case "HypeBoost":
-                const {login_hypeboost,password_hypeboost} = await getHypeBoostCredentials()
-                results = await delete_listing(listing_id,login_hypeboost,password_hypeboost)
-                break;
+            return results;
+        }
+        catch(err){
+            const msg = err instanceof Error ? err.message : String(err);
+            return {ok:false,error:msg}
         }
 
-        return results;
 
 
     })

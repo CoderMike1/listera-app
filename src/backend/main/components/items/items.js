@@ -1,7 +1,6 @@
 const {ipcMain} = require("electron")
 
 const items = require('./items-db')
-const {getProductData} = require("./getProductData");
 
 const registerItemsHandlers = () =>{
 
@@ -97,8 +96,30 @@ const registerItemsHandlers = () =>{
 
     })
 
-    ipcMain.handle("items_api:search_product_by_query",(_e,query)=>{
-        return getProductData(query)
+    ipcMain.handle("items_api:search_product_by_query",async (_e,query)=>{
+        try{
+            const params = new URLSearchParams({
+                "query":query
+            })
+            const resp = await fetch(`http://116.203.243.54:5000/get_p_data?${params}`,{
+                method:"GET"
+            })
+            if(!resp.ok){
+                throw new Error("error while getting product data")
+            }
+
+            const data = await resp.json()
+
+            const results = data.results;
+
+
+
+            return {ok:true, results:results}
+        }
+        catch{
+            return {ok:false,results:null}
+        }
+
     })
 
 

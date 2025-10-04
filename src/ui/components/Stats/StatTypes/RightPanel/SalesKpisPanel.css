@@ -99,3 +99,11 @@
     font-size:18px;
     font-weight: 600;
 }
+.rp-skp-text-currency{
+    font-size:40px;
+}
+.rp-skp-text{
+display: flex;
+    flex-direction: column;
+    gap:-50px;
+}

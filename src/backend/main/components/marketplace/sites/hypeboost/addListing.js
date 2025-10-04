@@ -3,10 +3,7 @@ const cheerio = require("cheerio");
 
 const addListing = async (f,sku,size,payout_price,minimum_price,stock) =>{
 
-    console.log("adding new listing...")
-
     const {size_id, product_id, token, lowest_price, product_image, product_link} = await getSizeInfo(f,sku,size);
-
 
     const lowest_payout = await calculatePayout(f,token,lowest_price);
 
@@ -62,7 +59,7 @@ const addListing = async (f,sku,size,payout_price,minimum_price,stock) =>{
         })
 
         if(!p1.ok){
-            throw new Error("error while adding new item")
+            throw new Error("[8] Error while adding new listing...")
         }
     const text_json = await p1.json()
     const check = text_json["success"];
@@ -85,7 +82,7 @@ const getListingId = async (f,product_id,size_id,listing_price) =>{
             }
         })
         if(!r1.ok){
-            throw new Error("sada")
+            throw new Error("[7] Error while getting listingId")
         }
         else{
             const content = await  r1.text()
@@ -141,7 +138,7 @@ const getSizeInfo = async (f,sku,size) => {
         }
     })
     if (!r1.ok) {
-        throw new Error("r1 error")
+        throw new Error("[1] Error while loading size info site")
     }
     const content = await r1.text()
 
@@ -156,7 +153,7 @@ const getSizeInfo = async (f,sku,size) => {
         $("div.search__result__product__info").attr("p").text().trim()
 
     if (product_sku && product_sku !== sku) {
-        throw new Error("sku not found")
+        throw new Error("[2] SKU not found...")
     }
 
 
@@ -168,10 +165,9 @@ const getSizeInfo = async (f,sku,size) => {
         }
     })
     if (!r2.ok) {
-        throw new Error("proxy error r2")
+        throw new Error("[3] Error while loading size info site")
     }
     const text = await r2.text()
-    console.log(text)
 
     const $p = cheerio.load(text);
     let product_id = null;
@@ -200,7 +196,7 @@ const getSizeInfo = async (f,sku,size) => {
     const match = sizes_list.find(x => correctFormatFromFraction(x.text) === size)
 
     if(!match){
-        throw new Error("size not found")
+        throw new Error("[4] Size not found...")
     }
     size_id = match.value;
 
@@ -265,14 +261,14 @@ const getLowestPrice = async (f,product_id,size_id) =>{
         }
     })
     if(!r1.ok){
-        throw new Error("r1 proxy error")
+        throw new Error("[5] Error while getting lowest price...")
     }
     else{
         const text = await r1.text();
         const price = Number(text);
 
         if(Number.isNaN(price)){
-            throw new Error("invalid price response")
+            throw new Error("[6] Invalid response status...")
         }
 
         return price;

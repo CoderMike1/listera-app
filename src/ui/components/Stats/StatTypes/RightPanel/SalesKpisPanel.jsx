@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from "react";
 import './SalesKpisPanel.css'
-
+import { Textfit } from "react-textfit";
 // const kpisOptions = [
 //     {name:'Total Profit',key:'total_profit'},
 //     {name:'Total Income',key:'total_income'},
@@ -21,7 +21,7 @@ const RANGE = {
 
 }
 
-const SalesKpisPanel = ({selectedStat,setSelectedStat,kpisData}) =>{
+const SalesKpisPanel = ({selectedStat,setSelectedStat,kpisData,currency}) =>{
 
     const [mode,setMode] = useState("total_profit")
     const [dateRange,setDateRange] = useState("24h")
@@ -55,8 +55,14 @@ const SalesKpisPanel = ({selectedStat,setSelectedStat,kpisData}) =>{
                         style={{ color: current_kpi_value >= 0 ? "green" : "red" }}
                         title="s"
                     >
-                        {current_kpi_value}
+                        <Textfit mode="single" min={20} max={90}>
+                            {current_kpi_value}
+                            <p className="rp-skp-text-currency">{currency}</p>
+                        </Textfit>
+
                     </p>
+
+
                 </div>
 
                 <div className="rp-skp-options">

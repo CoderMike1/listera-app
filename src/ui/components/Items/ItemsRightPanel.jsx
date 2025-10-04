@@ -89,38 +89,14 @@ const ItemsRightPanel = ({ selectedItem, onSave, onClose,setAdding,adding,editin
     }
 
     const searchItem = async ()=>{
-
         const res = await window.items.api_search_product_by_query(searchedValue);
 
-        const results = [
-            {
-                product_name: 'Nike Dunk Low Retro White Black Panda',
-                product_image: 'https://res.cloudinary.com/dm5xjgl02/image/upload/v1660067602/5e6a1e57-1c7d-435a-82bd-5666a13560fe.jpg',
-                product_sku: 'DD1391-100'
-            },
-            {
-                product_name: "Nike Dunk Low Retro White Black Panda (Women's)",
-                product_image: 'https://res.cloudinary.com/dm5xjgl02/image/upload/v1660056468/e175c189-cf87-4007-bc94-e5b919c4c75c.jpg',
-                product_sku: 'DD1503-101'
-            },
-            {
-                product_name: 'Nike Dunk Low Retro White Black Panda (GS)',
-                product_image: 'https://res.cloudinary.com/dm5xjgl02/image/upload/v1660070207/59f9f4de-a8b8-46fc-841f-42961d3567e7.jpg',
-                product_sku: 'CW1590-100'
-            },
-            {
-                product_name: 'Nike Dunk High Panda Black White (2021/2024)',
-                product_image: 'https://res.cloudinary.com/dm5xjgl02/image/upload/v1660229547/7d37091c-f214-491a-a50c-d289f0f7e255.jpg',
-                product_sku: 'DD1399-105'
-            },
-            {
-                product_name: 'Nike Dunk Low Panda-Monium Green Curry Multi-Color',
-                product_image: 'https://images.stockx.com/images/Nike-Dunk-Low-Panda-Monium-Green-Curry-Multi-Color.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&trim=color&q=90&dpr=2&updated_at=1753384349',
-                product_sku: 'IB2263-300'
-            }
-        ]
+        const {ok,results} = res;
+        if(!ok){
+            throw new Error("error while getting product data")
+        }
 
-        setSearchResults(res);
+        setSearchResults(results);
 
     }
 

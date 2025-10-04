@@ -8,7 +8,7 @@ import {useMemo} from "react";
 
 
 
-const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingAmount,agedInventory}) =>{
+const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingAmount,agedInventory,currency}) =>{
 
 
 
@@ -26,7 +26,7 @@ const StatsMiddlePanel = ({selectedStat,setSelectedStat, sales,kpisData,listingA
                     <SoldLastDaysChart sales={sales} initialRangeDays={30} selectedStat={selectedStat} setSelectedStat={setSelectedStat} height={230} />
                 </div>
                 <div className="sm-item">
-                    <SalesKpisPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} kpisData={kpisData} />
+                    <SalesKpisPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} kpisData={kpisData} currency={currency}/>
                 </div>
                 <div className="sm-item">
                     <ListingStatus selectedStat={selectedStat} setSelectedStat={setSelectedStat} listingAmount={listingAmount}/>

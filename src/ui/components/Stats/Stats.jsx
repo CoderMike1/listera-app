@@ -12,6 +12,8 @@ const Stats = () =>{
     const [kpisData,setKpisData] = useState([])
     const [listingAmount,setListingAmount] = useState([])
     const [agedInventory,setAgedInventory] = useState([])
+    const [currencySettings,setCurrencySettings] = useState("");
+
 
     useEffect (() =>{
         const f = async ()=>{
@@ -61,6 +63,15 @@ const Stats = () =>{
             }
 
         }
+        const f6 = async () =>{
+            const resp = await window.settings.api_get_currency_settings()
+            if(!resp.ok){
+                throw new Error()
+            }
+            else{
+                setCurrencySettings(resp.results.currency)
+            }
+        }
 
 
         f()
@@ -68,6 +79,7 @@ const Stats = () =>{
         f3()
         f4()
         f5()
+        f6()
     },[selectedStat])
     return (
 
@@ -76,10 +88,10 @@ const Stats = () =>{
                 <Sidebar/>
             </aside>
             <div className='panel'>
-                <StatsMiddlePanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} kpisData={kpisData} listingAmount={listingAmount} agedInventory={agedInventory}/>
+                <StatsMiddlePanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} kpisData={kpisData} listingAmount={listingAmount} agedInventory={agedInventory} currency={currencySettings}/>
             </div>
             <aside className='panel'>
-               <StatsRightPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} purchases={purchasesCount} kpisData={kpisData} listingAmount={listingAmount} agedInventory={agedInventory}/>
+               <StatsRightPanel selectedStat={selectedStat} setSelectedStat={setSelectedStat} sales={salesCount} purchases={purchasesCount} kpisData={kpisData} listingAmount={listingAmount} agedInventory={agedInventory} currency={currencySettings}/>
             </aside>
 
         </div>

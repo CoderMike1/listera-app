@@ -11,7 +11,7 @@ const deleteListing = async (f,listing_id) =>{
     })
 
     if(!r.ok){
-        throw new Error("r is not ok")
+        throw new Error("d[1] Error while loading site...")
     }
     const content = await r.text()
     const $ = cheerio.load(content)
@@ -32,7 +32,7 @@ const deleteListing = async (f,listing_id) =>{
     })
 
     if(!p.ok){
-        throw new Error("p is not ok")
+        throw new Error("d[2] Error while deleting listing...")
     }
     return {ok:true}
 }

@@ -43,7 +43,7 @@
 }
 .np-item:hover{
     border-radius:12px;
-    background: #acdd54;
+    background: #d5f1aa;
     cursor:pointer;
 }
 
@@ -78,4 +78,44 @@
     bottom:2px;
     font-size:13px;
     color:#94a3b8;
+}
+.np-item-close{
+    position:absolute;
+    right: 1px;
+    cursor:pointer;
+    border: 0;
+    background: #491010;
+    color:white;
+    border-radius:99px;
+}
+.np-item-close:hover{
+    background: #d38c8c;
+}
+
+
+/**/
+
+.np-item{ position:relative; }
+.np-tooltip{
+    position:absolute; top:100%; right:0;
+    transform: translateY(8px) scale(.98);
+    opacity:0; visibility:hidden; pointer-events:none;
+    z-index:9999;
+    max-width:420px; padding:12px 14px; border-radius:12px;
+    background: #1bbe1b; color:#fff; box-shadow:0 10px 30px rgba(0,0,0,.25);
+    white-space:normal; word-break:break-word; line-height:1.35;
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    font-family: 'Inter', sans-serif;
+}
+.np-tooltip-title{ font-size:14px; font-weight:700; display:block; margin-bottom:4px; }
+.np-tooltip-text{ font-size:15px; }
+.np-tooltip::before{
+    content:""; position:absolute; top:-6px; right:16px;
+    border:6px solid transparent; border-bottom-color:#111;
+}
+
+.np-item:hover .np-tooltip,
+.np-item:focus-within .np-tooltip{
+    opacity:1; visibility:visible; transform: translateY(8px) scale(1);
+    pointer-events:auto;
 }

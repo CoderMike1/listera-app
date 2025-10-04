@@ -242,7 +242,7 @@ const ItemsMiddlePanel = ({kpisData,itemsList,onSelect,selectedItem,loading,erro
                                   {(selectedCategory === 'active' || !selectedCategory) ?
                                       <td>{i.purchase_price} {currency}</td>
                                       :
-                                      <td>{i.sold_price - i.purchase_price} {currency}</td>
+                                      <td>{i.selling_price - i.purchase_price} {currency}</td>
                                   }
 
                                   <td>{STATUS_ENUM[i.status]}</td>
